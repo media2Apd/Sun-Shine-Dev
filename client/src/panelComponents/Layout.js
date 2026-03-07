@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
+import Header from "./Header";
 import Sidebar from "./Sidebar"; // Adjust path as needed
 import { Outlet } from "react-router-dom";
 
@@ -44,29 +44,4 @@ const Layout = () => {
 export default Layout;
 
 
-// {
-//         path: "admin-panel",
-//         element: <Layout />,
-//         children: [
-//           // {
-//           //   path: "",
-//           //   element: <Dashboard />
-//           // },
-//           // {
-//           //   path: "all-categories",
-//           //   element: <Categories />
-//           // },
-//           // {
-//           //   path: "all-products",
-//           //   element: <AllProducts />
-//           // },
-//           // {
-//           //   path: "all-products/upload",
-//           //   element: <ProductUpload />
-//           // },
-//           // {
-//           //   path: "all-products/upload/:id",
-//           //   element: <ProductUpload />
-//           // },
-//         ]
-//       },
+

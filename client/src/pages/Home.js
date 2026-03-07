@@ -9,16 +9,17 @@ import BannerSection2 from "../components/homeComponents/BannerSection2";
 import OrganicProducts from "../components/homeComponents/OrganicProducts";
 import BiobasedProducts from "../components/homeComponents/BiobasedProduct";
 import BlogsSection from "../components/homeComponents/BlogSection";
-import { User } from "lucide-react";
 import UserReviews from "../components/homeComponents/UserReviews";
 import { SimplifiedBuyingProcess } from "../components/homeComponents/SimplifiedBuying";
 import { OurCertificates } from "../components/homeComponents/OurCertificates";
 import Newsletter from "../components/homeComponents/NewsLetter";
-import Footer from "../components/Footer";
+import { ProductProvider } from "../Context/ProductContext";
 
 function Home() {
   return (
  
+
+
    <div>
    <HeroPage/>
    <FeaturesSection/>
@@ -33,6 +34,10 @@ function Home() {
     <SimplifiedBuyingProcess/>
     <OurCertificates/>
     <Newsletter/>
+    <ProductProvider/>
+    <ProductProvider/>
+ 
+
   </div>
   );
 }
