@@ -245,24 +245,89 @@ className="w-full border p-2 rounded mt-1"
 <option>12%</option>
 <option>18%</option>
 </select>
-
 </div>
 
 </div>
+
 
 <div className="mt-6">
+<label className="text-sm block mb-4">Product Images</label>
 
-<label className="text-sm">
-Product Images
-</label>
+<div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+
+{[0,1,2,3,4].map((index) => (
+
+<div key={index} className="text-center">
+
+<div className="w-full h-28 border-2 border-dashed rounded-lg flex items-center justify-center bg-gray-50">
+
+{product.images[index] ? (
+
+<img
+src={URL.createObjectURL(product.images[index])}
+alt="preview"
+className="h-full object-cover rounded"
+/>
+
+) : (
+
+<label className="cursor-pointer text-gray-400 text-sm">
+
+Upload
 
 <input
 type="file"
-multiple
-onChange={handleImage}
-className="mt-2"
+className="hidden"
+onChange={(e) => {
+const files = [...product.images];
+files[index] = e.target.files[0];
+setProduct({ ...product, images: files });
+}}
 />
 
+</label>
+
+)}
+
+</div>
+
+<div className="flex justify-between mt-2 text-sm">
+
+<button
+type="button"
+className="text-gray-500"
+onClick={() => {
+const files = [...product.images];
+files[index] = null;
+setProduct({ ...product, images: files });
+}}
+>
+Remove
+</button>
+
+<label className="cursor-pointer text-gray-500">
+
+✎
+
+<input
+type="file"
+className="hidden"
+onChange={(e) => {
+const files = [...product.images];
+files[index] = e.target.files[0];
+setProduct({ ...product, images: files });
+}}
+/>
+
+</label>
+
+</div>
+
+</div>
+
+))}
+
+</div>
 </div>
 
 </div>

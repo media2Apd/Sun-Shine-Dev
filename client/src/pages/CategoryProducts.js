@@ -6,6 +6,7 @@ import CategoriesSection from "../components/homeComponents/CategoriesSection";
 import banner from "../assets/ProductsBanner.png";
 import BiobasedProducts from "../components/homeComponents/BiobasedProduct";
 import NewLaunch from "../components/homeComponents/NewLaunch";
+import ProductCard from "../components/homeComponents/ProductCard";
 
 //  Product Data
 const products = [
@@ -75,37 +76,22 @@ const CategoryProducts = () => {
       <img src={banner} alt="Banner" className="relative w-full h-full overflow-hidden leading-none" />
      <div className="px-6 py-10">
       <CategoriesSection/>
-      
+      <div className="px-10">
+
       <h2 className="text-2xl font-semibold mb-8 capitalize mt-10">
         {category ? `${category} Products` : "All Products"}
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((item) => (
-            <div
-              key={item.id}
-              className="border rounded-lg p-4 shadow-sm"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-40 object-contain mb-4 "
-              />
-              <h3 className="text-sm font-medium">
-                {item.name}
-              </h3>
-              <p className="text-green-600 font-semibold">
-                ₹{item.price}
-              </p>
-               
-     
-            </div>
+            <ProductCard key={item.id} item={item} />
           ))
         ) : (
             <p className="text-gray-500">No products found in this category.</p>
            
         )}
+      </div>
    
       </div>
       <NewLaunch/>

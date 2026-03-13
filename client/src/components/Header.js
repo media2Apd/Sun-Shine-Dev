@@ -9,10 +9,11 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import logo from "../assets/logo.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
-
+  const navigate =useNavigate();
   return (
     <header className="bg-white-100">
       <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between relative">
@@ -36,11 +37,18 @@ const Header = () => {
             {open && (
               <div className="absolute right-0 mt-4 w-64 bg-gray-100 shadow-lg rounded-md overflow-hidden z-50">
                 
+                <Link to="/settings-page">
                 <DropdownItem icon={<FiUser />} text="My Profile" />
+                </Link>
                 <DropdownItem icon={<FiRefreshCw />} text="Order History" />
-                <DropdownItem icon={<FiHeart />} text="Wishlist" />
+                {/* <DropdownItem icon={<FiHeart />} text="Wishlist" /> */}
+                <Link to="/wishlist-page">
+                <DropdownItem icon={<FiHeart />} text="WishList" />
+                </Link>
+                <Link to="/cart-page">
                 <DropdownItem icon={<FiShoppingCart />} text="Shopping Cart" />
-                <DropdownItem icon={<FiSettings />} text="Settings" />
+                </Link>
+                {/* <DropdownItem icon={<FiSettings />} text="Settings" /> */}
                 <DropdownItem icon={<FiLogOut />} text="Log-out" />
 
               </div>
