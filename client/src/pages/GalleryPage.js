@@ -38,11 +38,11 @@ const Section = ({ title, subtitle, children }) => {
     <div className="mb-16">
 
       <div className="text-center mb-8">
-        <h2 className="text-xl font-semibold text-gray-800">
+        <h1 className="text-xl font-semibold text-gray-800">
           {title}
-        </h2>
+        </h1>
 
-        <p className="text-gray-500 text-sm">
+        <p className=" text-sm">
           {subtitle}
         </p>
       </div>
@@ -55,7 +55,7 @@ const Section = ({ title, subtitle, children }) => {
 
 const GalleryPage = () => {
   return (
-    <div className="bg-gray-50 min-h-screen px-5 md:px-10 lg:px-20 py-10">
+    <div className="bg-gray-50 min-h-screen px-5 md:px-10 lg:px-20 py-3">
 
       {/* INDUSTRY */}
       <Section

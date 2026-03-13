@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/footerimage.png";
 
 export default function Footer() {
+  const navigate = useNavigate();
   return (
     <div className="bg-[#111111] text-gray-300 py-16 px-6">
       <div className="max-w-7xl mx-auto grid md:grid-cols-5 gap-10">
@@ -26,18 +28,18 @@ export default function Footer() {
 
         {/* My Account */}
         <div>
-          <h3 className="text-white font-semibold mb-4">My Account</h3>
+          <h1 className="text-white font-semibold mb-4">My Account</h1>
           <ul className="space-y-2 text-sm">
-            <li>Profile</li>
+            <li onClick={()=> navigate('./settings-page')} className="cursor-pointer">Profile</li>
             <li>Order History</li>
-            <li>Shopping Cart</li>
-            <li>Wishlist</li>
+            <li onClick={()=> navigate('./cart-page')} className="cursor-pointer">Shopping Cart</li>
+            <li onClick={()=> navigate('./wishlist-page')} className="cursor-pointer">Wishlist</li>
           </ul>
         </div>
 
         {/* Categories */}
         <div>
-          <h3 className="text-white font-semibold mb-4">Categories</h3>
+          <h1 className="text-white font-semibold mb-4">Categories</h1>
           <ul className="space-y-2 text-sm">
             <li>Organic manures</li>
             <li>Bio fertilizers</li>
@@ -48,20 +50,20 @@ export default function Footer() {
 
         {/* Proxy */}
         <div>
-          <h3 className="text-white font-semibold mb-4">Proxy</h3>
+          <h1 className="text-white font-semibold mb-4">Proxy</h1>
           <ul className="space-y-2 text-sm">
-            <li>About</li>
-            <li>Shop</li>
-            <li>Blog</li>
-            <li>Gallery</li>
+            <li onClick={()=> navigate('./about-page')} className="cursor-pointer">About</li>
+            <li onClick={()=> navigate('./category-products')} className="cursor-pointer" >Shop</li>
+            <li onClick={()=> navigate('./blog-page')} className="cursor-pointer">Blog</li>
+            <li onClick={()=> navigate('./gallery-page')} className="cursor-pointer">Gallery</li>
           </ul>
         </div>
 
         {/* Helps */}
         <div>
-          <h3 className="text-white font-semibold mb-4">Helps</h3>
+          <h1 className="text-white font-semibold mb-4">Helps</h1>
           <ul className="space-y-2 text-sm">
-            <li>Contact</li>
+            <li  onClick={()=> navigate('./contact-page')} className="cursor-pointer">Contact</li>
             <li>FAQ’s</li>
             <li>Terms & Condition</li>
             <li>Privacy Policy</li>

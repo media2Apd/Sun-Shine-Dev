@@ -1,78 +1,300 @@
-// import React, { createContext, useContext, useState, useEffect } from "react";
-// import { useBlogs } from "../Context/BlogContext";
+// import React, { useState } from "react";
+// import { useBlog } from "../Context/BlogContext";
+// import { FiSearch, FiCalendar , FiPlus } from "react-icons/fi";
+// import { useNavigate } from "react-router-dom";
 
-// const BlogContext = createContext();
 
-// export const BlogProvider = ({ children }) => {
+// function AdminBloglist() {
+//   const navigate = useNavigate();
 
-//   const [blogs, setBlogs] = useState([]);
+//   const { blogs } = useBlog();
 
-//   useEffect(() => {
-//     const storedBlogs = localStorage.getItem("blogs");
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [selectedDate, setSelectedDate] = useState("");
 
-//     if (storedBlogs) {
-//       setBlogs(JSON.parse(storedBlogs));
-//     }
-//   }, []);
+//   const filteredBlogs = blogs.filter((blog) => {
+//     const matchSearch =
+//       blog.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       blog.author?.toLowerCase().includes(searchTerm.toLowerCase());
+
+//     const matchDate = selectedDate
+//       ? blog.publishDate === selectedDate
+//       : true;
+
+//     return matchSearch && matchDate;
+//   });
 
 //   return (
-//     <BlogContext.Provider value={{ blogs, setBlogs }}>
-//       {children}
-//     </BlogContext.Provider>
+//     <div className="p-1">
+
+//       {/* TITLE */}
+//       <div className="text-xl md:text-2xl font-bold pb-4">
+//         Blog Management
+//       </div>
+
+//       {/* FILTER SECTION */}
+//       <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-3 mb-6">
+
+//         {/* DATE */}
+//         <div className="relative w-full md:w-auto">
+//           <FiCalendar className="absolute left-3 top-3 text-gray-400" />
+//           <input
+//             type="date"
+//             value={selectedDate}
+//             onChange={(e) => setSelectedDate(e.target.value)}
+//             className="pl-9 pr-4 py-2 border rounded-lg w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-green-500"
+//           />
+//         </div>
+
+//         {/* SEARCH */}
+//         <div className="relative w-full md:w-auto">
+//           <FiSearch className="absolute left-3 top-3 text-gray-400" />
+//           <input
+//             type="text"
+//             placeholder="Search blog..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="pl-9 pr-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-green-500"
+//           />
+//         </div>
+
+//       </div>
+
+//        {/* CREATE PRODUCT BUTTON */}
+//              {/* Round Icon Button - 430px above */}
+//       <button
+//         onClick={() => navigate("/admin-panel/blog-form")}
+//         className="bg-green-600 text-white w-10 h-10 items-center justify-center rounded-full hover:bg-green-700 hidden min-[431px]:flex"
+//       >
+//         <FiPlus size={26} />
+//       </button>
+      
+//       {/* Mobile Button - below 430px */}
+//       <button
+//         onClick={() => navigate("/admin-panel/blog-form")}
+//         className="bg-green-600 text-white px-3 py-2 rounded-lg w-full max-[430px]:block hidden"
+//       >
+//         + Add
+//       </button>
+
+//       {/* TABLE */}
+//       <div className="bg-white rounded-xl overflow-x-auto">
+
+//         <table className="min-w-full border-separate border-spacing-y-3">
+
+//           {/* HEADER */}
+//           <thead className="text-sm text-gray-600">
+//             <tr className="text-center bg-gray-100">
+//               <th className="py-4 px-4 rounded-l-lg">Blog Title</th>
+//               <th className="py-4 px-4">Category</th>
+//               <th className="py-4 px-4">Author</th>
+//               <th className="py-4 px-4">Publish Date</th>
+//               <th className="py-4 px-4 rounded-r-lg">Status</th>
+//             </tr>
+//           </thead>
+
+//           {/* BODY */}
+//           <tbody>
+
+//             {filteredBlogs.length === 0 ? (
+//               <tr>
+//                 <td colSpan="5" className="p-4 text-center text-gray-400">
+//                   No blogs found
+//                 </td>
+//               </tr>
+//             ) : (
+
+//               filteredBlogs.map((blog, index) => (
+
+//                 <tr key={index} className="text-sm text-center">
+
+//                   <td className="py-4 px-4 bg-white border-y border-l border-gray-200 rounded-l-lg">
+//                     {blog.title}
+//                   </td>
+
+//                   <td className="py-4 px-4 bg-white border-y border-gray-200">
+//                     {blog.category}
+//                   </td>
+
+//                   <td className="py-4 px-4 bg-white border-y border-gray-200">
+//                     {blog.author}
+//                   </td>
+
+//                   <td className="py-4 px-4 bg-white border-y border-gray-200">
+//                     {blog.publishDate}
+//                   </td>
+
+//                   <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg">
+//                     <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
+//                       {blog.status || "Published"}
+//                     </span>
+//                   </td>
+
+//                 </tr>
+
+//               ))
+//             )}
+
+//           </tbody>
+
+//         </table>
+
+//       </div>
+
+//     </div>
 //   );
-// };
+// }
 
-// export const useBlogs = () => useContext(BlogContext);
+// export default AdminBloglist;
 
 
-import React from "react";
-import { useBlogs } from "../Context/BlogContext";
+
+import React, { useState } from "react";
+import { useBlog } from "../Context/BlogContext";
+import { FiSearch, FiCalendar, FiPlus } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 function AdminBloglist() {
 
-  const { blogs } = useBlogs();
+  const navigate = useNavigate();
+  const { blogs } = useBlog();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const filteredBlogs = blogs.filter((blog) => {
+
+    const matchSearch =
+      blog.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      blog.author?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchDate = selectedDate
+      ? blog.publishDate === selectedDate
+      : true;
+
+    return matchSearch && matchDate;
+  });
 
   return (
-    <div>
+    <div className="p-1">
 
-      <h2>Blog Management</h2>
+      {/* TITLE */}
+      <div className="text-xl md:text-2xl font-bold pb-4">
+        Blog Management
+      </div>
 
-      <table width="100%" border="0">
+      {/* FILTER SECTION */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-3 mb-6">
 
-        <thead>
-          <tr>
-            <th>Blog Title</th>
-            <th>Category</th>
-            <th>Author</th>
-            <th>Publish Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+        {/* DATE */}
+        <div className="relative w-full md:w-auto">
+          <FiCalendar className="absolute left-3 top-3 text-gray-400" />
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="pl-9 pr-4 py-2 border rounded-lg w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-        <tbody>
+        {/* SEARCH */}
+        <div className="relative w-full md:w-auto">
+          <FiSearch className="absolute left-3 top-3 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search blog..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 pr-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-          {blogs && blogs.length > 0 ? (
-            blogs.map((blog, index) => (
-              <tr key={index}>
-                <td>{blog.title}</td>
-                <td>{blog.category}</td>
-                <td>{blog.author}</td>
-                <td>{blog.publishDate}</td>
-                <td>{blog.status}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">No blogs found</td>
+        {/* DESKTOP + BUTTON */}
+        <button
+          onClick={() => navigate("/admin-panel/blog-form")}
+          className="bg-green-600 text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-green-700 hidden min-[431px]:flex"
+        >
+          <FiPlus size={26} />
+        </button>
+
+      </div>
+
+      {/* MOBILE ADD BUTTON */}
+      <button
+        onClick={() => navigate("/admin-panel/blog-form")}
+        className="bg-green-600 text-white px-3 py-2 rounded-lg w-full max-[430px]:block hidden mb-4"
+      >
+        + Add
+      </button>
+
+      {/* TABLE */}
+      <div className="bg-white rounded-xl overflow-x-auto">
+
+        <table className="min-w-full border-separate border-spacing-y-3">
+
+          {/* HEADER */}
+          <thead className="text-sm text-gray-600">
+            <tr className="text-center bg-gray-100">
+              <th className="py-4 px-4 rounded-l-lg">Blog Title</th>
+              <th className="py-4 px-4">Category</th>
+              <th className="py-4 px-4">Author</th>
+              <th className="py-4 px-4">Publish Date</th>
+              <th className="py-4 px-4 rounded-r-lg">Status</th>
             </tr>
-          )}
+          </thead>
 
-        </tbody>
+          {/* BODY */}
+          <tbody>
 
-      </table>
+            {filteredBlogs.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="p-4 text-center text-gray-400">
+                  No blogs found
+                </td>
+              </tr>
+            ) : (
+
+              filteredBlogs.map((blog, index) => (
+
+                <tr key={index} className="text-sm text-center">
+
+                  <td className="py-4 px-4 bg-white border-y border-l border-gray-200 rounded-l-lg">
+                    {blog.title}
+                  </td>
+
+                  <td className="py-4 px-4 bg-white border-y border-gray-200">
+                    {blog.category}
+                  </td>
+
+                  <td className="py-4 px-4 bg-white border-y border-gray-200">
+                    {blog.author}
+                  </td>
+
+                  <td className="py-4 px-4 bg-white border-y border-gray-200">
+                    {blog.publishDate}
+                  </td>
+
+                  <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg">
+                    <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                      {blog.status || "Published"}
+                    </span>
+                  </td>
+
+                </tr>
+
+              ))
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
 
     </div>
   );
 }
 
 export default AdminBloglist;
+
+

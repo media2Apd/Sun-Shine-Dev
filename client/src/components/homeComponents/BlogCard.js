@@ -1,39 +1,98 @@
 
+// import React from "react";
+
+// function BlogCard({ blog }) {
+//   return (
+//     <div className="bg-white rounded-xl border overflow-hidden hover:shadow-lg transition">
+
+//       {/* IMAGE */}
+//       {blog.image && (
+//         <img
+//           src={blog.image}
+//           alt={blog.title}
+//           className="w-full h-56 object-cover"
+//         />
+//       )}
+
+//       <div className="p-5">
+
+//         {/* CATEGORY */}
+//         <p className="text-sm text-gray-500 mb-2">
+//           {blog.category}
+//         </p>
+
+//         {/* TITLE */}
+//         <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 leading-snug">
+//           {blog.title}
+//         </h2>
+
+//         {/* SUMMARY */}
+//         <p className="text-gray-600 text-sm md:text-base mb-4">
+//           {blog.summary}
+//         </p>
+
+//         {/* READ MORE */}
+//         <div className="flex justify-end">
+//           <button className="text-green-600 text-sm font-medium hover:underline">
+//             Read more
+//           </button>
+//         </div>
+
+//       </div>
+
+//     </div>
+//   );
+// }
+
+// export default BlogCard;
 
 import React from "react";
 
-const BlogCard = ({ image, category, title, desc }) => {
+function BlogCard({ blog }) {
+
+  // 🛡️ Safety check
+  if (!blog) return null;
+
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition">
+    <div className="bg-white rounded-xl border overflow-hidden hover:shadow-lg transition">
 
-      <img
-        src={image}
-        alt={title}
-        className="h-48 w-full object-cover"
-      />
+      {/* IMAGE */}
+      {blog?.image && (
+        <img
+          src={blog.image}
+          alt={blog.title}
+          className="w-full h-56 object-cover"
+        />
+      )}
 
-      <div className="p-4">
+      <div className="p-5">
 
-        <p className="text-xs text-gray-500 mb-2">
-          {category}
+        {/* CATEGORY */}
+        <p className="text-sm text-gray-500 mb-2">
+          {blog?.category}
         </p>
 
-        <h3 className="font-semibold text-sm mb-2">
-          {title}
-        </h3>
+        {/* TITLE */}
+        <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 leading-snug">
+          {blog?.title}
+        </h2>
 
-        <p className="text-xs text-gray-600 mb-4">
-          {desc}
+        {/* SUMMARY */}
+        <p className="text-gray-600 text-sm md:text-base mb-4">
+          {blog?.summary}
         </p>
 
-        <button className="text-green-600 text-sm hover:underline">
-          Read more
-        </button>
+        {/* READ MORE */}
+        <div className="flex justify-end">
+          <button className="text-green-600 text-sm font-medium hover:underline">
+            Read more
+          </button>
+        </div>
 
       </div>
 
     </div>
   );
-};
+}
 
 export default BlogCard;

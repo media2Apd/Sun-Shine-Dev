@@ -9,6 +9,7 @@ import router from './routes';
 import { CategoryProvider } from './Context/CategoryContext';
 import { ProductProvider } from './Context/ProductContext';
 import { SettingsProvider } from './Context/SettingsContext';
+import { BlogProvider } from './Context/BlogContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,9 +20,9 @@ root.render(
     <CategoryProvider>
       <ProductProvider>
         <SettingsProvider>
-
+        <BlogProvider>
           <RouterProvider router={router} />
-          
+          </BlogProvider>
         </SettingsProvider>
       </ProductProvider>
     </CategoryProvider>

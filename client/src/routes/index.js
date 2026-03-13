@@ -19,7 +19,9 @@ import ContactPage from "../pages/ContactPage";
 import SettingsPage from "../pages/SettingsPage";
 import AdminBloglist from "../PanelPages/AdminBloglist"
 import BlogForm from "../panelComponents/BlogForm";
-import { BlogProvider } from "../Context/BlogContext";
+import BlogPage from "../pages/BlogPage"
+
+
 
 
 
@@ -68,6 +70,11 @@ const router = createBrowserRouter([
       {
         path:'settings-page',
         element:<SettingsPage/>
+      }, 
+      
+      {
+        path:'blog-page',
+        element:<BlogPage/>
       },
       
             {

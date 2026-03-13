@@ -35,25 +35,7 @@ const CategoryList = () => {
         : true
     );
 
-  // const handleDelete = (id) => {
-  //   const confirmDelete = window.confirm("Are you sure you want to delete?");
-  //   if (confirmDelete) {
-  //     context.deleteCategory && context.deleteCategory(id);
-  //   }
-  // };
-
-  // const handleHide = (id) => {
-  //   context.hideCategory && context.hideCategory(id);
-  // };
-
-  // const handleEdit = (id) => {
-  //   navigate(`/admin-panel/edit-product/${id}`);
-  // };
-
-  // const handleView = (id) => {
-  //   navigate(`/admin-panel/view-product/${id}`);
-  // };
-
+  
   return (
     <div className="p-1">
 

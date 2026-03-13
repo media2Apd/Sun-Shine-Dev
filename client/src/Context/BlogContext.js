@@ -3,21 +3,21 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const BlogContext = createContext();
 
 export const BlogProvider = ({ children }) => {
-  const [blogs, setBlogs] = useState([]);
 
-  useEffect(() => {
+  const [blogs, setBlogs] = useState(() => {
     const storedBlogs = localStorage.getItem("blogs");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
-    }
-  }, []);
+    return storedBlogs ? JSON.parse(storedBlogs) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem("blogs", JSON.stringify(blogs));
   }, [blogs]);
 
   const addBlog = (blog) => {
-    setBlogs((prev) => [...prev, blog]);
+    setBlogs((prevBlogs) => [
+      ...prevBlogs,
+      { ...blog, status: "Published" }
+    ]);
   };
 
   return (
