@@ -49,7 +49,7 @@ const Sidebar = ({
 
     { label: "Inventory", icon: <FiTruck />, to: "/admin-panel/inventory" },
 
-    { label: "Content Management", icon: <FiLayers />, to: "/admin-panel/content-management" },
+    { label: "Blog Management", icon: <FiLayers />, to: "/admin-panel/blog-list" },
 
     { label: "Settings", icon: <FiSettings />, to: "/admin-panel/settings" },
 

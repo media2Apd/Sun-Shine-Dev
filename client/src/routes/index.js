@@ -20,6 +20,7 @@ import SettingsPage from "../pages/SettingsPage";
 import AdminBloglist from "../PanelPages/AdminBloglist"
 import BlogForm from "../panelComponents/BlogForm";
 import BlogPage from "../pages/BlogPage"
+import AddressPage from "../pages/AddressPage";
 
 
 
@@ -76,8 +77,12 @@ const router = createBrowserRouter([
         path:'blog-page',
         element:<BlogPage/>
       },
+      {
+        path:'address-page',
+        element:<AddressPage/>
+      }
       
-            {
+            ,{
         path: "admin-panel",
         element: <Layout />,
         children:[
