@@ -110,6 +110,9 @@
 ////////////////////////////////
 
 // Price range state
+
+
+
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [minPrice, setMinPrice] = useState(0);
@@ -173,13 +176,12 @@ const handleMinPriceChange = (e) => {
     const value = Math.max(Number(e.target.value), priceRange[0] + 100);
     setPriceRange([priceRange[0], value]);
   };
-<div className='mb-4 border-t pt-4'>
-                  <button onClick={() => setIsPriceRangeOpen(!isPriceRangeOpen)} className='flex justify-between items-center w-full py-2 text-left font-medium'>
-                    <span>Price Range</span>
-                    <svg className={`w-5 h-5 transition-transform ${isPriceRangeOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
+ <div className='mb-4 border-t pt-4'>
+                <button onClick={() => setIsPriceRangeOpen(!isPriceRangeOpen)} className='flex justify-between items-center w-full py-2 text-left font-medium'>
+                   <span>Price Range</span>
+                   <svg className={`w-5 h-5 transition-transform ${isPriceRangeOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />                    </svg>
+                  </button>                  
                   {isPriceRangeOpen && (
                     <div className="px-4 pb-6 mt-4">
                       <div className="flex justify-between mb-3">
@@ -193,5 +195,5 @@ const handleMinPriceChange = (e) => {
                         <input type="range" min={minPrice} max={maxPrice} value={priceRange[1]} onChange={handleMaxPriceChange} className="price-range absolute w-full appearance-none bg-transparent pointer-events-none -mt-1" />
                       </div>
                     </div>
-                  )}
-                </div>
+                 )}
+              </div> 
