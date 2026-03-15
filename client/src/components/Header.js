@@ -5,7 +5,7 @@ import {
   FiHeart,
   FiShoppingCart,
   FiRefreshCw,
-  FiSettings,
+  
   FiLogOut,
 } from "react-icons/fi";
 import logo from "../assets/logo.png";
@@ -56,8 +56,10 @@ const Header = () => {
           </div>
 
           <FiHeart className="text-xl cursor-pointer hover:text-orange-500 transition" />
-          <FiShoppingCart className="text-xl cursor-pointer hover:text-orange-500 transition" />
-        </div>
+      <FiShoppingCart onClick={() => navigate("/cart-page")}
+      className="text-xl cursor-pointer hover:text-orange-500 transition"
+       />       
+   </div>
 
       </div>
     </header>

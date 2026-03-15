@@ -126,7 +126,7 @@ const SettingsPage = () => {
           <div className="order-2 lg:order-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div>
-              <label className="text-sm text-gray-600">
+              <label className="text-md">
                 First Name
               </label>
 
@@ -142,7 +142,7 @@ const SettingsPage = () => {
             </div>
 
             <div>
-              <label className="text-sm text-gray-600">
+              <label className="text-md">
                 Last Name
               </label>
 
@@ -158,7 +158,7 @@ const SettingsPage = () => {
             </div>
 
             <div>
-              <label className="text-sm text-gray-600">
+              <label className="text-md">
                 Email
               </label>
 
@@ -174,7 +174,7 @@ const SettingsPage = () => {
             </div>
 
             <div>
-              <label className="text-sm text-gray-600">
+              <label className="text-md">
                 Phone Number
               </label>
 
@@ -218,7 +218,7 @@ const SettingsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               First Name
             </label>
 
@@ -234,7 +234,7 @@ const SettingsPage = () => {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               Last Name
             </label>
 
@@ -250,7 +250,7 @@ const SettingsPage = () => {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               Company Name
             </label>
 
@@ -266,7 +266,7 @@ const SettingsPage = () => {
           </div>
 
           <div className="md:col-span-3">
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               Street Address
             </label>
 
@@ -282,7 +282,7 @@ const SettingsPage = () => {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               Country
             </label>
 
@@ -298,7 +298,7 @@ const SettingsPage = () => {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               State
             </label>
 
@@ -314,7 +314,7 @@ const SettingsPage = () => {
           </div>
 
           <div>
-            <label className="text-sm text-gray-600">
+            <label className="text-md">
               Zip Code
             </label>
 

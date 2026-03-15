@@ -6,14 +6,13 @@ import CategoriesSection from "../components/homeComponents/CategoriesSection";
 import BannerSection from "../components/homeComponents/BannerSection";
 import FeaturedProducts from "../components/homeComponents/FeaturedProducts";
 import BannerSection2 from "../components/homeComponents/BannerSection2";
-import OrganicProducts from "../components/homeComponents/OrganicProducts";
-import BiobasedProducts from "../components/homeComponents/BiobasedProduct";
 import BlogsSection from "../components/homeComponents/BlogSection";
 import UserReviews from "../components/homeComponents/UserReviews";
 import { SimplifiedBuyingProcess } from "../components/homeComponents/SimplifiedBuying";
 import { OurCertificates } from "../components/homeComponents/OurCertificates";
 import Newsletter from "../components/homeComponents/NewsLetter";
 import { ProductProvider } from "../Context/ProductContext";
+import HomeProducts from "../components/homeComponents/HomeProducts";
 
 function Home() {
   return (
@@ -27,8 +26,8 @@ function Home() {
     <BannerSection/>  
     <FeaturedProducts/>
     <BannerSection2/>
-    <OrganicProducts/> 
-    <BiobasedProducts/>
+   <HomeProducts/>
+  
     <UserReviews/>
     <BlogsSection/> 
     <SimplifiedBuyingProcess/>

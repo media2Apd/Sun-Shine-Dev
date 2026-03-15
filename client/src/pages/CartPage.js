@@ -1,46 +1,78 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { X } from "lucide-react";
-import blog1 from "../assets/blog1.png";
+import { CartContext } from "../Context/CartContext";
+import { ProductContext } from "../Context/ProductContext";
 
 export default function CartPage() {
+    
 
-const [cartItems, setCartItems] = useState([
-{ id:1, name:"A", price:650, qty:1, image:blog1 },
-{ id:2, name:"A", price:650, qty:1, image:blog1 },
-{ id:3, name:"A", price:650, qty:1, image:blog1 },
-{ id:4, name:"Azospirillum", price:650, qty:1, image:blog1 }
-]);
+const { cartItems, setCartItems } = useContext(CartContext);
+const { products } = useContext(ProductContext);
 
-// Increase Qty
-const increaseQty = (id)=>{
-setCartItems(prev =>
-prev.map(item =>
-item.id === id ? {...item, qty:item.qty + 1} : item
-));
+// merge cart + product
+const cartProducts = cartItems
+.map((cartItem) => {
+
+const product = products.find(
+(p) => String(p.id) === String(cartItem.id)
+);
+
+if (!product) return null;
+
+return {
+...product,
+qty: cartItem.quantity
 };
 
-// Decrease Qty
-const decreaseQty = (id)=>{
+})
+.filter(Boolean);
+
+// increase qty
+const increaseQty = (id) => {
+
 setCartItems(prev =>
 prev.map(item =>
-item.id === id && item.qty > 1
-? {...item, qty:item.qty - 1}
+item.id === id
+? { ...item, quantity: item.quantity + 1 }
 : item
-));
+)
+);
+
 };
 
-// Remove
-const removeItem = (id)=>{
-setCartItems(cartItems.filter(item => item.id !== id));
+// decrease qty
+const decreaseQty = (id) => {
+
+setCartItems(prev =>
+prev.map(item =>
+item.id === id && item.quantity > 1
+? { ...item, quantity: item.quantity - 1 }
+: item
+)
+);
+
 };
 
-const subtotal = cartItems.reduce(
-(total,item)=> total + item.price * item.qty,0
+// remove item
+const removeItem = (id) => {
+
+setCartItems(prev =>
+prev.filter(item => item.id !== id)
+);
+
+};
+
+const subtotal = cartProducts.reduce(
+(total,item)=> total + (item.price || 0) * item.qty,
+0
 );
 
 const shipping = 50;
 const tax = 30;
 const total = subtotal + shipping + tax;
+
+console.log("Cart Items:", cartItems);
+console.log("Products:", products);
 
 return (
 
@@ -52,8 +84,6 @@ return (
 
 <div className="lg:col-span-2 bg-white border rounded-xl overflow-hidden">
 
-{/* HEADER */}
-
 <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] p-4 border-b text-gray-500 text-sm font-medium">
 
 <p>Product</p>
@@ -63,9 +93,15 @@ return (
 
 </div>
 
-{/* ITEMS */}
+{cartProducts.length === 0 ? (
 
-{cartItems.map((item)=>{
+<p className="p-6 text-center text-gray-500">
+Cart is empty
+</p>
+
+) : (
+
+cartProducts.map((item)=>{
 
 const itemSubtotal = item.price * item.qty;
 
@@ -76,16 +112,12 @@ key={item.id}
 className="relative grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] items-center gap-4 md:gap-0 p-4 border-b"
 >
 
-{/* REMOVE BUTTON */}
-
 <button
 onClick={()=>removeItem(item.id)}
 className="absolute top-4 right-4 md:hidden text-gray-400 hover:text-red-500"
 >
 <X size={18}/>
 </button>
-
-{/* PRODUCT */}
 
 <div className="flex items-center gap-4">
 
@@ -108,13 +140,9 @@ className="h-16 w-16 object-cover rounded"
 
 </div>
 
-{/* PRICE */}
-
 <div className="flex justify-between md:justify-center text-sm">
 
-<span className="md:hidden font-medium">
-Price
-</span>
+<span className="md:hidden font-medium">Price</span>
 
 <span>
 Rs.{item.price}
@@ -122,13 +150,9 @@ Rs.{item.price}
 
 </div>
 
-{/* QUANTITY */}
-
 <div className="flex justify-between md:justify-center items-center">
 
-<span className="md:hidden font-medium">
-Qty
-</span>
+<span className="md:hidden font-medium">Qty</span>
 
 <div className="flex items-center border rounded-full px-3 py-1 gap-4">
 
@@ -152,8 +176,6 @@ className="text-gray-600"
 
 </div>
 
-{/* SUBTOTAL */}
-
 <div className="flex justify-between md:justify-center text-sm">
 
 <span className="md:hidden font-medium">
@@ -170,7 +192,9 @@ Rs.{itemSubtotal}
 
 )
 
-})}
+})
+
+)}
 
 </div>
 
@@ -186,7 +210,7 @@ Order summary
 
 <div className="flex justify-between">
 <span>Items</span>
-<span>{cartItems.length}</span>
+<span>{cartProducts.length}</span>
 </div>
 
 <div className="flex justify-between">
@@ -202,11 +226,6 @@ Order summary
 <div className="flex justify-between">
 <span>Taxes</span>
 <span>Rs.{tax}</span>
-</div>
-
-<div className="flex justify-between">
-<span>Coupon discount</span>
-<span>Rs.0</span>
 </div>
 
 <hr/>
@@ -231,4 +250,6 @@ Proceed to checkout
 </div>
 
 );
+
 }
+

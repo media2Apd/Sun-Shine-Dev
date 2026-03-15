@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import productImg1 from "../assets/product1.png";
 import productImg2 from "../assets/organicproduct.png";
@@ -7,62 +7,14 @@ import banner from "../assets/ProductsBanner.png";
 import BiobasedProducts from "../components/homeComponents/BiobasedProduct";
 import NewLaunch from "../components/homeComponents/NewLaunch";
 import ProductCard from "../components/homeComponents/ProductCard";
+import { ProductContext } from "../Context/ProductContext";
 
-//  Product Data
-const products = [
-  {
-    id: 1,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg1,
-    category: "Organic Manures",
-  },
-  {
-    id: 2,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg1,
-    category: "water Soluble Fertilizers",
-  },
-  {
-    id: 5,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg2,
-    category: "plant Growth Promoters",
-  },
-  {
-    id: 6,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg2,
-    category: "bio Pesticides",
-  },
-   {
-    id: 7,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg2,
-    category: "bio Fertilizers",
-  },
-   {
-    id: 8,
-    name: "Azospirillum Nitrogen Food Bacteria",
-    price: 650,
-    oldPrice: 850,
-    image: productImg2,
-    category: "Micronutrients",
-  },
-];
+
 
 const CategoryProducts = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
+  const { products } = useContext(ProductContext);
 
   //  Filter Logic
   const filteredProducts = category

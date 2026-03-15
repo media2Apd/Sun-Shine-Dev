@@ -86,10 +86,17 @@ const router = createBrowserRouter([
         path: "admin-panel",
         element: <Layout />,
         children:[
+          
             {
             path: 'products-category',
             element: <CategoryList />,
             },
+
+          {
+          path:'edit-product/:id',
+          element:<NewProduct/>
+          }
+,
               {
             path: 'create-category',
             element: <CreateCategory />
@@ -110,6 +117,13 @@ const router = createBrowserRouter([
                 path:"blog-form" ,
                 element:<BlogForm/> ,
               },
+
+            {
+          
+        path:"/admin-panel/view-product/:id",
+        element:<NewProduct />
+
+            }
               
         ]
       },
