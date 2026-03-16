@@ -1,199 +1,389 @@
-<div className="overflow-x-auto rounded-md">
-        <table className="min-w-full bg-white border-separate border-spacing-y-2 px-2">
-          <thead className="text-sm text-gray-600">
-            <tr className="text-center rounded-lg shadow-sm bg-purple-100">
-              <th className="py-4 px-4 rounded-l-lg">S.No</th>
-              <th className="py-4 px-4">Order ID</th>
-              <th className="py-4 px-4 whitespace-nowrap">Invoice ID</th>
-              <th className="py-4 px-4">Customer</th>
-              <th className="py-4 px-4">Branch</th>
-              <th className="py-4 px-4 whitespace-nowrap">Delivered Date</th>
-              <th className="py-4 px-4 whitespace-nowrap">Assigned Staff</th>
-              <th className="py-4 px-4 whitespace-nowrap">Delivery Address</th>
-              <th className="py-4 px-4 whitespace-nowrap">Payment</th>
-              <th className="py-4 px-4 whitespace-nowrap rounded-r-lg">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((order, index) => (
-              <tr
-                key={order.orderId}
-                className="bg-gray-50 hover:bg-gray-100 text-sm rounded-lg shadow-sm text-center"
-              >
-                <td className="py-3 px-4 font-medium text-gray-700 rounded-l-lg">
-                  {itemsPerPage !== "All"
-                    ? currentPage * itemsPerPage -
-                    itemsPerPage +
-                    serialNumber++
-                    : serialNumber++}
-                </td>
-                <td className="py-3 px-4 font-medium text-gray-700 capitalize">
-                  {order.orderId}
-                </td>
-                <td className="py-3 px-4 font-medium text-gray-700 whitespace-nowrap">
-                  {order.invoiceId || "-"}
-                </td>
-                <td className="py-3 px-4">
-                  <div>
-                    <div className="font-medium whitespace-nowrap">{order.customer.name}</div>
-                    <div className="text-xs text-gray-500">{order.customer.phoneNumber}</div>
-                  </div>
-                </td>
-                <td className="py-3 px-4">
-                  <div>
-                    <div className='whitespace-nowrap'>{order.branch?.branchCode}</div>
-                    <div className="text-xs text-gray-500">
-                      {order.branch.branchName.replace(/\s*Branch\s*$/i, "")}
-                    </div>
-                  </div>
-                </td>
-                <td className="py-3 px-4 whitespace-nowrap">
-                  {format(new Date(order?.date), "dd-MM-yyyy") || "N/A"}
-                </td>
-                <td className="py-3 px-4">
-                  {order?.cuttingMaster?.name || order?.tailor?.name ? (
-                    <div className="relative">
-                      {/* Collapsed view */}
-                      {expandedOrderId !== order._id && (
-                        <div
-                          className="cursor-pointer flex items-center"
-                          onClick={() => setExpandedOrderId(order._id)}
-                        >
-                          <span>
-                            {order?.cuttingMaster?.name?.split(' ')[0] ||
-                              order?.tailor?.name?.split(' ')[0]}
-                          </span>
+import { useState, useContext } from "react";
+import { ProductContext } from "../Context/ProductContext";
+import { useNavigate } from "react-router-dom";
 
-                          {/* Show +1 if both names exist and are different */}
-                          {(order?.cuttingMaster?.name &&
-                            order?.tailor?.name &&
-                            order.cuttingMaster.name !== order.tailor.name) && (
-                              <span className="text-xs bg-gray-100 rounded px-1 ml-1">+1</span>
-                            )}
-                        </div>
-                      )}
+const NewProduct = () => {
 
-                      {/* Expanded view */}
-                      {expandedOrderId === order._id && (
-                        <div
-                          className="cursor-pointer space-y-1"
-                          onClick={() => setExpandedOrderId(null)}
-                        >
-                          {order?.cuttingMaster?.name && (
-                            <div className="text-sm">{order.cuttingMaster.name} (cutting)</div>
-                          )}
+  const { addProduct } = useContext(ProductContext);
+  const navigate = useNavigate();
 
-                          {order?.tailor?.name && (
-                            <div className="text-sm">{order.tailor.name} (tailor)</div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-gray-400 items-center text-lg"><Minus /></div>
-                  )}
-                </td>
-                <td className="py-3 px-4">{order.customer.address}</td>
-                <td className="py-3 px-4 whitespace-nowrap">
-                  <StatusBadge status={order.paymentStatus} type='payment' />
-                </td>
-                <td className="py-3 px-4 whitespace-nowrap rounded-r-lg">
-                  <StatusBadge status={order.status} type='order' />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  const [product, setProduct] = useState({
+    name: "",
+    category: "",
+    subCategory: "",
+    code: "",
+    shortDescription: "",
+    description: "",
+    crops: "",
+    packageType: "",
+    mrp: "",
+    sellingPrice: "",
+    quantity: "",
+    gst: "",
+    images: []
+  });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
+  };
 
-////////////////////////////////
+  // ✅ IMAGE UPLOAD WITH BASE64
+  const handleImageChange = (file, index) => {
 
-// Price range state
+    if (!file) return;
 
+    const reader = new FileReader();
 
+    reader.onloadend = () => {
 
-  const [priceRange, setPriceRange] = useState([0, 100000]);
-  const [maxPrice, setMaxPrice] = useState(100000);
-  const [minPrice, setMinPrice] = useState(0);
+      const updatedImages = [...product.images];
+      updatedImages[index] = reader.result;
 
-  const fetchData = useCallback(async (categories = [], screenSizes = []) => {
-    setLoading(true);
-    try {
-      const response = await fetch(SummaryApi.filterProduct.url, {
-        method: SummaryApi.filterProduct.method,
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          category: categories,
-          parentCategory: validParentCategory || undefined,
-          screenSize: screenSizes.length > 0 ? screenSizes : undefined
-        })
+      setProduct({
+        ...product,
+        images: updatedImages
       });
-      const dataResponse = await response.json();
 
-      if (dataResponse.data?.length === 0) {
-        setData([]);
-        setAllProducts([]);
-      } else {
-        const products = dataResponse?.data || [];
-        setAllProducts(products); 
-        setData(products);
+    };
 
-        if (products.length > 0) {
-          const prices = products.map(p => p.sellingPrice || 0);
-          const max = Math.max(...prices);
-          const min = Math.min(...prices);
-          const calculatedMax = Math.ceil(max / 1000) * 1000;
-          const calculatedMin = Math.floor(min / 1000) * 1000;
-          setMaxPrice(calculatedMax);
-          setMinPrice(calculatedMin);
-          setPriceRange([calculatedMin, calculatedMax]);
-        }
-
-        if (hasScreenSizeFilter) {
-          const sizes = [...new Set(products
-            .map(p => p.screenSize)
-            .filter(Boolean)
-          )].sort((a, b) => parseInt(a) - parseInt(b));
-          setAvailableScreenSizes(sizes);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-      setAllProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [validParentCategory, hasScreenSizeFilter]);
-  
-const handleMinPriceChange = (e) => {
-    const value = Math.min(Number(e.target.value), priceRange[1] - 100);
-    setPriceRange([value, priceRange[1]]);
+    reader.readAsDataURL(file);
   };
 
-  const handleMaxPriceChange = (e) => {
-    const value = Math.max(Number(e.target.value), priceRange[0] + 100);
-    setPriceRange([priceRange[0], value]);
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+
+    const newProduct = {
+      id: Date.now(),
+      name: product.name,
+      category: product.category,
+      price: product.sellingPrice,
+      oldPrice: product.mrp,
+      stock: product.quantity,
+      image: product.images?.[0] || "",
+      date: new Date().toLocaleDateString(),
+      status: true
+    };
+
+    addProduct(newProduct);
+
+    navigate("/admin-panel/product-list");
   };
- <div className='mb-4 border-t pt-4'>
-                <button onClick={() => setIsPriceRangeOpen(!isPriceRangeOpen)} className='flex justify-between items-center w-full py-2 text-left font-medium'>
-                   <span>Price Range</span>
-                   <svg className={`w-5 h-5 transition-transform ${isPriceRangeOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />                    </svg>
-                  </button>                  
-                  {isPriceRangeOpen && (
-                    <div className="px-4 pb-6 mt-4">
-                      <div className="flex justify-between mb-3">
-                        <span className="text-sm font-medium">₹{priceRange[0]}</span>
-                        <span className="text-sm font-medium">₹{priceRange[1]}</span>
-                      </div>
-                      <div className="relative h-3">
-                        <div className="absolute top-1/2 -translate-y-1/2 w-full h-2 bg-brand-productCardImageBg rounded-full" />
-                        <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-brand-primary rounded-full" style={{ left: `${((priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`, right: `${100 - ((priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100}%` }} />
-                        <input type="range" min={minPrice} max={maxPrice} value={priceRange[0]} onChange={handleMinPriceChange} className="price-range absolute w-full appearance-none bg-transparent pointer-events-none -mt-1" />
-                        <input type="range" min={minPrice} max={maxPrice} value={priceRange[1]} onChange={handleMaxPriceChange} className="price-range absolute w-full appearance-none bg-transparent pointer-events-none -mt-1" />
-                      </div>
-                    </div>
-                 )}
-              </div> 
+
+  return (
+
+<div className="p-4 md:p-6">
+
+<h2 className="text-xl md:text-2xl font-semibold mb-6">
+Add New Product
+</h2>
+
+<form onSubmit={handleSubmit} className="space-y-6">
+
+{/* BASIC INFORMATION */}
+
+<div className="bg-white p-4 md:p-6 rounded-xl shadow">
+
+<h3 className="font-semibold mb-4">Basic Information</h3>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+<div>
+<label className="text-sm">Product Name</label>
+<input
+type="text"
+name="name"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+<div>
+<label className="text-sm">Category</label>
+<select
+name="category"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+>
+<option>Select Category</option>
+<option>Bio Based Product</option>
+<option>Organic Product</option>
+</select>
+</div>
+
+<div>
+<label className="text-sm">Sub Category</label>
+<select
+name="subCategory"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+>
+<option>Select Sub Category</option>
+<option>Renewable</option>
+<option>Non-Renewable</option>
+</select>
+</div>
+
+<div>
+<label className="text-sm">Product Code</label>
+<input
+type="text"
+name="code"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+<div className="md:col-span-2">
+<label className="text-sm">Short Description</label>
+<input
+type="text"
+name="shortDescription"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+</div>
+</div>
+
+{/* PRODUCT DETAILS */}
+
+<div className="bg-white p-4 md:p-6 rounded-xl shadow">
+
+<h3 className="font-semibold mb-4">Product Details</h3>
+
+<div className="space-y-4">
+
+<div>
+<label className="text-sm">Detailed Description</label>
+
+<textarea
+rows="4"
+name="description"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+<div>
+<label className="text-sm">Suitable Crops</label>
+
+<select
+name="crops"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+>
+<option>Select Crops</option>
+<option>Paddy</option>
+<option>Vegetables</option>
+</select>
+
+</div>
+
+<div>
+<label className="text-sm">Packaging Type</label>
+
+<select
+name="packageType"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+>
+<option>Select Type</option>
+<option>Bottle</option>
+<option>Packet</option>
+</select>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+{/* PRICING */}
+
+<div className="bg-white p-4 md:p-6 rounded-xl shadow">
+
+<h3 className="font-semibold mb-4">
+Pricing & Inventory
+</h3>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+<div>
+<label className="text-sm">MRP</label>
+<input
+type="number"
+name="mrp"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+<div>
+<label className="text-sm">Selling Price</label>
+<input
+type="number"
+name="sellingPrice"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+<div>
+<label className="text-sm">Quantity</label>
+<input
+type="number"
+name="quantity"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+/>
+</div>
+
+<div>
+<label className="text-sm">GST/Tax</label>
+
+<select
+name="gst"
+onChange={handleChange}
+className="w-full border p-2 rounded mt-1"
+>
+<option>Select GST</option>
+<option>5%</option>
+<option>12%</option>
+<option>18%</option>
+</select>
+</div>
+
+</div>
+
+{/* PRODUCT IMAGES */}
+
+<div className="mt-6">
+
+<label className="text-sm block mb-4">
+Product Images
+</label>
+
+<div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+
+{[0,1,2,3,4].map((index) => (
+
+<div key={index} className="text-center">
+
+<div className="w-full h-28 border-2 border-dashed rounded-lg flex items-center justify-center bg-gray-50">
+
+{product.images[index] ? (
+
+<img
+src={product.images[index]}
+alt="preview"
+className="h-full object-cover rounded"
+/>
+
+) : (
+
+<label className="cursor-pointer text-gray-400 text-sm">
+
+Upload
+
+<input
+type="file"
+className="hidden"
+onChange={(e) =>
+handleImageChange(e.target.files[0], index)
+}
+/>
+
+</label>
+
+)}
+
+</div>
+
+<div className="flex justify-between mt-2 text-sm">
+
+<button
+type="button"
+className="text-gray-500"
+onClick={() => {
+
+const files = [...product.images];
+files[index] = null;
+
+setProduct({
+...product,
+images: files
+});
+
+}}
+>
+
+Remove
+
+</button>
+
+<label className="cursor-pointer text-gray-500">
+
+✎
+
+<input
+type="file"
+className="hidden"
+onChange={(e) =>
+handleImageChange(e.target.files[0], index)
+}
+/>
+
+</label>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+</div>
+
+{/* BUTTONS */}
+
+<div className="flex flex-col sm:flex-row justify-end gap-3">
+
+<button
+type="button"
+className="px-6 py-2 border rounded-lg w-full sm:w-auto"
+onClick={() => navigate(-1)}
+>
+
+Back
+
+</button>
+
+<button
+type="submit"
+className="px-6 py-2 bg-green-600 text-white rounded-lg w-full sm:w-auto"
+>
+
+Save Product
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+  );
+};
+
+export default NewProduct;

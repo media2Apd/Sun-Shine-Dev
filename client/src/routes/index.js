@@ -72,7 +72,11 @@ const router = createBrowserRouter([
         path:'settings-page',
         element:<SettingsPage/>
       }, 
-      
+
+      {
+        path: "category-products/product-overview",
+        element: <ProductOverview/>
+         },
       {
         path:'blog-page',
         element:<BlogPage/>
@@ -86,6 +90,15 @@ const router = createBrowserRouter([
         path: "admin-panel",
         element: <Layout />,
         children:[
+
+         {
+  path: "edit-category/:id",
+  element: <CreateCategory />
+},
+{
+  path: "view-category/:id",
+  element: <CreateCategory />
+},
           
             {
             path: 'products-category',
@@ -122,6 +135,8 @@ const router = createBrowserRouter([
           
         path:"/admin-panel/view-product/:id",
         element:<NewProduct />
+
+
 
             }
               
