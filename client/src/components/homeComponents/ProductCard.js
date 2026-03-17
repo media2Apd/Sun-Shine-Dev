@@ -1,6 +1,6 @@
 
-
 // import { useState, useContext } from "react";
+
 // import { useNavigate } from "react-router-dom";
 // import { CartContext } from "../../Context/CartContext";
 
@@ -13,7 +13,9 @@
 // const [liked, setLiked] = useState(false);
 
 // const handlecardClick = () => {
-// navigate(`/category-products/product-overview`);
+//   navigate(`/category-products/product-overview`, {
+//     state: { id: item.id }
+//   });
 // };
 
 // return (
@@ -54,7 +56,7 @@
 // onClick={(e) => {
 // e.stopPropagation();
 // setAdded(!added);
-// addToCart(item);   // ✅ add to cart context
+// addToCart(item);
 // }}
 // className={`px-6 py-2 text-sm font-medium rounded-md transition
 // ${added 
@@ -90,7 +92,6 @@
 
 // export default ProductCard;
 
-
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../Context/CartContext";
@@ -102,6 +103,10 @@ const { addToCart } = useContext(CartContext);
 
 const [added, setAdded] = useState(false);
 const [liked, setLiked] = useState(false);
+
+const price = item.price ?? item.variants?.[0]?.price;
+const mrp = item.oldPrice ?? item.variants?.[0]?.mrp;
+const firstVariant = item.variants?.[0] ?? null;
 
 const handlecardClick = () => {
   navigate(`/category-products/product-overview`, {
@@ -130,11 +135,11 @@ className="w-full object-contain"
 <div className="flex items-center gap-3 mb-4">
 
 <span className="text-xl font-semibold text-gray-900">
-Rs.{item.price}
+Rs.{price}
 </span>
 
 <span className="text-sm text-gray-400 line-through">
-Rs.{item.oldPrice}
+Rs.{mrp}
 </span>
 
 </div>
@@ -147,7 +152,7 @@ Rs.{item.oldPrice}
 onClick={(e) => {
 e.stopPropagation();
 setAdded(!added);
-addToCart(item);
+addToCart(item, firstVariant);
 }}
 className={`px-6 py-2 text-sm font-medium rounded-md transition
 ${added 

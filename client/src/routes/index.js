@@ -20,7 +20,8 @@ import SettingsPage from "../pages/SettingsPage";
 import AdminBloglist from "../PanelPages/AdminBloglist"
 import BlogForm from "../panelComponents/BlogForm";
 import BlogPage from "../pages/BlogPage"
-import AddressPage from "../pages/AddressPage";
+import CheckoutPage from "../pages/CheckoutPage";
+import OrderSuccess from "../pages/OrderSuccess";
 
 
 
@@ -82,8 +83,12 @@ const router = createBrowserRouter([
         element:<BlogPage/>
       },
       {
-        path:'address-page',
-        element:<AddressPage/>
+        path:'cart-page/checkout-page',
+        element:<CheckoutPage/>
+      },
+      {
+        path:'order-page',
+        element:<OrderSuccess/>
       }
       
             ,{

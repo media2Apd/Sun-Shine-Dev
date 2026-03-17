@@ -46,8 +46,6 @@ const CategoryProducts = () => {
       </div>
    
       </div>
-      <NewLaunch/>
-      <BiobasedProducts/>
     </div>
     </div>
 

@@ -3,44 +3,94 @@ import { createContext, useState, useEffect } from "react";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState(() => {
+    const storedCart = localStorage.getItem("cartItems");
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
 
-const [cartItems, setCartItems] = useState(() => {
-const storedCart = localStorage.getItem("cartItems");
-return storedCart ? JSON.parse(storedCart) : [];
-});
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
-useEffect(() => {
-localStorage.setItem("cartItems", JSON.stringify(cartItems));
-}, [cartItems]);
+  // ✅ ADD TO CART (supports variant)
+  const addToCart = (product, variant = null) => {
+    const price = variant ? Number(variant.price) : Number(product.price) || 0;
+    const variantId = variant ? variant.id : null;
 
-const addToCart = (product) => {
+    // Check if same product + variant exists
+    const existing = cartItems.find(
+      (item) => item.productId === product.id && item.variantId === variantId
+    );
 
-setCartItems((prev) => {
+    if (existing) {
+      // increase quantity
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.productId === product.id && item.variantId === variantId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      // add new item
+      setCartItems((prev) => [
+        ...prev,
+        {
+          id: Date.now(),        // unique cart item id
+          productId: product.id,
+          variantId,             // store variant id
+          quantity: 1,
+          price,                 // store correct price
+        },
+      ]);
+    }
+  };
 
-const existing = prev.find((item) => item.id === product.id);
+  // ✅ INCREASE QTY
+  const increaseQty = (cartId) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === cartId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
 
-if (existing) {
+  // ✅ DECREASE QTY
+  const decreaseQty = (cartId) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === cartId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
 
-return prev.map((item) =>
-item.id === product.id
-? { ...item, quantity: item.quantity + 1 }
-: item
-);
-
-} else {
-
-return [...prev, { id: product.id, quantity: 1 }];
-
-}
-
-});
-
-};
-
-return (
-<CartContext.Provider value={{ cartItems, setCartItems, addToCart }}>
-{children}
-</CartContext.Provider>
-);
-
+  // ✅ REMOVE ITEM
+  const removeItem = (cartId) => {
+    setCartItems((prev) =>
+      prev.filter((item) => item.id !== cartId)
+    );
+  };
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem("cartItems");
+  };
+  return (
+    <CartContext.Provider
+      value={{
+        setCartItems,
+        cartItems,
+        addToCart,
+        increaseQty,
+        decreaseQty,
+        removeItem,
+        clearCart
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 };

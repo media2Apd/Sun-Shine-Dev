@@ -10,6 +10,7 @@ import { ProductProvider } from './Context/ProductContext';
 import { SettingsProvider } from './Context/SettingsContext';
 import { BlogProvider } from './Context/BlogContext';
 import { CartProvider } from './Context/CartContext';
+import { OrderProvider } from './Context/OrderContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -22,7 +23,11 @@ root.render(
         <SettingsProvider>
         <BlogProvider>
           <CartProvider>
+          <OrderProvider>
+
           <RouterProvider router={router} />
+
+          </OrderProvider>
           </CartProvider>
           </BlogProvider>
         </SettingsProvider>

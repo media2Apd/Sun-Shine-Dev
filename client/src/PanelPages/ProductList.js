@@ -208,10 +208,10 @@ const ProductList = () => {
 
       <tr>
 
-        <th className="p-3 text-left text-[#000000] rounded-l-lg">ID</th>
+      
         <th className="p-3 text-left text-[#000000]">Category</th>
         <th className="p-3 text-left text-[#000000]">Product Name</th>
-        <th className="p-3 text-left text-[#000000]">Price</th>
+        {/* <th className="p-3 text-left text-[#000000]">Price</th> */}
         <th className="p-3 text-left text-[#000000]">Stock</th>
         <th className="p-3 text-left text-[#000000]">Date</th>
         <th className="p-3 text-left text-[#000000]">Status</th>
@@ -227,9 +227,7 @@ const ProductList = () => {
 
       <tr key={item.id} className="bg-white shadow-sm">
 
-      <td className="p-3 border border-gray-200 border-r-0 rounded-l-lg">
-        {item.id}
-      </td>
+    
 
       <td className="p-3 border border-gray-200 border-x-0">
         {item.category}
@@ -239,17 +237,26 @@ const ProductList = () => {
         {item.name}
       </td>
 
-      <td className="p-3 border border-gray-200 border-x-0">
+      {/* <td className="p-3 border border-gray-200 border-x-0">
         ₹{item.price}
-      </td>
+      </td> */}
 
-      <td className="p-3 border border-gray-200 border-x-0">
+      {/* <td className="p-3 border border-gray-200 border-x-0">
         {item.stock === 0 ? (
           <span className="text-red-500">Out of Stock</span>
         ) : (
           <span>In Stock</span>
         )}
-      </td>
+      </td> */}
+
+      <td className="p-3 border border-gray-200 border-x-0">
+
+       {item.variants?.reduce(
+       (total, v) => total + Number(v.stock || 0),
+        0
+      )}
+
+</td> 
 
       <td className="p-3 border border-gray-200 border-x-0">
         {item.date}
