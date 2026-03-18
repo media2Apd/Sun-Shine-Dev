@@ -55,7 +55,8 @@ const Header = () => {
             )}
           </div>
 
-          <FiHeart className="text-xl cursor-pointer hover:text-orange-500 transition" />
+          <FiHeart onClick={() => navigate("/wishlist-page") }
+          className="text-xl cursor-pointer hover:text-orange-500 transition" />
       <FiShoppingCart onClick={() => navigate("/cart-page")}
       className="text-xl cursor-pointer hover:text-orange-500 transition"
        />       

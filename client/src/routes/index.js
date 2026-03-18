@@ -15,13 +15,19 @@ import CartPage from "../pages/CartPage";
 import WishlistPage from "../pages/WishlistPage";
 import AboutPage from "../pages/AboutPage";
 import GalleryPage from "../pages/GalleryPage";
-import ContactPage from "../pages/ContactPage";
+import EnquiryForm from "../pages/EnquiryForm";
 import SettingsPage from "../pages/SettingsPage";
 import AdminBloglist from "../PanelPages/AdminBloglist"
 import BlogForm from "../panelComponents/BlogForm";
 import BlogPage from "../pages/BlogPage"
 import CheckoutPage from "../pages/CheckoutPage";
 import OrderSuccess from "../pages/OrderSuccess";
+import OrderHistoryPage from "../pages/OrderhistoryPage";
+import OrderDetails from "../pages/OrderdetailsPage";
+import { EnquiryProvider } from "../Context/EnquiryContext";
+import EnquiryList from "../PanelPages/EnquiryList";
+import EnquiryOverview from "../PanelPages/EnquiryOverview";
+import OrderlistPage from "../PanelPages/OrderlistPage";
 
 
 
@@ -66,8 +72,8 @@ const router = createBrowserRouter([
         element:<GalleryPage/>
       },
       {
-      path:'contact-page',
-      element:<ContactPage/>
+      path:'enquiry-form',
+      element:<EnquiryForm/>
       },
       {
         path:'settings-page',
@@ -89,8 +95,15 @@ const router = createBrowserRouter([
       {
         path:'order-page',
         element:<OrderSuccess/>
+      },
+      {
+        path:'orderhistory-page',
+        element:<OrderHistoryPage/>
+      },
+      {
+        path:'orderdetails-page/:id',
+        element:<OrderDetails/>
       }
-      
             ,{
         path: "admin-panel",
         element: <Layout />,
@@ -140,10 +153,20 @@ const router = createBrowserRouter([
           
         path:"/admin-panel/view-product/:id",
         element:<NewProduct />
-
-
-
+            },
+            {
+           path:"/admin-panel/enquiry-list",
+           element:<EnquiryList/>
             }
+           ,{
+            path:"/admin-panel/enquiry-list/enquiry-overview",
+            element:<EnquiryOverview/>
+           }
+           ,
+           {
+            path:"/admin-panel/order-list",
+            element:<OrderlistPage/>
+           }
               
         ]
       },

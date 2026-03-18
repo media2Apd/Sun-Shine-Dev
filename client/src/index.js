@@ -11,30 +11,59 @@ import { SettingsProvider } from './Context/SettingsContext';
 import { BlogProvider } from './Context/BlogContext';
 import { CartProvider } from './Context/CartContext';
 import { OrderProvider } from './Context/OrderContext';
+import { WishlistProvider } from './Context/WishlistContext';
+import { EnquiryProvider } from './Context/EnquiryContext';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// root.render(
+//   <React.StrictMode>
+
+//     <CategoryProvider>
+//       <ProductProvider>
+//         <SettingsProvider>
+//            <BlogProvider>
+//               <CartProvider>
+//                  <OrderProvider>
+//                     <WishlistProvider>
+//                        <EnquiryProvider>
+//                              <EnquiryOverview>
+//                                  <RouterProvider router={router} />
+//                                </EnquiryOverview>
+//                             </EnquiryProvider>
+//                         </WishlistProvider>
+//                   </OrderProvider>
+//                </CartProvider>
+//             </BlogProvider>
+//         </SettingsProvider>
+//       </ProductProvider>
+//     </CategoryProvider>
+
+//   </React.StrictMode>
+// );
 root.render(
   <React.StrictMode>
-
     <CategoryProvider>
       <ProductProvider>
         <SettingsProvider>
-        <BlogProvider>
-          <CartProvider>
-          <OrderProvider>
-
-          <RouterProvider router={router} />
-
-          </OrderProvider>
-          </CartProvider>
+          <BlogProvider>
+            <CartProvider>
+              <OrderProvider>
+                <WishlistProvider>
+                  <EnquiryProvider>
+                  
+                    <RouterProvider router={router} />
+                   
+                  </EnquiryProvider>
+                </WishlistProvider>
+              </OrderProvider>
+            </CartProvider>
           </BlogProvider>
         </SettingsProvider>
       </ProductProvider>
     </CategoryProvider>
-
   </React.StrictMode>
 );
-
 reportWebVitals();

@@ -26,3 +26,19 @@ display: none;
 -ms-overflow-style: none;
 scrollbar-width: none;
 }
+
+.label {
+  @apply text-sm text-black mb-1 block;
+}
+
+.input {
+  @apply w-full border rounded-md px-4 py-2.5 text-sm outline-none focus:border-green-500 bg-white;
+}
+
+.error {
+  @apply text-xs text-red-500 mt-1;
+}
+
+.radio {
+  @apply flex items-center gap-2 cursor-pointer;
+}

@@ -12,7 +12,6 @@ import {
   FiShoppingBag,
   FiHeadphones,
   FiUsers,
-  FiTruck,
   FiLayers,
   FiSettings,
   FiChevronsLeft,
@@ -43,11 +42,9 @@ const Sidebar = ({
 
     { label: "Orders", icon: <FiTag />, to: "/admin-panel/orders" },
 
-    { label: "Enquiries", icon: <FiHeadphones />, to: "/admin-panel/enquiries" },
+    { label: "Enquiries", icon: <FiHeadphones />, to: "/admin-panel/enquiry-list" },
 
     { label: "Customers", icon: <FiUsers />, to: "/admin-panel/customers" },
-
-    { label: "Inventory", icon: <FiTruck />, to: "/admin-panel/inventory" },
 
     { label: "Blog Management", icon: <FiLayers />, to: "/admin-panel/blog-list" },
 

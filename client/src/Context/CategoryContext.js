@@ -28,7 +28,7 @@
 //   );
 // };
 
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 export const CategoryContext = createContext();
 
@@ -90,3 +90,4 @@ export const CategoryProvider = ({ children }) => {
   );
 };
 
+export const useCategory = () => useContext(CategoryContext);
