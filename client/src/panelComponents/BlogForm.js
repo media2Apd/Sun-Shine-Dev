@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from "react";
 // import { useBlog } from "../Context/BlogContext";
 // import { useNavigate } from "react-router-dom";
@@ -53,15 +51,16 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen p-4 md:p-4 sm:p-1">
 
-//       <div className="w-full max-w-[900px] mx-auto px-2 sm:px-4">
+//     <div className="min-h-screen  py-2 sm:px-1">
 
-//         <h1 className="text-xl md:text-2xl font-semibold mb-6">
+//       <div className="w-full max-w-[900px]">
+
+//         <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 pl-5">
 //           Add New Blog
 //         </h1>
 
-//         <div className="bg-white rounded-xl shadow-sm p-6 space-y-8">
+//         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 md:p-8 space-y-8">
 
 //           {/* BLOG BASIC INFO */}
 //           <div>
@@ -70,10 +69,10 @@
 //               Blog Basic Information
 //             </h3>
 
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
 //               <div className="md:col-span-2">
-//                 <label className="text-sm text-gray-500">Blog Title</label>
+//                 <label className="text-md">Blog Title</label>
 //                 <input
 //                   name="title"
 //                   value={formData.title}
@@ -83,7 +82,7 @@
 //               </div>
 
 //               <div className="md:col-span-2">
-//                 <label className="text-sm text-gray-500">Blog Slug</label>
+//                 <label className="text-md">Blog Slug</label>
 //                 <input
 //                   name="slug"
 //                   value={formData.slug}
@@ -93,7 +92,7 @@
 //               </div>
 
 //               <div>
-//                 <label className="text-sm text-gray-500">Category</label>
+//                 <label className="text-md">Category</label>
 //                 <select
 //                   name="category"
 //                   value={formData.category}
@@ -107,7 +106,7 @@
 //               </div>
 
 //               <div>
-//                 <label className="text-sm text-gray-500">Author Name</label>
+//                 <label className="text-md">Author Name</label>
 //                 <input
 //                   name="author"
 //                   value={formData.author}
@@ -118,7 +117,7 @@
 //               </div>
 
 //               <div>
-//                 <label className="text-sm text-gray-500">Publish Date</label>
+//                 <label className="text-md">Publish Date</label>
 //                 <input
 //                   type="date"
 //                   name="publishDate"
@@ -132,14 +131,16 @@
 
 //           </div>
 
+
 //           {/* IMAGE UPLOAD */}
+
 //           <div>
 
 //             <h3 className="text-sm font-semibold text-gray-700 mb-3">
 //               Blog Featured Image
 //             </h3>
 
-//             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+//             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6  text-center">
 
 //               <p className="text-sm text-gray-500 mb-4">
 //                 Upload high-resolution image
@@ -165,7 +166,7 @@
 //                   <img
 //                     src={formData.image}
 //                     alt="preview"
-//                     className="w-40 h-40 object-cover rounded-lg"
+//                     className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-lg"
 //                   />
 //                 </div>
 //               )}
@@ -174,7 +175,9 @@
 
 //           </div>
 
+
 //           {/* SUMMARY */}
+
 //           <div>
 
 //             <h3 className="text-sm font-semibold text-gray-700 mb-2">
@@ -192,7 +195,9 @@
 
 //           </div>
 
+
 //           {/* CONTENT */}
+
 //           <div>
 
 //             <h3 className="text-sm font-semibold text-gray-700 mb-2">
@@ -211,23 +216,25 @@
 
 //         </div>
 
-//         {/* ACTION BUTTONS */}
+
+//         {/* BUTTONS */}
+
 //         <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3">
 
-//           <button className="px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100">
+//           <button className="w-full sm:w-auto px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100">
 //             ← Back
 //           </button>
 
 //           <button
 //             onClick={handleSaveAndCreate}
-//             className="px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100"
+//             className="w-full sm:w-auto px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100"
 //           >
 //             Save & Create Another
 //           </button>
 
 //           <button
 //             onClick={handlePublish}
-//             className="px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700"
+//             className="w-full sm:w-auto px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700"
 //           >
 //             Publish Blog
 //           </button>
@@ -237,12 +244,13 @@
 //       </div>
 
 //     </div>
+
 //   );
 // }
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useBlog } from "../Context/BlogContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const initialState = {
   title: "",
@@ -256,10 +264,20 @@ const initialState = {
 };
 
 export default function BlogForm() {
-
   const navigate = useNavigate();
-  const { addBlog } = useBlog();
-  const [formData, setFormData] = useState(initialState);
+  const location = useLocation();
+  const { addBlog, blogs, setBlogs } = useBlog();
+
+  // If we are editing, get blog from location.state
+  const editBlog = location.state?.blog;
+
+  // Prefill form if editing
+  const [formData, setFormData] = useState(editBlog || initialState);
+
+  // If location.state changes (e.g., refreshing page while editing)
+  useEffect(() => {
+    if (editBlog) setFormData(editBlog);
+  }, [editBlog]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -271,48 +289,55 @@ export default function BlogForm() {
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.onloadend = () => {
-      setFormData({
-        ...formData,
-        image: reader.result
-      });
+      setFormData({ ...formData, image: reader.result });
     };
-
     reader.readAsDataURL(file);
   };
 
   const handlePublish = () => {
-    addBlog({ ...formData, status: "Published" });
+    if (editBlog) {
+      // Update existing blog
+      const updatedBlogs = blogs.map((b) =>
+        b.id === editBlog.id ? { ...formData, id: editBlog.id } : b
+      );
+      setBlogs(updatedBlogs);
+      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+    } else {
+      addBlog({ ...formData, status: "Published", id: Date.now().toString() });
+    }
     navigate("/admin-panel/blog-list");
   };
 
   const handleSaveAndCreate = () => {
-    addBlog(formData);
-    setFormData(initialState);
+    if (editBlog) {
+      const updatedBlogs = blogs.map((b) =>
+        b.id === editBlog.id ? { ...formData, id: editBlog.id } : b
+      );
+      setBlogs(updatedBlogs);
+      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      navigate("/admin-panel/blog-list");
+    } else {
+      addBlog(formData);
+      setFormData(initialState);
+    }
   };
 
   return (
-
-    <div className="min-h-screen  py-2 sm:px-1">
-
+    <div className="min-h-screen py-2 sm:px-1">
       <div className="w-full max-w-[900px]">
-
         <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 pl-5">
-          Add New Blog
+          {editBlog ? "Edit Blog" : "Add New Blog"}
         </h1>
 
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 md:p-8 space-y-8">
-
           {/* BLOG BASIC INFO */}
           <div>
-
             <h3 className="text-sm font-semibold text-gray-700 mb-5">
               Blog Basic Information
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
               <div className="md:col-span-2">
                 <label className="text-md">Blog Title</label>
                 <input
@@ -368,22 +393,15 @@ export default function BlogForm() {
                   className="w-full border rounded-lg p-3 mt-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-
             </div>
-
           </div>
 
-
           {/* IMAGE UPLOAD */}
-
           <div>
-
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
               Blog Featured Image
             </h3>
-
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6  text-center">
-
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
               <p className="text-sm text-gray-500 mb-4">
                 Upload high-resolution image
               </p>
@@ -412,20 +430,14 @@ export default function BlogForm() {
                   />
                 </div>
               )}
-
             </div>
-
           </div>
 
-
           {/* SUMMARY */}
-
           <div>
-
             <h3 className="text-sm font-semibold text-gray-700 mb-2">
               Short Description
             </h3>
-
             <textarea
               name="summary"
               value={formData.summary}
@@ -434,18 +446,13 @@ export default function BlogForm() {
               className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="A brief hook for readers (80–200 characters)..."
             />
-
           </div>
 
-
           {/* CONTENT */}
-
           <div>
-
             <h3 className="text-sm font-semibold text-gray-700 mb-2">
               Blog Content
             </h3>
-
             <textarea
               name="content"
               value={formData.content}
@@ -453,17 +460,15 @@ export default function BlogForm() {
               rows="7"
               className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-
           </div>
-
         </div>
 
-
         {/* BUTTONS */}
-
         <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3">
-
-          <button className="w-full sm:w-auto px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100">
+          <button
+            onClick={() => navigate("/admin-panel/blog-list")}
+            className="w-full sm:w-auto px-6 py-2 rounded-full border text-gray-600 hover:bg-gray-100"
+          >
             ← Back
           </button>
 
@@ -478,15 +483,10 @@ export default function BlogForm() {
             onClick={handlePublish}
             className="w-full sm:w-auto px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700"
           >
-            Publish Blog
+            {editBlog ? "Update Blog" : "Publish Blog"}
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   );
 }
-

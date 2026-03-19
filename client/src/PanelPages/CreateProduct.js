@@ -194,7 +194,7 @@ const NewProduct = () => {
 
   return (
 
-<div className="p-6">
+<div className="">
 
 <h2 className="text-2xl font-semibold mb-6">
 {isViewMode ? "View Product" : id ? "Edit Product" : "Add New Product"}

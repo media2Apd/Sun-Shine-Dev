@@ -24,10 +24,13 @@ import CheckoutPage from "../pages/CheckoutPage";
 import OrderSuccess from "../pages/OrderSuccess";
 import OrderHistoryPage from "../pages/OrderhistoryPage";
 import OrderDetails from "../pages/OrderdetailsPage";
-import { EnquiryProvider } from "../Context/EnquiryContext";
+// import { EnquiryProvider } from "../Context/EnquiryContext";
 import EnquiryList from "../PanelPages/EnquiryList";
 import EnquiryOverview from "../PanelPages/EnquiryOverview";
 import OrderlistPage from "../PanelPages/OrderlistPage";
+import AdminorderOverview from "../PanelPages/AdminorderOverview";
+import CustomerList from "../PanelPages/CustomerList";
+import CustomerDetail from "../PanelPages/CustomerDetail";
 
 
 
@@ -101,7 +104,7 @@ const router = createBrowserRouter([
         element:<OrderHistoryPage/>
       },
       {
-        path:'orderdetails-page/:id',
+        path:'orderhistory-page/orderdetails-page',
         element:<OrderDetails/>
       }
             ,{
@@ -137,7 +140,7 @@ const router = createBrowserRouter([
                 element: <ProductList/>
               },
               {
-                path:'create-product',
+                path:'product-list/create-product',
                 element:<NewProduct/>
               },
               {
@@ -145,7 +148,7 @@ const router = createBrowserRouter([
                 element:<AdminBloglist/>
               },
               {
-                path:"blog-form" ,
+                path:"blog-list/blog-form" ,
                 element:<BlogForm/> ,
               },
 
@@ -166,8 +169,20 @@ const router = createBrowserRouter([
            {
             path:"/admin-panel/order-list",
             element:<OrderlistPage/>
+           },
+           {
+            path:"/admin-panel/order-list/order-overview",
+            element:<AdminorderOverview/>
+           } ,
+           {
+            path:"/admin-panel/customer-list",
+            element:<CustomerList/>
            }
-              
+           ,
+           {
+            path:"/admin-panel/customer-detail",
+           element:<CustomerDetail>
+           }
         ]
       },
     ],

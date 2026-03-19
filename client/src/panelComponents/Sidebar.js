@@ -1,6 +1,4 @@
 
-// export default Sidebar;
-
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
@@ -40,11 +38,11 @@ const Sidebar = ({
 
     { label: "Products Category", icon: <FiShoppingBag />, to: "/admin-panel/products-category" },
 
-    { label: "Orders", icon: <FiTag />, to: "/admin-panel/orders" },
+    { label: "Orders", icon: <FiTag />, to: "/admin-panel/order-list" },
 
     { label: "Enquiries", icon: <FiHeadphones />, to: "/admin-panel/enquiry-list" },
 
-    { label: "Customers", icon: <FiUsers />, to: "/admin-panel/customers" },
+    { label: "Customers", icon: <FiUsers />, to: "/admin-panel/customer-list" },
 
     { label: "Blog Management", icon: <FiLayers />, to: "/admin-panel/blog-list" },
 

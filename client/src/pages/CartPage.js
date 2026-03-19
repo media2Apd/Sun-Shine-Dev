@@ -552,9 +552,9 @@ const subtotal = cartProducts.reduce(
 0
 );
 
-const shipping = 50;
-const tax = 30;
-const total = subtotal + shipping + tax;
+// const shipping = 50;
+// const tax = 30;
+const total = subtotal ;
 
 return (
 
@@ -698,7 +698,7 @@ Order summary
 <span>Rs.{subtotal}</span>
 </div>
 
-<div className="flex justify-between">
+{/* <div className="flex justify-between">
 <span>Shipping</span>
 <span>Rs.{shipping}</span>
 </div>
@@ -706,7 +706,7 @@ Order summary
 <div className="flex justify-between">
 <span>Taxes</span>
 <span>Rs.{tax}</span>
-</div>
+</div> */}
 
 <hr/>
 
@@ -730,8 +730,6 @@ Proceed to checkout
         orderSummary: {
           items: cartProducts,
           subtotal,
-          shipping,
-          tax,
           total
         }
       }

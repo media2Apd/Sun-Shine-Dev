@@ -1,124 +1,85 @@
-// import { createContext, useContext, useState, useEffect } from "react";
-
-// const OrderContext = createContext();
-
-// export const OrderProvider = ({ children }) => {
-//   const [orderData, setOrderData] = useState(() => {
-//     const stored = localStorage.getItem("orderData");
-//     return stored ? JSON.parse(stored) : null;
-//   });
-
-//   // localStorage sync
-//   useEffect(() => {
-//     if (orderData) {
-//       localStorage.setItem("orderData", JSON.stringify(orderData));
-//     }
-//   }, [orderData]);
-
-//   return (
-//     <OrderContext.Provider value={{ orderData, setOrderData }}>
-//       {children}
-//     </OrderContext.Provider>
-//   );
-// };
-
-// // custom hook
-// export const useOrder = () => useContext(OrderContext);
-
-// import { createContext, useContext, useState, useEffect } from "react";
-
-// const OrderContext = createContext();
-
-// export const OrderProvider = ({ children }) => {
-//   const [orderData, setOrderData] = useState(() => {
-//     const stored = localStorage.getItem("orderData");
-//     return stored ? JSON.parse(stored) : []; // <-- changed null to empty array
-//   });
-
-//   // localStorage sync
-//   useEffect(() => {
-//     localStorage.setItem("orderData", JSON.stringify(orderData)); // always sync
-//   }, [orderData]);
-
-//   return (
-//     <OrderContext.Provider value={{ orderData, setOrderData }}>
-//       {children}
-//     </OrderContext.Provider>
-//   );
-// };
-
-// // custom hook
-// export const useOrder = () => useContext(OrderContext);
-
-// import { createContext, useContext, useState, useEffect } from "react";
-
-// // Create context
-// const OrderContext = createContext();
-
-// // Provider component
-// export const OrderProvider = ({ children }) => {
-//   const [orderData, setOrderData] = useState(() => {
-//     const stored = localStorage.getItem("orderData");
-//     try {
-//       const parsed = stored ? JSON.parse(stored) : [];
-//       return Array.isArray(parsed) ? parsed : []; // Ensure it's always an array
-//     } catch (error) {
-//       return []; // Fallback to empty array if JSON.parse fails
-//     }
-//   });
-
-//   // Sync orderData to localStorage whenever it changes
-//   useEffect(() => {
-//     localStorage.setItem("orderData", JSON.stringify(orderData));
-//   }, [orderData]);
-
-//   return (
-//     <OrderContext.Provider value={{ orderData, setOrderData }}>
-//       {children}
-//     </OrderContext.Provider>
-//   );
-// };
-
-// // Custom hook to use OrderContext
-// export const useOrder = () => useContext(OrderContext);
-
 import { createContext, useContext, useState, useEffect } from "react";
 
-// Create context
 const OrderContext = createContext();
 
-// Provider component
 export const OrderProvider = ({ children }) => {
+  // ✅ Initialize orderData from localStorage, single source
   const [orderData, setOrderData] = useState(() => {
     try {
-      // First try to read "orderData"
-      const stored = localStorage.getItem("orderData");
-      let parsed = stored ? JSON.parse(stored) : [];
-
-      // If "orderData" is empty, fallback to "orders" key
-      if (!Array.isArray(parsed) || parsed.length === 0) {
-        const oldOrders = localStorage.getItem("orders");
-        parsed = oldOrders ? JSON.parse(oldOrders) : [];
-      }
-
-      // Ensure it's always an array
+      const stored = localStorage.getItem("orders");
+      const parsed = stored ? JSON.parse(stored) : [];
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
+      console.error("Failed to parse orderData from localStorage:", error);
       return [];
     }
   });
 
-  // Sync orderData to localStorage whenever it changes
+  // ✅ Add new order safely
+  const addOrder = newOrder => {
+    setOrderData(prev => [...prev, { ...newOrder }]);
+  };
+
+  // ✅ Update order status safely with timeline
+  const updateOrderStatus = (orderId, newStatus) => {
+    const steps = ["Order received", "Processing", "On the way", "Delivered"];
+
+    setOrderData(prev =>
+      prev.map(order => {
+        if (order.orderId !== orderId) return order;
+
+        const currentIndex = steps.indexOf(order.status || "Order received");
+        const newIndex = steps.indexOf(newStatus);
+
+        // ❌ Prevent backward status
+        if (newIndex <= currentIndex) return order;
+
+        return {
+          ...order,
+          status: newStatus,
+          statusHistory: [
+            ...(order.statusHistory || []),
+            { status: newStatus, date: new Date().toLocaleString() },
+          ],
+        };
+      })
+    );
+  };
+
+  // ✅ Update items for a specific order (deep copy to prevent override)
+  const updateOrderItems = (orderId, newItems) => {
+    setOrderData(prev =>
+      prev.map(order =>
+        order.orderId === orderId
+          ? { ...order, items: newItems.map(item => ({ ...item })) }
+          : { ...order, items: order.items.map(item => ({ ...item })) } // deep copy all orders
+      )
+    );
+  };
+
+  // ✅ Persist to localStorage
   useEffect(() => {
     localStorage.setItem("orderData", JSON.stringify(orderData));
   }, [orderData]);
 
   return (
-    <OrderContext.Provider value={{ orderData, setOrderData }}>
+    <OrderContext.Provider
+      value={{
+        orderData,
+        setOrderData,
+        addOrder,
+        updateOrderStatus,
+        updateOrderItems,
+      }}
+    >
       {children}
     </OrderContext.Provider>
   );
 };
 
-// Custom hook to use OrderContext
-export const useOrder = () => useContext(OrderContext);
+// ✅ Custom hook
+export const useOrder = () => {
+  const context = useContext(OrderContext);
+  if (!context) throw new Error("useOrder must be used within OrderProvider");
+  return context;
+};
