@@ -32,7 +32,7 @@ const Sidebar = ({
 
   const navItems = [
 
-    { label: "Dashboard", icon: <FiGrid />, to: "/admin-panel" },
+    { label: "Dashboard", icon: <FiGrid />, to: "/admin-panel/admin-dashboard" },
 
     { label: "Product", icon: <FiBox />, to: "/admin-panel/product-list" },
 

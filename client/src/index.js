@@ -17,32 +17,6 @@ import { EnquiryProvider } from './Context/EnquiryContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// root.render(
-//   <React.StrictMode>
-
-//     <CategoryProvider>
-//       <ProductProvider>
-//         <SettingsProvider>
-//            <BlogProvider>
-//               <CartProvider>
-//                  <OrderProvider>
-//                     <WishlistProvider>
-//                        <EnquiryProvider>
-//                              <EnquiryOverview>
-//                                  <RouterProvider router={router} />
-//                                </EnquiryOverview>
-//                             </EnquiryProvider>
-//                         </WishlistProvider>
-//                   </OrderProvider>
-//                </CartProvider>
-//             </BlogProvider>
-//         </SettingsProvider>
-//       </ProductProvider>
-//     </CategoryProvider>
-
-//   </React.StrictMode>
-// );
 root.render(
   <React.StrictMode>
     <CategoryProvider>

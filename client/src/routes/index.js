@@ -31,12 +31,7 @@ import OrderlistPage from "../PanelPages/OrderlistPage";
 import AdminorderOverview from "../PanelPages/AdminorderOverview";
 import CustomerList from "../PanelPages/CustomerList";
 import CustomerDetail from "../PanelPages/CustomerDetail";
-
-
-
-
-
-
+import AdminDashboard from "../PanelPages/AdminDashboard";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -104,14 +99,17 @@ const router = createBrowserRouter([
         element:<OrderHistoryPage/>
       },
       {
-        path:'orderhistory-page/orderdetails-page',
-        element:<OrderDetails/>
-      }
+  path:'order-page/orderdetails-page',
+  element:<OrderDetails/>
+}
             ,{
         path: "admin-panel",
         element: <Layout />,
         children:[
-
+{
+path:"admin-dashboard",
+element:<AdminDashboard/>
+},
          {
   path: "edit-category/:id",
   element: <CreateCategory />
@@ -180,9 +178,9 @@ const router = createBrowserRouter([
            }
            ,
            {
-            path:"/admin-panel/customer-detail",
-           element:<CustomerDetail>
-           }
+            path:"/admin-panel/customer-list/customer-detail",
+           element:<CustomerDetail/>
+           },
         ]
       },
     ],
