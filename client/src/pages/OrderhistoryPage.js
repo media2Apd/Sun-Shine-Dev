@@ -87,37 +87,6 @@ export default function OrderHistoryPage() {
                 <span className="text-lg font-semibold text-gray-800">
                   ₹{order.total?.toLocaleString()}
                 </span>
-
-                {/* Buttons */}
-                {/* <div className="flex flex-col md:flex-row gap-2 mt-2">
-                  {order.status === "Delivered" ? (
-                    <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition">
-                      Buy Again
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() =>
-                        navigate("/orderhistory-page/orderdetails-page", {
-                          state: { order },
-                        })
-                      }
-                      className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition"
-                    >
-                      Track Order
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() =>
-                      navigate("/orderhistory-page/orderdetails-page", {
-                        state: { order },
-                      })
-                    }
-                    className="border border-gray-300 px-6 py-2 rounded-full text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    Details
-                  </button>
-                </div> */}
                 <div className="flex flex-col md:flex-row gap-2 mt-2">
   {order.status === "Delivered" ? (
     <button

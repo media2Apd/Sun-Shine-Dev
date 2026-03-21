@@ -592,6 +592,7 @@ import { ProductContext } from "../Context/ProductContext";
 import { useEnquiry } from "../Context/EnquiryContext";
 import { useNavigate } from "react-router-dom";
 
+
 export default function AdminDashboard() {
   const { orderData } = useOrder();
   const { products } = useContext(ProductContext);
@@ -601,7 +602,14 @@ export default function AdminDashboard() {
   
 const navigate = useNavigate();
 
+const getProductStockCount = (product) => {
+  if (!product?.variants) return 0;
 
+  return product.variants.reduce(
+    (total, variant) => total + Number(variant.stock || 0),
+    0
+  );
+};
   /* ===== TOP STATS ===== */
 
   const totalOrders = orders.length;
@@ -654,11 +662,20 @@ const navigate = useNavigate();
 
   /* ===== INVENTORY ===== */
 
-  const inventory = products?.map((p) => ({
+ const inventory = products?.map((p) => {
+  const stockCount = getProductStockCount(p);
+
+  return {
     name: p.name,
-    available: p.stock ?? p.count ?? 0,
-    status: (p.stock ?? p.count ?? 0) < 1 ? "Out of Stock" : "Low Stock",
-  }));
+    available: stockCount,
+    status:
+      stockCount === 0
+        ? "Out of Stock"
+        : stockCount < 10
+        ? "Low Stock"
+        : "In Stock",
+  };
+});
 
   /* ===== RECENT ORDERS ===== */
 
@@ -771,14 +788,16 @@ const navigate = useNavigate();
                   <td className="text-center">{item.available}</td>
                   <td className="text-center">
                     <span
-                      className={
-                        item.status === "Low Stock"
-                          ? "text-orange-500"
-                          : "text-red-500"
-                      }
-                    >
-                      ● {item.status}
-                    </span>
+  className={
+    item.status === "Low Stock"
+      ? "text-orange-500"
+      : item.status === "Out of Stock"
+      ? "text-red-500"
+      : "text-green-600"
+  }
+>
+  ● {item.status}
+</span>
                   </td>
                 </tr>
               ))}

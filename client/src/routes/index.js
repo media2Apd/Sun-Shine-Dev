@@ -18,7 +18,7 @@ import GalleryPage from "../pages/GalleryPage";
 import EnquiryForm from "../pages/EnquiryForm";
 import SettingsPage from "../pages/SettingsPage";
 import AdminBloglist from "../PanelPages/AdminBloglist"
-import BlogForm from "../panelComponents/BlogForm";
+import BlogForm from "../PanelPages/BlogForm";
 import BlogPage from "../pages/BlogPage"
 import CheckoutPage from "../pages/CheckoutPage";
 import OrderSuccess from "../pages/OrderSuccess";
@@ -32,6 +32,11 @@ import AdminorderOverview from "../PanelPages/AdminorderOverview";
 import CustomerList from "../PanelPages/CustomerList";
 import CustomerDetail from "../PanelPages/CustomerDetail";
 import AdminDashboard from "../PanelPages/AdminDashboard";
+import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
+import ChangePassword from "../pages/ChangePassword";
+import AdminSettings from "../PanelPages/AdminSettings";
+import BlogPreview from "../PanelPages/BlogPreview";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +45,18 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+     path:"login-page",
+     element:<LoginPage/>
+      },
+      {
+      path:"signup-page",
+      element:<SignupPage/>
+      },
+      {
+       path:"change-password",
+       element:<ChangePassword/>
       },
       {
         path: "/category-products",
@@ -110,6 +127,10 @@ const router = createBrowserRouter([
 path:"admin-dashboard",
 element:<AdminDashboard/>
 },
+{
+path:"admin-settings",
+element:<AdminSettings/>
+},
          {
   path: "edit-category/:id",
   element: <CreateCategory />
@@ -148,6 +169,10 @@ element:<AdminDashboard/>
               {
                 path:"blog-list/blog-form" ,
                 element:<BlogForm/> ,
+              },
+              {
+                 path:"blog-preview",
+                 element:<BlogPreview/>
               },
 
             {

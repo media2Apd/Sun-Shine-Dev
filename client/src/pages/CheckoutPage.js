@@ -8,6 +8,7 @@ import Lottie from "lottie-react";
 import animationData from "../assets/animation.json";
 import { useOrder } from "../Context/OrderContext";
 import { CartContext } from "../Context/CartContext";
+import { LoginContext } from "../Context/LoginContext";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const CheckoutPage = () => {
   const { clearCart } = useContext(CartContext);
   const { address } = useSettings();
   const { setOrderData } = useOrder();
-
+ const { currentUser } = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
 
@@ -77,11 +78,13 @@ const CheckoutPage = () => {
 
       paymentMethod: "COD",
       createdAt: new Date().toISOString(),
+
+       customerId: currentUser?.customerId, 
     };
 
     // context
     setOrderData(finalOrder);
-
+    
     // localStorage (multiple orders)
     const existingOrders =
       JSON.parse(localStorage.getItem("orders")) || [];
@@ -413,7 +416,7 @@ const CheckoutPage = () => {
               <span>₹{orderSummary.total}</span>
             </div>
 
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span>Shipping</span>
               <span className="text-black font-medium">Free</span>
             </div>
@@ -422,8 +425,8 @@ const CheckoutPage = () => {
               <span>Taxes</span>
               <span>₹5.00</span>
             </div>
-          </div>
-
+          </div> */}
+  </div>
           <div className="border-t border-dashed my-4"></div>
 
           <div className="flex justify-between items-center text-lg font-semibold">

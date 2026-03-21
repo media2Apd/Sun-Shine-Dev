@@ -46,7 +46,7 @@ const Sidebar = ({
 
     { label: "Blog Management", icon: <FiLayers />, to: "/admin-panel/blog-list" },
 
-    { label: "Settings", icon: <FiSettings />, to: "/admin-panel/settings" },
+    { label: "Settings", icon: <FiSettings />, to: "/admin-panel/admin-settings" },
 
   ];
 

@@ -13,6 +13,8 @@ import { CartProvider } from './Context/CartContext';
 import { OrderProvider } from './Context/OrderContext';
 import { WishlistProvider } from './Context/WishlistContext';
 import { EnquiryProvider } from './Context/EnquiryContext';
+import { LoginProvider } from "./Context/LoginContext"; 
+import { TokenProvider } from './Context/TokenContext';
 
 
 
@@ -24,15 +26,19 @@ root.render(
         <SettingsProvider>
           <BlogProvider>
             <CartProvider>
-              <OrderProvider>
+              
                 <WishlistProvider>
                   <EnquiryProvider>
-                  
-                    <RouterProvider router={router} />
-                   
+                    <LoginProvider>
+                      <OrderProvider>
+                       <TokenProvider>
+                        <RouterProvider router={router} />
+                        </TokenProvider>
+                      </OrderProvider>
+                    </LoginProvider>
                   </EnquiryProvider>
                 </WishlistProvider>
-              </OrderProvider>
+              
             </CartProvider>
           </BlogProvider>
         </SettingsProvider>
