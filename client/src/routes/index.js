@@ -37,6 +37,7 @@ import SignupPage from "../pages/SignupPage";
 import ChangePassword from "../pages/ChangePassword";
 import AdminSettings from "../PanelPages/AdminSettings";
 import BlogPreview from "../PanelPages/BlogPreview";
+import BlogOverview from "../pages/BlogOverviewpage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -103,6 +104,11 @@ const router = createBrowserRouter([
         path:'blog-page',
         element:<BlogPage/>
       },
+      {
+        path:"blog-overview",
+        element:<BlogOverview/>
+      }
+      ,
       {
         path:'cart-page/checkout-page',
         element:<CheckoutPage/>
