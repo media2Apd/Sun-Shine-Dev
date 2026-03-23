@@ -4,7 +4,7 @@ import * as controller
 from "../controllers/productController.js";
 
 import {
-uploadProductImages
+uploadProductMedia
 }
 from "../utils/Cloudinary.js";
 
@@ -14,49 +14,20 @@ from "../validators/productValid.js";
 const router=express.Router();
 
 
-router.post(
-"/create",
-uploadProductImages,
-validator.validate(
-validator.createProductSchema
-),
-controller.createProduct
+router.post("/create", uploadProductMedia, validator.validate(validator.createProductSchema), controller.createProduct
 );
 
 
-router.get("/view-all",
-controller.getAllProducts
-);
+router.get("/view-all", controller.getAllProducts);
 
 
-router.get(
-"/view-one/:id",
-validator.validate(
-validator.mongoIdSchema,
-"params"
-),
-controller.getProductById
-);
+router.get("/view-one/:id", validator.validate(validator.mongoIdSchema, "params"), controller.getProductById);
 
 
-router.put(
-"/update-one/:id",
-uploadProductImages,
-validator.validate(
-validator.updateProductSchema
-),
-controller.updateProduct
-);
+router.put("/update-one/:id",uploadProductMedia, validator.validate(validator.updateProductSchema), controller.updateProduct);
 
 
-router.delete(
-"/delete-one/:id",
-validator.validate(
-validator.mongoIdSchema,
-"params"
-),
-controller.deleteProduct
-);
+router.delete("/delete-one/:id", validator.validate(validator.mongoIdSchema, "params"), controller.deleteProduct);
 
 
 export default router;

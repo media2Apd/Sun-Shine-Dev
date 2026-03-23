@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema(
 {
 name: { type: String, required: true },
 
-category: String,
+category: {type: mongoose.Schema.Types.ObjectId, ref: "Category" },
 
 slug: String,
 
@@ -35,6 +35,11 @@ url: String,
 publicId: String
 }
 ],
+
+video: {
+  url: { type: String, default: null },
+  publicId: { type: String, default: null }
+},
 
 showOnWebsite: Boolean,
 
