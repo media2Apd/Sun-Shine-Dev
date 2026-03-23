@@ -33,12 +33,10 @@ export const uploadCategoryFiles = multer({
   { name: "image", maxCount: 1 },
 ]);
 
-/**
- * Upload a single buffer to Cloudinary
- * @param {Buffer} buffer
- * @param {string} folder
- * @returns {Promise<{url, publicId}>}
- */
+export const uploadProductImages = multer({
+storage: multer.memoryStorage()
+}).array("images", 5);
+
 export const uploadToCloudinary = (buffer, folder = "categories") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
