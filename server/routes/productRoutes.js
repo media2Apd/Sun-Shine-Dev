@@ -1,15 +1,10 @@
 import express from "express";
 
-import * as controller
-from "../controllers/productController.js";
+import * as controller from "../controllers/productController.js";
 
-import {
-uploadProductMedia
-}
-from "../utils/Cloudinary.js";
+import { uploadProductMedia } from "../utils/Cloudinary.js";
 
-import * as validator
-from "../validators/productValid.js";
+import * as validator from "../validators/productValid.js";
 
 const router=express.Router();
 
