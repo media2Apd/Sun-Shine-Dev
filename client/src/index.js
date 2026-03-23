@@ -26,7 +26,6 @@ root.render(
         <SettingsProvider>
           <BlogProvider>
             <CartProvider>
-              
                 <WishlistProvider>
                   <EnquiryProvider>
                     <LoginProvider>
@@ -37,8 +36,7 @@ root.render(
                       </OrderProvider>
                     </LoginProvider>
                   </EnquiryProvider>
-                </WishlistProvider>
-              
+                </WishlistProvider>    
             </CartProvider>
           </BlogProvider>
         </SettingsProvider>

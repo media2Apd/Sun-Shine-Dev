@@ -1,12 +1,12 @@
-// import React, { createContext, useContext, useEffect, useState } from "react";
+
+// import { createContext, useContext, useEffect, useState } from "react";
 
 // const BlogContext = createContext();
 
 // export const BlogProvider = ({ children }) => {
-
 //   const [blogs, setBlogs] = useState(() => {
-//     const storedBlogs = localStorage.getItem("blogs");
-//     return storedBlogs ? JSON.parse(storedBlogs) : [];
+//     const saved = localStorage.getItem("blogs");
+//     return saved ? JSON.parse(saved) : [];
 //   });
 
 //   useEffect(() => {
@@ -14,14 +14,11 @@
 //   }, [blogs]);
 
 //   const addBlog = (blog) => {
-//     setBlogs((prevBlogs) => [
-//       ...prevBlogs,
-//       { ...blog, status: "Published" }
-//     ]);
+//     setBlogs((prev) => [...prev, blog]);
 //   };
 
 //   return (
-//     <BlogContext.Provider value={{ blogs, setBlogs, addBlog }}>
+//     <BlogContext.Provider value={{ blogs, addBlog }}>
 //       {children}
 //     </BlogContext.Provider>
 //   );
@@ -47,8 +44,18 @@ export const BlogProvider = ({ children }) => {
     setBlogs((prev) => [...prev, blog]);
   };
 
+  const updateBlog = (updatedBlog) => {
+    setBlogs((prev) =>
+      prev.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))
+    );
+  };
+
+  const deleteBlog = (id) => {
+    setBlogs((prev) => prev.filter((b) => b.id !== id));
+  };
+
   return (
-    <BlogContext.Provider value={{ blogs, addBlog }}>
+    <BlogContext.Provider value={{ blogs, setBlogs, addBlog, updateBlog, deleteBlog }}>
       {children}
     </BlogContext.Provider>
   );
