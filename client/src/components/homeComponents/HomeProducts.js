@@ -25,7 +25,7 @@ const HomeProducts = () => {
   }
 
         return (
-          <div key={index} className="mb-10">
+          <div key={index} className="container mx-auto py-4 px-8">
 
             {/* Header */}
             <div className="flex justify-between items-center mb-6">

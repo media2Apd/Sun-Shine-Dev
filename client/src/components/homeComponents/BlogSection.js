@@ -9,7 +9,7 @@ function BlogSection() {
   const latestBlogs = blogs.slice(0, 4); // only first 4 blogs
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="container mx-auto bg-white py-4 px-8">
       <h2 className="text-2xl font-semibold mb-6 text-center">
         Latest Blogs
       </h2>

@@ -41,21 +41,23 @@
 import React, { useContext } from "react";
 import ProductCard from "./ProductCard";
 import { ProductContext } from "../../Context/ProductContext";
+import { useNavigate } from "react-router-dom";
 
 const FeaturedProducts = () => {
 
   const { products } = useContext(ProductContext);
+  const navigate = useNavigate();
 
-  // filter featured products
-  const featuredProducts = products.filter(
+  // 🔥 SAFE FILTER
+  const featuredProducts = (products || []).filter(
     (item) => item.featuredProduct === true && item.showOnWebsite === true
   );
 
-  // products இல்லனா section hide
+  // ❌ no products → hide
   if (featuredProducts.length === 0) return null;
 
   return (
-    <div className="bg-white-100 px-10">
+    <div className="container mx-auto bg-white py-4 px-8">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -64,7 +66,10 @@ const FeaturedProducts = () => {
           Featured Products
         </h2>
 
-        <button className="text-green-700 font-medium hover:underline self-start sm:self-auto">
+        <button
+          onClick={() => navigate("/category-products?type=featured")}
+          className="text-green-700 font-medium hover:underline self-start sm:self-auto"
+        >
           View all
         </button>
 
