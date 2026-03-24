@@ -1,4 +1,4 @@
-import Blog from "../models/blogModel.js";
+import Blog from "../models/Blog.js";
 
 export const createBlog=data=>Blog.create(data);
 
