@@ -123,6 +123,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../Context/CartContext";
 import { WishlistContext } from "../../Context/WishlistContext";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ item }) => {
   const navigate = useNavigate();
@@ -168,6 +169,7 @@ const ProductCard = ({ item }) => {
               e.stopPropagation();
               setAdded(!added);
               addToCart(item, firstVariant);
+              toast.success("Added to Cart 🛒");
             }} 
             className={`px-6 py-2 text-sm font-medium rounded-md transition bg-gray-200
              
@@ -197,8 +199,10 @@ const ProductCard = ({ item }) => {
           <button
   onClick={(e) => {
     e.stopPropagation();
-    if (isLiked) removeFromWishlist(item.id);
-    else addToWishlist(item);
+    if (isLiked){ removeFromWishlist(item.id);
+    toast.info("Removed from Wishlist");}
+    else{ addToWishlist(item);
+    toast.success("Added to Wishlist");}
   }}
   className={`w-10 h-10 flex items-center justify-center text-xl rounded-md transition ${
     isLiked
