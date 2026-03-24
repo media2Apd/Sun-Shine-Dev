@@ -283,7 +283,7 @@ import { Star, Heart, ShoppingCart } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { useCart } from "../Context/CartContext";
