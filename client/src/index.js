@@ -4,6 +4,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider } from 'react-router-dom';
 import router from './routes';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 import { CategoryProvider } from './Context/CategoryContext';
 import { ProductProvider } from './Context/ProductContext';
@@ -21,6 +23,7 @@ import { TokenProvider } from './Context/TokenContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Provider store={store}>
     <CategoryProvider>
       <ProductProvider>
         <SettingsProvider>
@@ -42,6 +45,7 @@ root.render(
         </SettingsProvider>
       </ProductProvider>
     </CategoryProvider>
+    </Provider>
   </React.StrictMode>
 );
 reportWebVitals();

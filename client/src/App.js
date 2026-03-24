@@ -1,16 +1,33 @@
-
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
-import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './helpers/ScrollToTop';
 import {Toaster } from "react-hot-toast";
+import useFetchLoginUser from './hooks/useFetchLoginUser';
+import { setNavigationHandler } from './common/apiClient';
+import PageLoader from './helpers/PageLoader';
 
 
 function App() {
+  const navigate = useNavigate();
   const location = useLocation();
-  // const loading = useFetchLoginUser();
+  const loading = useFetchLoginUser();
   const isAdminPanel = location.pathname.startsWith('/admin-panel');
+
+  // Set up navigation handler for API client
+    useEffect(() => {
+      setNavigationHandler(navigate);
+    }, [navigate]);
+  
+    if (loading) {
+      return (
+        <div className="h-screen flex justify-center items-center">
+          <PageLoader />
+        </div>
+      );
+    }
   return (
     <>
       <ScrollToTop />
