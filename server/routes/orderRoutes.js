@@ -19,8 +19,6 @@ router.delete("/delete/:id", controller.deleteOrder );
 
 router.post("/razorpay/create", controller.createRazorpayOrder);
 
-
 router.post("/razorpay/verify", controller.verifyPayment);
-
 
 export default router;
