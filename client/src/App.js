@@ -4,7 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './helpers/ScrollToTop';
-
+import {Toaster } from "react-hot-toast";
 
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
         <Outlet />
       </main>
       {!isAdminPanel && <Footer />}
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </>
   );
 }
