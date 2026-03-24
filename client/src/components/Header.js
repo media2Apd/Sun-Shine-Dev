@@ -45,7 +45,7 @@ export default function Header() {
 
   return (
     <header className="bg-white-100">
-      <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between relative">
+      <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
         {/* Logo */}
         <div>
           <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 object-contain" />
