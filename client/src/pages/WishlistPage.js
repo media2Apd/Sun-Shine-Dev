@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { X } from "lucide-react";
 import { WishlistContext } from "../Context/WishlistContext";
 import { CartContext } from "../Context/CartContext";
+import { toast } from "react-toastify";
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useContext(WishlistContext);
@@ -9,12 +10,16 @@ export default function WishlistPage() {
 
   const handleRemove = (id) => {
     removeFromWishlist(id);
+    toast.info("Removed from Wishlist ❌");
   };
 
   const handleAddToCart = (item) => {
     // Add to cart only if in stock
     if (item.stock && item.stock > 0) {
       addToCart(item);
+         toast.success("Added to Cart 🛒");
+  } else {
+    toast.error("Out of Stock ❌");
     }
   };
 

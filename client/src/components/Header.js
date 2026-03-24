@@ -14,12 +14,14 @@ import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginContext } from "../Context/LoginContext";
 import { useToken } from "../Context/TokenContext";
+import { useSelector } from 'react-redux';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   // const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const user = useSelector((state) => state?.user?.user); // Redux store data
 
   const { currentUser, logout } = useContext(LoginContext);
   const { clearToken } = useToken();
@@ -45,7 +47,7 @@ export default function Header() {
 
   return (
     <header className="bg-white-100">
-      <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between relative">
+      <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
         {/* Logo */}
         <div>
           <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 object-contain" />
@@ -79,6 +81,13 @@ export default function Header() {
                 <Link to="/cart-page" onClick={() => setOpen(false)}>
                   <DropdownItem icon={<FiShoppingCart />} text="Shopping Cart" />
                 </Link>
+
+                {/* 🔥 ADMIN PANEL */}
+                {user?.role?.toLowerCase() === "admin" && (
+                  <Link to="/admin-panel" onClick={() => setOpen(false)}>
+                    <DropdownItem icon={<FiUser />} text="Admin Panel" />
+                  </Link>
+                )}
 
                 {/* Logout */}
                 <DropdownItem icon={<FiLogOut />} text="Log-out" onClick={handleLogout} />

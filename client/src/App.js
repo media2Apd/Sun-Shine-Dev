@@ -31,6 +31,8 @@ function App() {
   return (
     <>
       <ScrollToTop />
+
+        
      {!isAdminPanel && <Header />}
    
       <main className='min-h-[calc(100vh-120px)] '>
