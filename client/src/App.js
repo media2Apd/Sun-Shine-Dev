@@ -17,23 +17,23 @@ function App() {
   const isAdminPanel = location.pathname.startsWith('/admin-panel');
 
   // Set up navigation handler for API client
-    useEffect(() => {
-      setNavigationHandler(navigate);
-    }, [navigate]);
+  useEffect(() => {
+    setNavigationHandler(navigate);
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <PageLoader />
+      </div>
+    );
+  }
   
-    if (loading) {
-      return (
-        <div className="h-screen flex justify-center items-center">
-          <PageLoader />
-        </div>
-      );
-    }
   return (
     <>
       <ScrollToTop />
-
         
-     {!isAdminPanel && <Header />}
+      {!isAdminPanel && <Header />}
    
       <main className='min-h-[calc(100vh-120px)] '>
         <Outlet />

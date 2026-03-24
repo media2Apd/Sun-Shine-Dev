@@ -310,9 +310,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import SummaryApi from "../common/SummaryApi";
+import api from "../common/apiClient";
 
 const CreateCategory = () => {
   const { id } = useParams();
@@ -325,7 +325,6 @@ const CreateCategory = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    url: "",
     shortDescription: "",
     status: "Active",
     showOnWebsite: true,
@@ -334,7 +333,7 @@ const CreateCategory = () => {
     categoryType: "topCategory",
   });
 
-  const [iconFile, setIconFile] = useState(null);
+  // const [iconFile, setIconFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [previews, setPreviews] = useState({ icon: null, image: null });
   const [loading, setLoading] = useState(false);
@@ -344,14 +343,14 @@ const CreateCategory = () => {
     if (id) {
       const fetchDetail = async () => {
         try {
-          const res = await axios({
+          const res = await api({
             url: SummaryApi.getCategoryById.url(id),
             method: SummaryApi.getCategoryById.method,
           });
           if (res.data.success) {
             setFormData(res.data.data);
             setPreviews({
-              icon: res.data.data.icon?.url,
+              // icon: res.data.data.icon?.url,
               image: res.data.data.image?.url,
             });
           }
@@ -375,8 +374,8 @@ const CreateCategory = () => {
   const handleFile = (e, type) => {
     const file = e.target.files[0];
     if (file) {
-      if (type === "icon") setIconFile(file);
-      else setImageFile(file);
+      // if (type === "icon") setIconFile(file);
+      if (type === "image") setImageFile(file);
       setPreviews((prev) => ({ ...prev, [type]: URL.createObjectURL(file) }));
     }
   };
@@ -388,14 +387,14 @@ const CreateCategory = () => {
     setLoading(true);
     const data = new FormData();
     Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-    if (iconFile) data.append("icon", iconFile);
+    // if (iconFile) data.append("icon", iconFile);
     if (imageFile) data.append("image", imageFile);
 
     try {
       const apiConfig = isCreate ? SummaryApi.createCategory : SummaryApi.updateCategory;
       const url = isCreate ? apiConfig.url : apiConfig.url(id);
 
-      const response = await axios({
+      const response = await api({
         url: url,
         method: apiConfig.method,
         data: data,
@@ -406,7 +405,7 @@ const CreateCategory = () => {
         toast.success(isCreate ? "Category Created" : "Category Updated");
         if (mode === "save") navigate("/admin-panel/products-category");
         else {
-          setFormData({ name: "", url: "", status: "Active" }); // Reset for create another
+          setFormData({ name: "", status: "Active" }); // Reset for create another
           setPreviews({ icon: null, image: null });
         }
       }
@@ -439,7 +438,7 @@ const CreateCategory = () => {
             />
           </div>
 
-          <div className="col-span-2 md:col-span-1">
+          {/* <div className="col-span-2 md:col-span-1">
             <label className="block text-sm font-semibold mb-2">Slug URL</label>
             <input
               name="url"
@@ -448,7 +447,7 @@ const CreateCategory = () => {
               disabled={isView}
               className="w-full border p-3 rounded-lg outline-none focus:border-green-500 disabled:bg-gray-50"
             />
-          </div>
+          </div> */}
 
           <div className="col-span-2">
             <label className="block text-sm font-semibold mb-2">Short Description</label>
@@ -491,15 +490,15 @@ const CreateCategory = () => {
 
         {/* Media Upload */}
         <div className="bg-white p-6 rounded-xl shadow grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
+          {/* <div>
             <label className="block text-sm font-semibold mb-2">Icon</label>
             <div className="border-2 border-dashed p-4 rounded-lg text-center">
               {previews.icon && <img src={previews.icon} className="h-16 mx-auto mb-2 rounded" alt="icon" />}
               {!isView && <input type="file" onChange={(e) => handleFile(e, "icon")} className="text-sm" />}
             </div>
-          </div>
+          </div> */}
           <div>
-            <label className="block text-sm font-semibold mb-2">Featured Image</label>
+            <label className="block text-sm font-semibold mb-2">Image</label>
             <div className="border-2 border-dashed p-4 rounded-lg text-center">
               {previews.image && <img src={previews.image} className="h-16 mx-auto mb-2 rounded" alt="preview" />}
               {!isView && <input type="file" onChange={(e) => handleFile(e, "image")} className="text-sm" />}
