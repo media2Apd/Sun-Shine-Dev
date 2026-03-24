@@ -435,7 +435,7 @@ import { useContext, useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ProductContext } from "../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 import { LoginContext } from "../Context/LoginContext";
 import { useToken } from "../Context/TokenContext";
