@@ -167,10 +167,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 import SummaryApi from "../common/SummaryApi";
+import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/userSlice";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -197,6 +201,13 @@ const LoginPage = () => {
         toast.success(dataResponse.message);
         localStorage.setItem("token", dataResponse.token);
         localStorage.setItem("user", JSON.stringify(dataResponse.user));
+
+        const userRes = await axios.get(SummaryApi.getProfile.url, {
+          headers: { Authorization: `Bearer ${dataResponse.token}` },
+        });
+
+        // 3. Update Redux
+        dispatch(setUserDetails(userRes?.data?.data));
         navigate("/");
       } else {
         toast.error(dataResponse.message);
