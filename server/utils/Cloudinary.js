@@ -43,6 +43,13 @@ export const uploadProductMedia = multer({
   { name: "images", maxCount: 5 },
   { name: "video", maxCount: 1 }
 ]);
+
+export const uploadBlogMedia = multer({
+  storage: multer.memoryStorage()
+}).fields([
+  { name: "featuredImage", maxCount: 100 },
+  { name: "video", maxCount: 1 }
+]);
 export const uploadToCloudinary = (buffer, folder = "categories") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
