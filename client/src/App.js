@@ -4,9 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './helpers/ScrollToTop';
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import {Toaster } from "react-hot-toast";
 
 
 function App() {
@@ -17,7 +15,6 @@ function App() {
     <>
       <ScrollToTop />
 
-        <ToastContainer position="top-right" autoClose={2000} />
         
      {!isAdminPanel && <Header />}
    
@@ -25,6 +22,7 @@ function App() {
         <Outlet />
       </main>
       {!isAdminPanel && <Footer />}
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </>
   );
 }
