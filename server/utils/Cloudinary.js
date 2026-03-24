@@ -37,6 +37,12 @@ export const uploadProductImages = multer({
 storage: multer.memoryStorage()
 }).array("images", 5);
 
+export const uploadProductMedia = multer({
+  storage: multer.memoryStorage()
+}).fields([
+  { name: "images", maxCount: 5 },
+  { name: "video", maxCount: 1 }
+]);
 export const uploadToCloudinary = (buffer, folder = "categories") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -52,7 +58,29 @@ export const uploadToCloudinary = (buffer, folder = "categories") => {
     stream.end(buffer);
   });
 };
+export const uploadVideoToCloudinary = (buffer, folder) =>
+new Promise((resolve, reject) => {
 
+const stream = cloudinary.uploader.upload_stream(
+{
+folder,
+resource_type: "video"
+},
+(error, result) => {
+
+if(error) return reject(error);
+
+resolve({
+url: result.secure_url,
+publicId: result.public_id
+});
+
+}
+);
+
+stream.end(buffer);
+
+});
 /**
  * Delete an image from Cloudinary by publicId
  * @param {string} publicId
