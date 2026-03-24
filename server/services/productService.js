@@ -1,36 +1,57 @@
 import * as repo from "../repositories/productRepo.js";
 import {
 uploadToCloudinary,
-deleteFromCloudinary
+deleteFromCloudinary,
+uploadVideoToCloudinary
 } from "../utils/Cloudinary.js";
 
 
 export const createProduct = async (body, files) => {
 
-  if (body.variants && typeof body.variants === "string") {
-    body.variants = JSON.parse(body.variants);
-  }
+if (body.variants && typeof body.variants === "string") {
+body.variants = JSON.parse(body.variants);
+}
 
-  const data = { ...body };
+const data = { ...body };
 
-  if (files?.length) {
 
-    const uploadedImages = [];
+/* IMAGE UPLOAD */
 
-    for (const file of files) {
+if (files?.images?.length) {
 
-      const img = await uploadToCloudinary(
-        file.buffer,
-        "products"
-      );
+const uploadedImages = [];
 
-      uploadedImages.push(img);
-    }
+for (const file of files.images) {
 
-    data.images = uploadedImages;
-  }
+const img = await uploadToCloudinary(
+file.buffer,
+"products/images"
+);
 
-  return repo.createProduct(data);
+uploadedImages.push(img);
+
+}
+
+data.images = uploadedImages;
+
+}
+
+
+/* VIDEO UPLOAD */
+
+if (files?.video?.[0]) {
+
+const video = await uploadVideoToCloudinary(
+files.video[0].buffer,
+"products/videos"
+);
+
+data.video = video;
+
+}
+
+return repo.createProduct(data);
+
 };
 
 
@@ -68,7 +89,18 @@ uploadedImages.push(img);
 updateData.images=uploadedImages;
 
 }
+if (files?.video?.[0]) {
 
+await deleteFromCloudinary(existing.video?.publicId);
+
+const video = await uploadVideoToCloudinary(
+files.video[0].buffer,
+"products/videos"
+);
+
+updateData.video = video;
+
+}
 return repo.updateProduct(id,updateData);
 
 };
@@ -82,7 +114,7 @@ const existing=await repo.getProductById(id);
 if(!existing) throw new Error("Product not found");
 
 
-for(const img of existing.images){
+for(const img of existing.images && existing.video){
 
 await deleteFromCloudinary(img.publicId);
 
