@@ -431,19 +431,21 @@
 //   );
 // }
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { CartContext } from "../Context/CartContext";
 import { ProductContext } from "../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { LoginContext } from "../Context/LoginContext";
 import { useToken } from "../Context/TokenContext";
-
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
+import { useCart } from "../Context/CartContext";
 export default function CartPage() {
   const navigate = useNavigate();
-  const { cartItems, increaseQty, decreaseQty, removeItem } = useContext(CartContext);
+  const [cartItems, setCartItems] = useState([]);
+  const { refreshCart } = useCart();
   const { products } = useContext(ProductContext);
   const { currentUser } = useContext(LoginContext);
   const { getToken, generateToken } = useToken();
@@ -487,6 +489,68 @@ export default function CartPage() {
     });
   };
 
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.getCartItems.url,
+        method: SummaryApi.getCartItems.method,
+      });
+
+      setCartItems(res.data?.items || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleRemove = async (id) => {
+  try {
+    await api.delete(SummaryApi.deleteCartItem.url, {
+      data: { cartId: id },
+    });
+
+    toast.info("Removed from Cart ❌");
+
+    fetchCart();      // update page
+    refreshCart();    // update header
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+  const handleIncrease = async (item) => {
+    try {
+      await api.put(SummaryApi.updateCartItem.url, {
+        cartId: item.cartId,
+        quantity: item.qty + 1,
+      });
+
+      fetchCart();
+      refreshCart();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDecrease = async (item) => {
+    if (item.qty <= 1) return;
+
+    try {
+      await api.put(SummaryApi.updateCartItem.url, {
+        cartId: item.cartId,
+        quantity: item.qty - 1,
+      });
+
+      fetchCart();
+      refreshCart();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -513,7 +577,7 @@ export default function CartPage() {
                   {/* Mobile remove button */}
                   <button
                     onClick={() => {
-                      removeItem(item.cartId);
+                      handleRemove(item.cartId);
                       toast.info("Removed from Cart ❌");
                     }}
                     className="absolute top-4 right-4 md:hidden text-gray-400 hover:text-red-500"
@@ -525,7 +589,7 @@ export default function CartPage() {
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => {
-                        removeItem(item.cartId);
+                        handleRemove(item.cartId);
                         toast.info("Removed from Cart ❌");
                       }}
                       className="hidden md:block text-gray-400 hover:text-red-500"
@@ -549,11 +613,11 @@ export default function CartPage() {
                   <div className="flex justify-between md:justify-center items-center">
                     <span className="md:hidden font-medium">Qty</span>
                     <div className="flex items-center border rounded-full px-3 py-1 gap-4">
-                      <button onClick={() => decreaseQty(item.cartId)} className="text-gray-600">
+                      <button onClick={() => handleDecrease(item.cartId)} className="text-gray-600">
                         -
                       </button>
                       <span>{item.qty}</span>
-                      <button onClick={() => increaseQty(item.cartId)} className="text-gray-600">
+                      <button onClick={() => handleIncrease(item.cartId)} className="text-gray-600">
                         +
                       </button>
                     </div>

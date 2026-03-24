@@ -82,6 +82,57 @@ const SummaryApi = {
         method: "delete"
     },
 
+    // ===================== PRODUCTS ROUTES =====================
+    createProduct: {
+        url: `${backendDomain}/api/products/upload`,
+        method: "post"
+    },
+    getAllProducts: {
+        url: `${backendDomain}/api/products/view-all`,
+        method: "get"
+    },
+    getOneProduct: {
+        url: (productId) => `${backendDomain}/api/products/view-one/${productId}`,
+        method: "get"
+    },
+    updateProduct: {
+        url: (productId) => `${backendDomain}/api/products/update-one/${productId}`,
+        method: "put"
+    },
+    deleteProduct: {
+        url: (productId) => `${backendDomain}/api/products/delete-one/${productId}`,
+        method: "delete"
+    },
+
+    // ===================== CART ROUTES =====================
+    addToCart: {
+        url: `${backendDomain}/api/cart/add`,
+        method: "post"
+    },
+    getCartItems: {
+        url: `${backendDomain}/api/cart/view`,
+        method: "get"
+    },
+    updateCartItem: {
+        url: `${backendDomain}/api/cart/update`,
+        method: "put"
+    },
+    deleteCartItem: {
+        url: `${backendDomain}/api/cart/remove`,
+        method: "delete"
+    },
+
+    // ===================== WISHLIST ROUTES =====================
+
+    addToWishlist: {
+        url: `${backendDomain}/api/wishlist/add`,
+        method: "post"
+    },
+    getWishlistItems: {
+        url: `${backendDomain}/api/wishlist/view`,
+        method: "get"
+    },
+    
     // ===================== ADMIN PRODUCTS ROUTES =====================
     // uploadVariantImages: {
     //     url: (variantId) => `${backendDomain}/api/products/variant/${variantId}/images`,

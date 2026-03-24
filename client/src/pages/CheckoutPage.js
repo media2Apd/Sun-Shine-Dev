@@ -7,17 +7,17 @@ import { useSettings } from "../Context/SettingsContext";
 import Lottie from "lottie-react";
 import animationData from "../assets/animation.json";
 import { useOrder } from "../Context/OrderContext";
-import { CartContext } from "../Context/CartContext";
 import { LoginContext } from "../Context/LoginContext";
+import { useCart } from "../Context/CartContext";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const orderSummary = location.state?.orderSummary;
-  const { clearCart } = useContext(CartContext);
+  const { refreshCart } = useCart();
   const { address } = useSettings();
   const { setOrderData } = useOrder();
- const { currentUser } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
 
@@ -93,7 +93,7 @@ const CheckoutPage = () => {
       "orders",
       JSON.stringify([...existingOrders, finalOrder])
     );
-    clearCart();
+    refreshCart();
     setTimeout(() => {
       navigate("/order-page");
     }, 4000);

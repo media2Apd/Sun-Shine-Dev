@@ -14,12 +14,12 @@ export function SimplifiedBuyingProcess() {
   ];
 
   return (
-    <div className="w-full bg-white-100 py-2 px-4 ">
+    <div className="container mx-auto bg-white py-4 px-8">
       <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-8 px-6">
   Simplified Buying Process
 </h2>
 
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className=" grid grid-cols-2 md:grid-cols-4 gap-10">
         {steps.map((step, index) => (
           <div key={index} className="flex flex-col items-center">
             <div className="bg-white rounded-full p-6 shadow-sm mb-5">

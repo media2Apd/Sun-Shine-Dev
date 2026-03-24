@@ -283,41 +283,80 @@ import { Star, Heart, ShoppingCart } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
-import { CartContext } from "../Context/CartContext";
-import { WishlistContext } from "../Context/WishlistContext";
 import { toast } from "react-toastify";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
+import { useCart } from "../Context/CartContext";
+import { useWishlist } from "../Context/WishlistContext";
+import { addToLocalWishlist, removeFromLocalWishlist } from "../helpers/wishlistHelper";
 
 export default function ProductOverview() {
   const location = useLocation();
   const id = location.state?.id;
-  const { addToCart } = useContext(CartContext);
+  const { refreshCart } = useCart();
+const { refreshWishlist } = useWishlist();
   const { products } = useContext(ProductContext);
-  const { wishlist, addToWishlist, removeFromWishlist } = useContext(WishlistContext);
   const [product, setProduct] = useState(null);
   const [selectedPack, setSelectedPack] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [activeTab, setActiveTab] = useState("description");
   const [variantQty, setVariantQty] = useState({});
-  const [liked, setLiked] = useState(
-  wishlist.some((item) => item.id === product.id)
-);
-const handleWishlistToggle = () => {
+  const [liked, setLiked] = useState(false);
+
+const handleWishlistToggle = async () => {
   if (!product) return;
 
-  if (liked) {
-    removeFromWishlist(product.id);
-    toast.info(`${product.name} removed from wishlist ❌`);
-    setLiked(false);
-  } else {
-    addToWishlist(product);
-    toast.success(`${product.name} added to wishlist ❤️`);
-    setLiked(true);
+  try {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      if (liked) {
+        await api.delete("/api/wishlist/remove", {
+          data: { productId: product.id },
+        });
+
+        toast.info(`${product.name} removed from wishlist ❌`);
+        setLiked(false);
+      } else {
+        await api.post("/api/wishlist/add", {
+          productId: product.id,
+        });
+
+        toast.success(`${product.name} added to wishlist ❤️`);
+        setLiked(true);
+      }
+    } else {
+      // 🔥 guest
+      if (liked) {
+        removeFromLocalWishlist(product.id);
+        setLiked(false);
+      } else {
+        addToLocalWishlist(product);
+        setLiked(true);
+      }
+    }
+
+    refreshWishlist(); // 🔥 header update
+  } catch (err) {
+    console.log(err);
   }
 };
-  const handleAddToCart = () => {
+const handleAddToCart = async () => {
   if (!selectedVariant) return;
-  addToCart(product, selectedVariant, currentQty);
-  toast.success(`${product.name} added to cart ✅`);
+
+  try {
+    await api.post(SummaryApi.addToCart.url, {
+      productId: product.id,
+      variantId: selectedVariant.id,
+      quantity: currentQty,
+    });
+
+    toast.success(`${product.name} added to cart ✅`);
+
+    refreshCart(); // 🔥 header count update
+  } catch (err) {
+    console.log(err);
+  }
 };
 
   useEffect(() => {
