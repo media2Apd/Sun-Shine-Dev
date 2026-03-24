@@ -285,7 +285,7 @@ import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
 import { CartContext } from "../Context/CartContext";
 import { WishlistContext } from "../Context/WishlistContext";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export default function ProductOverview() {
   const location = useLocation();

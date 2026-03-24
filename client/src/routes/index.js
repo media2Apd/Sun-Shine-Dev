@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home";
 // import CategoryProducts from "../pages/CategoryProducts";
@@ -40,6 +40,7 @@ import BlogPreview from "../PanelPages/BlogPreview";
 import BlogOverview from "../pages/BlogOverviewpage";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import NotFound from "../pages/NotFound";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -50,20 +51,20 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-     path:"login-page",
-     element:<LoginPage/>
+        path: "login-page",
+        element: <LoginPage />
       },
       {
-      path:"signup-page",
-      element:<SignupPage/>
+        path: "signup-page",
+        element: <SignupPage />
       },
       {
-       path:"forgot-password",
-       element:<ForgotPassword/>
+        path: "forgot-password",
+        element: <ForgotPassword />
       },
       {
-       path:"reset-password",
-       element:<ResetPassword/>
+        path: "reset-password",
+        element: <ResetPassword />
       },
       // {
       //  path:"change-password",
@@ -74,155 +75,160 @@ const router = createBrowserRouter([
         element: <CategoryProducts />,
       },
       {
-        path:'/product-listing',
-        element:<ProductListing/>,
+        path: '/product-listing',
+        element: <ProductListing />,
       },
       {
-        path:'category-products/product-overview',
-        element:<ProductOverview/>,
+        path: 'category-products/product-overview',
+        element: <ProductOverview />,
       },
       {
-        path:'cart-page',
-        element:<CartPage/>,
+        path: 'cart-page',
+        element: <CartPage />,
       },
       {
-       path:'wishlist-page',
-        element:<WishlistPage/>
+        path: 'wishlist-page',
+        element: <WishlistPage />
       },
       {
-        path:'about-page',
-        element:<AboutPage/>
+        path: 'about-page',
+        element: <AboutPage />
       },
       {
-        path:'gallery-page',
-        element:<GalleryPage/>
+        path: 'gallery-page',
+        element: <GalleryPage />
       },
       {
-      path:'enquiry-form',
-      element:<EnquiryForm/>
+        path: 'enquiry-form',
+        element: <EnquiryForm />
       },
       {
-        path:'settings-page',
-        element:<SettingsPage/>
-      }, 
+        path: 'settings-page',
+        element: <SettingsPage />
+      },
 
       {
         path: "category-products/product-overview",
-        element: <ProductOverview/>
-         },
-      {
-        path:'blog-page',
-        element:<BlogPage/>
+        element: <ProductOverview />
       },
       {
-        path:"blog-overview",
-        element:<BlogOverview/>
+        path: 'blog-page',
+        element: <BlogPage />
+      },
+      {
+        path: "blog-overview",
+        element: <BlogOverview />
       }
       ,
       {
-        path:'cart-page/checkout-page',
-        element:<CheckoutPage/>
+        path: 'cart-page/checkout-page',
+        element: <CheckoutPage />
       },
       {
-        path:'order-page',
-        element:<OrderSuccess/>
+        path: 'order-page',
+        element: <OrderSuccess />
       },
       {
-        path:'orderhistory-page',
-        element:<OrderHistoryPage/>
+        path: 'orderhistory-page',
+        element: <OrderHistoryPage />
       },
       {
-  path:'order-page/orderdetails-page',
-  element:<OrderDetails/>
-}
-            ,{
+        path: 'order-page/orderdetails-page',
+        element: <OrderDetails />
+      }
+      , {
         path: "admin-panel",
         element: <Layout />,
-        children:[
-{
-path:"admin-dashboard",
-element:<AdminDashboard/>
-},
-{
-path:"admin-settings",
-element:<AdminSettings/>
-},
-         {
-  path: "edit-category/:id",
-  element: <CreateCategory />
-},
-{
-  path: "view-category/:id",
-  element: <CreateCategory />
-},
-          
-            {
-            path: 'products-category',
-            element: <CategoryList />,
-            },
+        children: [
+          {
+            path: "admin-dashboard",
+            element: <AdminDashboard />
+          },
+          {
+            path: "admin-settings",
+            element: <AdminSettings />
+          },
+          {
+            path: "edit-category/:id",
+            element: <CreateCategory />
+          },
+          {
+            path: "view-category/:id",
+            element: <CreateCategory />
+          },
 
           {
-          path:'edit-product/:id',
-          element:<NewProduct/>
+            path: 'products-category',
+            element: <CategoryList />,
+          },
+
+          {
+            path: 'edit-product/:id',
+            element: <NewProduct />
           }
-,
-              {
+          ,
+          {
             path: 'create-category',
             element: <CreateCategory />
-              },
-              {
-                path: 'product-list',
-                element: <ProductList/>
-              },
-              {
-                path:'product-list/create-product',
-                element:<NewProduct/>
-              },
-              {
-                path:'blog-list',
-                element:<AdminBloglist/>
-              },
-              {
-                path:"blog-list/blog-form" ,
-                element:<BlogForm/> ,
-              },
-              {
-                 path:"blog-preview",
-                 element:<BlogPreview/>
-              },
+          },
+          {
+            path: 'product-list',
+            element: <ProductList />
+          },
+          {
+            path: 'product-list/create-product',
+            element: <NewProduct />
+          },
+          {
+            path: 'blog-list',
+            element: <AdminBloglist />
+          },
+          {
+            path: "blog-list/blog-form",
+            element: <BlogForm />,
+          },
+          {
+            path: "blog-preview",
+            element: <BlogPreview />
+          },
 
-            {
+          {
+
+            path: "/admin-panel/view-product/:id",
+            element: <NewProduct />
+          },
+          {
+            path: "/admin-panel/enquiry-list",
+            element: <EnquiryList />
+          }
+          , {
+            path: "/admin-panel/enquiry-list/enquiry-overview",
+            element: <EnquiryOverview />
+          }
+          ,
+          {
+            path: "/admin-panel/order-list",
+            element: <OrderlistPage />
+          },
+          {
+            path: "/admin-panel/order-list/order-overview",
+            element: <AdminorderOverview />
+          },
+          {
+            path: "/admin-panel/customer-list",
+            element: <CustomerList />
+          }
+          ,
+          {
+            path: "/admin-panel/customer-list/customer-detail",
+            element: <CustomerDetail />
+          },
           
-        path:"/admin-panel/view-product/:id",
-        element:<NewProduct />
-            },
-            {
-           path:"/admin-panel/enquiry-list",
-           element:<EnquiryList/>
-            }
-           ,{
-            path:"/admin-panel/enquiry-list/enquiry-overview",
-            element:<EnquiryOverview/>
-           }
-           ,
-           {
-            path:"/admin-panel/order-list",
-            element:<OrderlistPage/>
-           },
-           {
-            path:"/admin-panel/order-list/order-overview",
-            element:<AdminorderOverview/>
-           } ,
-           {
-            path:"/admin-panel/customer-list",
-            element:<CustomerList/>
-           }
-           ,
-           {
-            path:"/admin-panel/customer-list/customer-detail",
-           element:<CustomerDetail/>
-           },
         ]
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
