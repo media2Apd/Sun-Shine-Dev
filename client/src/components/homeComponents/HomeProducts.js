@@ -2,36 +2,45 @@ import React, { useContext } from "react";
 import ProductCard from "./ProductCard";
 import { ProductContext } from "../../Context/ProductContext";
 import { CategoryContext } from "../../Context/CategoryContext";
+import { useNavigate } from "react-router-dom";
 
 const HomeProducts = () => {
 
   const { products } = useContext(ProductContext);
     const context = useContext(CategoryContext);
-  const category = context?.category || [];
+    const category = context?.category || [];
+    const navigate = useNavigate();
   
   return (
     <div className="px-10 py-5">
 
       {category.map((cat, index) => {
 
-        // filter products by category
         const categoryProducts = products
-       .filter((p) => p.category === cat.name && p.showOnWebsite === true)
+          .filter(
+            (p) =>
+              String(p.category?._id) === String(cat._id) &&
+              p.showOnWebsite === true
+          )
           .slice(0, 4);
-   
-// if no products in this category, don't show section
-    if (categoryProducts.length === 0) {
-    return null;
-  }
+
+        if (categoryProducts.length === 0) {
+          return null;
+        }
 
         return (
-          <div key={index} className="container mx-auto py-4 px-8">
+          <div key={cat._id || index} className="container mx-auto py-4 px-8">
 
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold">{cat.name}</h2>
+              <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">{cat.name}</h2>
 
-              <button className="text-green-700 hover:underline">
+              <button
+                onClick={() =>
+                  navigate(`/category-products?category=${cat._id}`)
+                }
+                className="text-[#354A10] font-medium"
+              >
                 View all
               </button>
             </div>
@@ -39,7 +48,7 @@ const HomeProducts = () => {
             {/* Products */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {categoryProducts.map((item) => (
-                <ProductCard key={item.id} item={item} />
+                <ProductCard key={item._id} item={item} />
               ))}
             </div>
 

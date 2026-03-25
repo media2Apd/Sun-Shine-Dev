@@ -10,10 +10,12 @@ function BlogSection() {
 
   return (
     <div className="container mx-auto bg-white py-4 px-8">
-      <h2 className="text-2xl font-semibold mb-6 text-center">
-        Latest Blogs
-      </h2>
-
+      <div className="flex justify-between items-center mb-10">
+        <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">Latest Blogs</h2>
+        <button className="text-[#354A10] font-medium">
+          View all
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {latestBlogs.map((blog, index) => {
           const cardData = {

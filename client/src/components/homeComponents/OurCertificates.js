@@ -14,17 +14,13 @@ export function OurCertificates() {
 
   return (
     
-    // <div className="w-full bg-white-100 py-10 px-10">
-      
-    //   <div className="max-w-5xl mx-auto">
-    //     <h1 className="text-3xl font-semibold mb-6 px-2">Our Certificates</h1>
 <div className="container mx-auto bg-white py-4 px-8">
-  <div>
-    <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-8 px-6">
+    <div className="flex justify-between items-center mb-10">
+    <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">
       Our Certificates
     </h2>
-
-    <div className="bg-white rounded-2xl max-w-5xl mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.05)] py-10 flex flex-col md:flex-row justify-center items-center gap-10">
+    </div>
+    <div className="bg-white border border-[#E6E6E6] rounded-xl max-w-5xl mx-auto shadow-[0_0_10px_rgba(0,0,0,0.08)] py-10 flex flex-col md:flex-row justify-center items-center gap-10">
       {certificates.map((logo, index) => (
         <img
           key={index}
@@ -33,7 +29,6 @@ export function OurCertificates() {
           className="h-20 object-contain"
         />
       ))}
-    </div>
   </div>
 </div>
   );

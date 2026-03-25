@@ -99,7 +99,7 @@ const router = createBrowserRouter([
         element: <GalleryPage />
       },
       {
-        path: 'enquiry-form',
+        path: 'contact-page',
         element: <EnquiryForm />
       },
       {

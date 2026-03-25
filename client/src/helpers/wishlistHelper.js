@@ -6,25 +6,23 @@ export const getLocalWishlist = () => {
   return data ? JSON.parse(data) : [];
 };
 
-// 🔹 Save wishlist
+// 🔹 Save
 export const setLocalWishlist = (wishlist) => {
   localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
 };
 
-// 🔹 Add to wishlist
+// 🔹 Add
 export const addToLocalWishlist = (product) => {
   const wishlist = getLocalWishlist();
 
   const exists = wishlist.find(
-    (item) => item.productId === product.id
+    (item) => item.productId === product.productId
   );
 
   if (!exists) {
     wishlist.push({
-      productId: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
+      productId: product.productId,
+      variantId: product.variantId,
     });
 
     setLocalWishlist(wishlist);

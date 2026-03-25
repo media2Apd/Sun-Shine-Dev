@@ -38,7 +38,6 @@
 //   );
 // };
 
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import SummaryApi from "../common/SummaryApi";
 import api from "../common/apiClient";
@@ -48,26 +47,33 @@ const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [wishlist, setWishlist] = useState([]); // 🔥 NEW
 
   const refreshWishlist = async () => {
     try {
       const token = localStorage.getItem("token");
 
       if (token) {
-        // ✅ logged user
+        // ✅ backend
         const res = await api({
           url: SummaryApi.getWishlistItems.url,
           method: SummaryApi.getWishlistItems.method,
         });
 
-        setWishlistCount(res.data?.items?.length || 0);
+        const items = res.data?.items || [];
+
+        setWishlist(items);              // 🔥 IMPORTANT
+        setWishlistCount(items.length);
       } else {
-        // ✅ guest
+        // ✅ local
         const local = getLocalWishlist();
+
+        setWishlist(local);              // 🔥 IMPORTANT
         setWishlistCount(local.length);
       }
     } catch (err) {
       console.error("Wishlist load failed", err);
+      setWishlist([]);
       setWishlistCount(0);
     }
   };
@@ -83,7 +89,9 @@ export const WishlistProvider = ({ children }) => {
   }, []);
 
   return (
-    <WishlistContext.Provider value={{ wishlistCount, refreshWishlist }}>
+    <WishlistContext.Provider
+      value={{ wishlistCount, wishlist, refreshWishlist }} // 🔥 expose wishlist
+    >
       {children}
     </WishlistContext.Provider>
   );
