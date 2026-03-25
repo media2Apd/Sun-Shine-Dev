@@ -2,11 +2,16 @@ import mongoose from "mongoose";
 import slugify from "slugify";
 
 const variantSchema = new mongoose.Schema({
+  sku: String,
   capacity: String,
   unit: String,
   mrp: Number,
   price: Number,
-  stock: Number
+  stock: Number,
+  additionalInfo: [ {
+    key: String,
+    value: String
+  } ]
 });
 
 const productSchema = new mongoose.Schema(
@@ -16,6 +21,8 @@ name: { type: String, required: true },
 category: {type: mongoose.Schema.Types.ObjectId, ref: "Category" },
 
 slug: String,
+
+brand: String,
 
 code: String,
 

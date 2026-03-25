@@ -1,19 +1,35 @@
-import Cart from "../models/Cart.js";
 import * as repo from "../repositories/cartRepo.js";
 
-export const addToCart = async (body) => {
+import Cart from "../models/Cart.js";
 
-const { userId, productId, variantIndex, quantity } = body;
+
+export const addToCart = async ({
+
+userId,
+productId,
+variantId,
+quantity
+
+}) => {
+
+if (!productId || !variantId)
+
+throw new Error("ProductId and VariantId required");
+
+
+if (!quantity || quantity <= 0)
+
+throw new Error("Quantity must be greater than 0");
 
 
 let cart = await Cart.findOne({ userId });
 
 
-/* If cart not exists → create */
+/* create cart if not exists */
 
 if (!cart) {
 
-return repo.addToCart({
+cart = await Cart.create({
 
 userId,
 
@@ -22,9 +38,7 @@ items: [
 {
 
 productId,
-
-variantIndex,
-
+variantId,
 quantity
 
 }
@@ -33,42 +47,44 @@ quantity
 
 });
 
+return cart;
+
 }
 
 
-/* Check duplicate product */
+/* check duplicate product */
 
-const exists = cart.items.find(
+const existingItem = cart.items.find(
 
 (item) =>
 
 item.productId.toString() === productId &&
 
-item.variantIndex === variantIndex
+item.variantId.toString() === variantId
 
 );
 
 
-if (exists)
+/* increase quantity if exists */
 
-throw new Error("Product already exists in cart");
+if (existingItem) {
 
+existingItem.quantity += quantity;
 
-/* Add new item */
+} else {
 
 cart.items.push({
 
 productId,
-
-variantIndex,
-
+variantId,
 quantity
 
 });
 
+}
+
 
 await cart.save();
-
 
 return cart;
 

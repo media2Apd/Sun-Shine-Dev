@@ -84,7 +84,7 @@ const SummaryApi = {
 
     // ===================== PRODUCTS ROUTES =====================
     createProduct: {
-        url: `${backendDomain}/api/products/upload`,
+        url: `${backendDomain}/api/products/create`,
         method: "post"
     },
     getAllProducts: {
