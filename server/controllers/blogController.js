@@ -1,36 +1,24 @@
 import * as service from "../services/blogService.js";
 
 
-export const createBlog=async(req,res)=>{
+export const createBlog = async (req, res) => {
+  try {
+    const body = {
+      ...req.body,
+      content: JSON.parse(req.body.content), // 🔥 ADD THIS
+    };
 
-try{
+    const blog = await service.createBlog(body, req.files);
 
-const blog=await service.createBlog(
-
-req.body,
-req.files
-
-);
-
-res.json({
-
-success:true,
-blog
-
-});
-
-}
-
-catch(err){
-
-res.status(400).json({
-
-message:err.message
-
-});
-
-}
-
+    res.json({
+      success: true,
+      blog,
+    });
+  } catch (err) {
+    res.status(400).json({
+      message: err.message,
+    });
+  }
 };
 
 
@@ -63,18 +51,19 @@ res.json(blog);
 
 
 
-export const updateBlog=async(req,res)=>{
+export const updateBlog = async (req, res) => {
+  const body = {
+    ...req.body,
+    content: JSON.parse(req.body.content), // 🔥 ADD THIS
+  };
 
-const blog=await service.updateBlog(
+  const blog = await service.updateBlog(
+    req.params.id,
+    body,
+    req.files
+  );
 
-req.params.id,
-req.body,
-req.files
-
-);
-
-res.json(blog);
-
+  res.json(blog);
 };
 
 

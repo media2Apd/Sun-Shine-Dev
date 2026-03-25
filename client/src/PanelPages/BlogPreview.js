@@ -405,7 +405,7 @@ export default function BlogPreview({ blog, onBack }) {
       {/* FEATURED IMAGE */}
       {blog.featuredImage && (
         <img
-          src={blog.featuredImage}
+          src={blog.featuredImage?.url || blog.featuredImage}
           alt="blog featured"
           className="w-full rounded-xl mb-8"
         />
