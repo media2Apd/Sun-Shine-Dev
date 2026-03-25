@@ -2251,11 +2251,458 @@
 
 // export default NewProduct;
 
+// import React, { useState, useEffect } from "react";
+// import { useNavigate, useParams, useLocation } from "react-router-dom";
+// import { 
+//   FiPlus, FiTrash2, FiUpload, FiVideo, FiInfo, 
+//   FiPackage, FiLayers, FiEye, FiX, FiPlay, FiAlignLeft 
+// } from "react-icons/fi";
+// import api from "../common/apiClient";
+// import SummaryApi from "../common/SummaryApi";
+// import toast from "react-hot-toast";
+
+// const NewProduct = () => {
+//   const navigate = useNavigate();
+//   const { id } = useParams();
+//   const { pathname } = useLocation();
+
+//   const isViewMode = pathname.includes("view-product");
+//   const isEditMode = !!id && !isViewMode;
+
+//   const [loading, setLoading] = useState(false);
+//   const [categories, setCategories] = useState([]);
+//   const [previewModal, setPreviewModal] = useState({ isOpen: false, url: null, type: null });
+
+//   // --- INITIAL STATE (Refactored) ---
+//   const initialVariant = () => ({
+//     id: Date.now() + Math.random(),
+//     sku: "",
+//     capacity: "",
+//     unit: "kg",
+//     mrp: "",
+//     price: "",
+//     stock: "",
+//     stockStatus: "In Stock",
+//     additionalInfo: [{ key: "", value: "" }]
+//   });
+
+//   const [product, setProduct] = useState({
+//     name: "",
+//     categoryId: "",
+//     brand: "",
+//     description: "", // Single description field
+//     showOnWebsite: true,
+//     newLaunch: false,
+//     featuredProduct: false,
+//     images: Array(5).fill(null),
+//     video: null,
+//     variants: [initialVariant()]
+//   });
+
+//   const [previews, setPreviews] = useState({
+//     images: Array(5).fill(null),
+//     video: null
+//   });
+
+//   // --- DATA FETCHING ---
+//   useEffect(() => {
+//     const fetchCategories = async () => {
+//       try {
+//         const res = await api({
+//           url: SummaryApi.getAllCategories.url,
+//           method: SummaryApi.getAllCategories.method
+//         });
+//         if (res.data.success) setCategories(res.data.data);
+//       } catch (err) {
+//         toast.error("Error loading categories");
+//       }
+//     };
+
+//     const fetchProductDetails = async () => {
+//       if (!id) return;
+//       setLoading(true);
+//       try {
+//         const res = await api({
+//           url: SummaryApi.getProductById?.url ? SummaryApi.getProductById.url(id) : `${SummaryApi.getAllProduct.url}/${id}`,
+//           method: "GET"
+//         });
+//         if (res.data.success) {
+//           const p = res.data.data;
+//           setProduct({
+//             ...p,
+//             categoryId: p.categoryId?._id || p.categoryId,
+//             images: Array(5).fill(null),
+//             video: null,
+//             variants: p.variants || [initialVariant()]
+//           });
+          
+//           const existingImages = [...(p.images || [])];
+//           const newPreviews = Array(5).fill(null);
+//           existingImages.forEach((url, i) => { if(i < 5) newPreviews[i] = url; });
+          
+//           setPreviews({
+//             images: newPreviews,
+//             video: p.video || null
+//           });
+//         }
+//       } catch (err) {
+//         toast.error("Error loading product details");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCategories();
+//     fetchProductDetails();
+//   }, [id]);
+
+//   // --- HANDLERS ---
+//   const handleChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+//     setProduct(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+//   };
+
+//   const handleToggle = (name) => {
+//     if (isViewMode) return;
+//     setProduct(prev => ({ ...prev, [name]: !prev[name] }));
+//   };
+
+//   // Media Handlers
+//   const handleImageChange = (e, index) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     const newImages = [...product.images];
+//     newImages[index] = file;
+//     setProduct(prev => ({ ...prev, images: newImages }));
+//     const newPreviews = [...previews.images];
+//     newPreviews[index] = URL.createObjectURL(file);
+//     setPreviews(prev => ({ ...prev, images: newPreviews }));
+//   };
+
+//   const removeImage = (index) => {
+//     const newImages = [...product.images];
+//     newImages[index] = null;
+//     const newPreviews = [...previews.images];
+//     newPreviews[index] = null;
+//     setProduct(prev => ({ ...prev, images: newImages }));
+//     setPreviews(prev => ({ ...prev, images: newPreviews }));
+//   };
+
+//   const handleVideoChange = (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     setProduct(prev => ({ ...prev, video: file }));
+//     setPreviews(prev => ({ ...prev, video: URL.createObjectURL(file) }));
+//   };
+
+//   const removeVideo = () => {
+//     setProduct(prev => ({ ...prev, video: null }));
+//     setPreviews(prev => ({ ...prev, video: null }));
+//   };
+
+//   // Variant & Info Handlers
+//   const onVariantChange = (index, field, value) => {
+//     const updated = [...product.variants];
+//     updated[index][field] = value;
+//     setProduct({ ...product, variants: updated });
+//   };
+//   const onInfoChange = (vIndex, iIndex, field, value) => {
+//     const updated = [...product.variants];
+//     updated[vIndex].additionalInfo[iIndex][field] = value;
+//     setProduct({ ...product, variants: updated });
+//   };
+//   const addInfoRow = (vIndex) => {
+//     const updated = [...product.variants];
+//     updated[vIndex].additionalInfo.push({ key: "", value: "" });
+//     setProduct({ ...product, variants: updated });
+//   };
+//   const removeInfoRow = (vIndex, iIndex) => {
+//     const updated = [...product.variants];
+//     updated[vIndex].additionalInfo.splice(iIndex, 1);
+//     setProduct({ ...product, variants: updated });
+//   };
+
+//   // --- SUBMIT ---
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!product.name || !product.categoryId) return toast.error("Basic info missing");
+
+//     setLoading(true);
+//     const formData = new FormData();
+
+//     Object.keys(product).forEach(key => {
+//       if (!['variants', 'images', 'video'].includes(key)) {
+//         formData.append(key, product[key]);
+//       }
+//     });
+
+//     formData.append("variants", JSON.stringify(product.variants));
+
+//     product.images.forEach(img => {
+//       if (img instanceof File) formData.append("images", img);
+//     });
+    
+//     const remainingUrls = previews.images.filter(img => typeof img === 'string' && img.startsWith('http'));
+//     formData.append("existingImages", JSON.stringify(remainingUrls));
+
+//     if (product.video instanceof File) {
+//       formData.append("video", product.video);
+//     } else if (typeof previews.video === 'string' && previews.video.startsWith('http')) {
+//       formData.append("existingVideo", previews.video);
+//     }
+
+//     try {
+//       const config = isEditMode ? SummaryApi.updateProduct(id) : SummaryApi.createProduct;
+//       const res = await api({
+//         url: config.url,
+//         method: config.method,
+//         data: formData,
+//         headers: { "Content-Type": "multipart/form-data" }
+//       });
+
+//       if (res.data.success) {
+//         toast.success(isEditMode ? "Product Updated!" : "Product Created!");
+//         navigate("/admin-panel/product-list");
+//       }
+//     } catch (err) {
+//       toast.error(err.response?.data?.message || "Error saving product");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className=" pb-20 relative">
+      
+//       {/* PREVIEW MODAL */}
+//       {previewModal.isOpen && (
+//         <div className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm">
+//           <button onClick={() => setPreviewModal({isOpen:false})} className="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition-colors z-50"><FiX /></button>
+//           <div className="w-full max-w-5xl flex items-center justify-center">
+//             {previewModal.type === 'video' ? (
+//               <video src={previewModal.url} controls autoPlay className="max-w-full max-h-[85vh] shadow-2xl rounded-lg" />
+//             ) : (
+//               <img src={previewModal.url} alt="Full view" className="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-lg" />
+//             )}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* HEADER */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+//         <div>
+//           <h2 className="text-2xl font-bold text-gray-800">
+//             {isViewMode ? "View Product" : isEditMode ? "Edit Product" : "Add Product"}
+//           </h2>
+//         </div>
+//         {!isViewMode && (
+//           <button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-full font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50">
+//             {loading ? "Processing..." : "Save Product Data"}
+//           </button>
+//         )}
+//       </div>
+
+//       <form className="space-y-8">
+//         {/* BASIC INFORMATION & DESCRIPTION */}
+//         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+//           <h3 className="text-lg font-bold text-gray-700 mb-6 flex items-center gap-2 border-b pb-4">
+//             <FiInfo className="text-green-500" /> Basic Information
+//           </h3>
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//             <div className="md:col-span-1">
+//               <label className="text-sm font-bold text-gray-600">Product Name *</label>
+//               <input name="name" value={product.name} onChange={handleChange} disabled={isViewMode} className="w-full border border-gray-200 p-3 rounded-xl mt-1 outline-none focus:border-green-500" placeholder="Product Title" />
+//             </div>
+//             <div>
+//               <label className="text-sm font-bold text-gray-600">Brand</label>
+//               <input name="brand" value={product.brand} onChange={handleChange} disabled={isViewMode} className="w-full border border-gray-200 p-3 rounded-xl mt-1 outline-none focus:border-green-500" placeholder="Brand Name" />
+//             </div>
+//             <div>
+//               <label className="text-sm font-bold text-gray-600">Category *</label>
+//               <select name="categoryId" value={product.categoryId} onChange={handleChange} disabled={isViewMode} className="w-full border border-gray-200 p-3 rounded-xl mt-1 outline-none focus:border-green-500">
+//                 <option value="">Select Category</option>
+//                 {categories.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+//               </select>
+//             </div>
+//           </div>
+
+//           <div className="mt-6">
+//             <label className="text-sm font-bold text-gray-600 flex items-center gap-1 mb-2">
+//               <FiAlignLeft className="text-green-500" /> Product Description
+//             </label>
+//             <textarea 
+//               name="description" 
+//               value={product.description} 
+//               onChange={handleChange} 
+//               disabled={isViewMode} 
+//               className="w-full border border-gray-200 p-4 rounded-xl h-40 resize-none outline-none focus:border-green-500 transition-all shadow-inner bg-gray-50/30" 
+//               placeholder="Write everything about the product here - usage, benefits, ingredients, etc..." 
+//             />
+//           </div>
+//         </div>
+
+//         {/* VISIBILITY SETTINGS */}
+//         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+//           <h3 className="text-lg font-bold text-gray-700 mb-6 flex items-center gap-2 border-b pb-4">
+//             <FiLayers className="text-green-500" /> Visibility Settings
+//           </h3>
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//             {[
+//               { label: "Show on Website", name: "showOnWebsite" },
+//               { label: "New Launch", name: "newLaunch" },
+//               { label: "Featured Product", name: "featuredProduct" }
+//             ].map(item => (
+//               <div key={item.name} className="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
+//                 <span className="font-semibold text-gray-700">{item.label}</span>
+//                 <button type="button" onClick={() => handleToggle(item.name)} className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${product[item.name] ? "bg-green-600" : "bg-gray-300"}`}>
+//                   <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all ${product[item.name] ? "translate-x-6" : ""}`} />
+//                 </button>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* VARIANTS */}
+//         <div className="space-y-6">
+//           <div className="flex justify-between items-center">
+//             <h3 className="text-xl font-extrabold text-gray-800 flex items-center gap-2">
+//               <FiPackage className="text-green-600" /> Variants & Pricing
+//             </h3>
+//             {!isViewMode && (
+//               <button type="button" onClick={() => setProduct(prev => ({ ...prev, variants: [...prev.variants, initialVariant()] }))} className="flex items-center gap-1 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-bold hover:bg-green-100 transition-all border border-green-200">
+//                 <FiPlus /> Add Variant
+//               </button>
+//             )}
+//           </div>
+
+//           {product.variants.map((variant, vIndex) => (
+//             <div key={variant.id} className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
+//               <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
+//               {!isViewMode && product.variants.length > 1 && (
+//                 <button type="button" onClick={() => {
+//                   const updated = [...product.variants];
+//                   updated.splice(vIndex, 1);
+//                   setProduct({ ...product, variants: updated });
+//                 }} className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors">
+//                   <FiTrash2 size={20} />
+//                 </button>
+//               )}
+//               <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+//                 <div className="md:col-span-2">
+//                   <label className="text-[11px] font-bold text-gray-400 uppercase">SKU</label>
+//                   <input className="w-full border p-2 rounded-lg mt-1" value={variant.sku} onChange={(e) => onVariantChange(vIndex, 'sku', e.target.value)} disabled={isViewMode} />
+//                 </div>
+//                 <div>
+//                   <label className="text-[11px] font-bold text-gray-400 uppercase">Capacity</label>
+//                   <input className="w-full border p-2 rounded-lg mt-1" value={variant.capacity} onChange={(e) => onVariantChange(vIndex, 'capacity', e.target.value)} disabled={isViewMode} />
+//                 </div>
+//                 <div>
+//                   <label className="text-[11px] font-bold text-gray-400 uppercase">Unit</label>
+//                   <select className="w-full border p-2 rounded-lg mt-1" value={variant.unit} onChange={(e) => onVariantChange(vIndex, 'unit', e.target.value)} disabled={isViewMode}>
+//                     <option value="ml">ml</option><option value="liter">liter</option><option value="kg">kg</option><option value="unit">Unit</option>
+//                   </select>
+//                 </div>
+//                 <div>
+//                   <label className="text-[11px] font-bold text-gray-400 uppercase">MRP</label>
+//                   <input type="number" className="w-full border p-2 rounded-lg mt-1" value={variant.mrp} onChange={(e) => onVariantChange(vIndex, 'mrp', e.target.value)} disabled={isViewMode} />
+//                 </div>
+//                 <div>
+//                   <label className="text-[11px] font-bold text-gray-400 uppercase">Price</label>
+//                   <input type="number" className="w-full border p-2 rounded-lg mt-1" value={variant.price} onChange={(e) => onVariantChange(vIndex, 'price', e.target.value)} disabled={isViewMode} />
+//                 </div>
+//               </div>
+
+//               <div className="mt-6 bg-gray-50/50 p-4 rounded-2xl border border-dashed border-gray-200">
+//                 <div className="flex justify-between items-center mb-4">
+//                   <p className="text-xs font-bold text-gray-500 uppercase">Extra Details</p>
+//                   {!isViewMode && (
+//                     <button type="button" onClick={() => addInfoRow(vIndex)} className="text-[10px] font-bold text-green-600 bg-white px-3 py-1 rounded-full border border-green-100 shadow-sm">+ Add Field</button>
+//                   )}
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                   {variant.additionalInfo.map((info, iIndex) => (
+//                     <div key={iIndex} className="flex gap-2 items-center">
+//                       <input placeholder="Key" className="flex-1 text-sm border p-2 rounded-lg" value={info.key} onChange={(e) => onInfoChange(vIndex, iIndex, 'key', e.target.value)} disabled={isViewMode} />
+//                       <input placeholder="Value" className="flex-1 text-sm border p-2 rounded-lg" value={info.value} onChange={(e) => onInfoChange(vIndex, iIndex, 'value', e.target.value)} disabled={isViewMode} />
+//                       {!isViewMode && <button type="button" onClick={() => removeInfoRow(vIndex, iIndex)} className="text-red-300 hover:text-red-500"><FiTrash2 /></button>}
+//                     </div>
+//                   ))}
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         {/* MEDIA SECTION */}
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//           {/* IMAGES */}
+//           <div className="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+//             <h3 className="font-bold text-gray-700 mb-6 flex items-center gap-2 border-b pb-4">
+//               <FiUpload className="text-green-500" /> Images
+//             </h3>
+//             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+//               {previews.images.map((preview, idx) => (
+//                 <div key={idx} className="relative aspect-square border-2 border-dashed rounded-2xl overflow-hidden flex items-center justify-center bg-gray-50 border-gray-200 group">
+//                   {preview ? (
+//                     <>
+//                       <img src={preview} alt="preview" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+//                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+//                         <button type="button" onClick={() => setPreviewModal({ isOpen: true, url: preview, type: 'image' })} className="p-2 bg-white rounded-full text-blue-600 shadow-lg"><FiEye /></button>
+//                         {!isViewMode && <button type="button" onClick={() => removeImage(idx)} className="p-2 bg-white rounded-full text-red-600 shadow-lg"><FiTrash2 /></button>}
+//                       </div>
+//                     </>
+//                   ) : (
+//                     !isViewMode && (
+//                       <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full">
+//                         <FiPlus className="text-gray-300" size={24} />
+//                         <input type="file" hidden accept="image/*" onChange={(e) => handleImageChange(e, idx)} />
+//                       </label>
+//                     )
+//                   )}
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+
+//           {/* VIDEO */}
+//           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+//             <h3 className="font-bold text-gray-700 mb-6 flex items-center gap-2 border-b pb-4">
+//               <FiVideo className="text-green-500" /> Product Video
+//             </h3>
+//             <div className="relative aspect-video w-full border-2 border-dashed rounded-2xl overflow-hidden flex items-center justify-center bg-gray-50 border-gray-200 group">
+//               {previews.video ? (
+//                 <>
+//                   <video key={previews.video} src={previews.video} className="w-full h-full object-cover" muted playsInline />
+//                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+//                     <button type="button" onClick={() => setPreviewModal({ isOpen: true, url: previews.video, type: 'video' })} className="p-3 bg-white rounded-full text-blue-600 shadow-xl"><FiPlay size={24} /></button>
+//                     {!isViewMode && <button type="button" onClick={removeVideo} className="p-3 bg-white rounded-full text-red-600 shadow-xl"><FiTrash2 size={24} /></button>}
+//                   </div>
+//                 </>
+//               ) : (
+//                 !isViewMode && (
+//                   <label className="cursor-pointer flex flex-col items-center">
+//                     <FiPlus className="text-gray-300" size={32} />
+//                     <span className="text-xs font-bold text-gray-400 mt-2 uppercase">Upload MP4</span>
+//                     <input type="file" hidden accept="video/*" onChange={handleVideoChange} />
+//                   </label>
+//                 )
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default NewProduct;
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { 
   FiPlus, FiTrash2, FiUpload, FiVideo, FiInfo, 
-  FiPackage, FiLayers, FiChevronLeft, FiEye, FiX, FiPlay, FiAlignLeft 
+  FiPackage, FiLayers, FiEye, FiX, FiPlay, FiAlignLeft, FiFileText 
 } from "react-icons/fi";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
@@ -2273,7 +2720,7 @@ const NewProduct = () => {
   const [categories, setCategories] = useState([]);
   const [previewModal, setPreviewModal] = useState({ isOpen: false, url: null, type: null });
 
-  // --- INITIAL STATE (Refactored) ---
+  // --- INITIAL STATE ---
   const initialVariant = () => ({
     id: Date.now() + Math.random(),
     sku: "",
@@ -2290,7 +2737,8 @@ const NewProduct = () => {
     name: "",
     categoryId: "",
     brand: "",
-    description: "", // Single description field
+    shortDescription: "", // Restored
+    detailDescription: "", // Restored
     showOnWebsite: true,
     newLaunch: false,
     featuredProduct: false,
@@ -2472,7 +2920,7 @@ const NewProduct = () => {
   };
 
   return (
-    <div className=" pb-20 relative">
+    <div className="pb-20 relative">
       
       {/* PREVIEW MODAL */}
       {previewModal.isOpen && (
@@ -2491,10 +2939,7 @@ const NewProduct = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 hover:text-green-600 mb-2 transition-all">
-            <FiChevronLeft /> Back to List
-          </button>
-          <h2 className="text-3xl font-extrabold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800">
             {isViewMode ? "View Product" : isEditMode ? "Edit Product" : "Add Product"}
           </h2>
         </div>
@@ -2506,7 +2951,7 @@ const NewProduct = () => {
       </div>
 
       <form className="space-y-8">
-        {/* BASIC INFORMATION & DESCRIPTION */}
+        {/* BASIC INFORMATION */}
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
           <h3 className="text-lg font-bold text-gray-700 mb-6 flex items-center gap-2 border-b pb-4">
             <FiInfo className="text-green-500" /> Basic Information
@@ -2529,18 +2974,34 @@ const NewProduct = () => {
             </div>
           </div>
 
-          <div className="mt-6">
-            <label className="text-sm font-bold text-gray-600 flex items-center gap-1 mb-2">
-              <FiAlignLeft className="text-green-500" /> Product Description
-            </label>
-            <textarea 
-              name="description" 
-              value={product.description} 
-              onChange={handleChange} 
-              disabled={isViewMode} 
-              className="w-full border border-gray-200 p-4 rounded-xl h-40 resize-none outline-none focus:border-green-500 transition-all shadow-inner bg-gray-50/30" 
-              placeholder="Write everything about the product here - usage, benefits, ingredients, etc..." 
-            />
+          {/* DESCRIPTIONS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <label className="text-sm font-bold text-gray-600 flex items-center gap-1 mb-2">
+                <FiAlignLeft className="text-green-500" /> Short Description
+              </label>
+              <textarea 
+                name="shortDescription" 
+                value={product.shortDescription} 
+                onChange={handleChange} 
+                disabled={isViewMode} 
+                className="w-full border border-gray-200 p-4 rounded-xl h-32 resize-none outline-none focus:border-green-500 transition-all shadow-inner bg-gray-50/30" 
+                placeholder="Brief summary for product lists..." 
+              />
+            </div>
+            <div>
+              <label className="text-sm font-bold text-gray-600 flex items-center gap-1 mb-2">
+                <FiFileText className="text-green-500" /> Detailed Description
+              </label>
+              <textarea 
+                name="detailDescription" 
+                value={product.detailDescription} 
+                onChange={handleChange} 
+                disabled={isViewMode} 
+                className="w-full border border-gray-200 p-4 rounded-xl h-32 resize-none outline-none focus:border-green-500 transition-all shadow-inner bg-gray-50/30" 
+                placeholder="Full usage instructions, benefits, and ingredients..." 
+              />
+            </div>
           </div>
         </div>
 
