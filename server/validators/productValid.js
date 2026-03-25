@@ -17,7 +17,11 @@ export const createProductSchema = Joi.object({
 
 name: Joi.string().required(),
 
-category: Joi.string(),
+categoryId: Joi.string(),
+
+slug: Joi.string(),
+
+brand: Joi.string(),
 
 code: Joi.string(),
 
@@ -51,6 +55,8 @@ variants: Joi.alternatives().try(
 Joi.array().items(
 Joi.object({
 
+sku: Joi.string(),
+
 capacity: Joi.string(),
 
 unit: Joi.string(),
@@ -59,7 +65,13 @@ mrp: Joi.number(),
 
 price: Joi.number(),
 
-stock: Joi.number()
+stock: Joi.number(),
+additionalInfo: Joi.array().items(
+Joi.object({
+key: Joi.string(),
+value: Joi.string()
+})
+)
 
 })
 ),
@@ -68,7 +80,15 @@ Joi.string()
 
 ),
 
-images: Joi.array().items(Joi.string())
+images: Joi.array().items(Joi.string()),
+existingImages: Joi.alternatives()
+.try(
+Joi.array().items(Joi.string()),
+Joi.string()
+)
+.optional(),
+
+video: Joi.string()
 
 });
 
