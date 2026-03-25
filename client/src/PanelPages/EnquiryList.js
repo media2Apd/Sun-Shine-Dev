@@ -196,9 +196,9 @@ const filteredData = (enquiries || []).filter((item) => {
             ) : (
               filteredData.map((item) => (
 
-                <tr key={item._id} className="text-sm text-center relative">
+                <tr key={item._id} className="text-sm text-center relative ">
 
-                  <td className="py-4 px-4 bg-white border-y border-gray-200">
+                  <td className="py-4 px-4 bg-white border-y border-l rounded-l-lg border-gray-200 ">
                     {item.firstName} {item.lastName}
                   </td>
 
