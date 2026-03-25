@@ -5,11 +5,13 @@ import productRoutes from "./productRoutes.js";
 import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import blogRoutes from "./blogRoutes.js";
+import wishlistRoutes from "./wishlistRoutes.js";
 import express from "express";
 
 const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
+router.use("/wishlist", wishlistRoutes);
 router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/cart", cartRoutes);
