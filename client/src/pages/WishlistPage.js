@@ -324,45 +324,21 @@
 // }
 
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import api from "../common/apiClient";
 import { useWishlist } from "../Context/WishlistContext";
 import { useCart } from "../Context/CartContext";
 import { ProductContext } from "../Context/ProductContext"; // 🔥 IMPORTANT
 import SummaryApi from "../common/SummaryApi";
-import { getLocalWishlist, removeFromLocalWishlist } from "../helpers/wishlistHelper";
+import { removeFromLocalWishlist } from "../helpers/wishlistHelper";
 import { addToLocalCart } from "../helpers/cartHelper";
 import { MdOutlineCancel } from "react-icons/md";
 export default function WishlistPage() {
-  const [wishlist, setWishlist] = useState([]);
 
   const { products } = useContext(ProductContext); // 🔥 IMPORTANT
-  const { refreshWishlist } = useWishlist();
+  const { wishlist, refreshWishlist } = useWishlist();
   const { refreshCart } = useCart();
-
-  useEffect(() => {
-    fetchWishlist();
-  }, []);
-
-  const fetchWishlist = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        const res = await api({
-          url: SummaryApi.getWishlistItems.url,
-          method: SummaryApi.getWishlistItems.method,
-        });
-
-        setWishlist(res.data?.items || []);
-      } else {
-        setWishlist(getLocalWishlist());
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const handleRemove = async (item) => {
     const token = localStorage.getItem("token");
@@ -370,8 +346,8 @@ export default function WishlistPage() {
     try {
       if (token) {
         await api({
-          url: SummaryApi.removeWishlistItem.url,
-          method: SummaryApi.removeWishlistItem.method,
+          url: SummaryApi.removeWishlist.url,
+          method: SummaryApi.removeWishlist.method,
           data: {
             productId: item.productId,
           },
@@ -381,7 +357,6 @@ export default function WishlistPage() {
       }
 
       toast.success("Removed from Wishlist ❌");
-      fetchWishlist();
       refreshWishlist();
     } catch (err) {
       console.log(err);

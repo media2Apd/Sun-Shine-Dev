@@ -132,6 +132,10 @@ const SummaryApi = {
         url: `${backendDomain}/api/wishlist/view`,
         method: "get"
     },
+    removeWishlist: {
+        url: `${backendDomain}/api/wishlist/remove`,
+        method: "delete"
+    },
     
 
     // ===================== ENQUIRY ROUTES =====================

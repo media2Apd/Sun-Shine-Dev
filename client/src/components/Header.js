@@ -23,16 +23,25 @@ export default function Header() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const user = useSelector((state) => state?.user?.user); // Redux store data
-  const { cartCount } = useCart();
-  const { wishlistCount } = useWishlist();
+  const { refreshCart, cartCount } = useCart();
+  const { refreshWishlist, wishlistCount } = useWishlist();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setOpen(false);
 
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-    dispatch(setUserDetails(null)); // 🔥 THIS IS KEY FIX
+    dispatch(setUserDetails(null));
+
+    // 🔥 IMPORTANT
+    await refreshWishlist(); // now loads LOCAL
+    await refreshCart();
+
+    // 🔥 trigger UI update
+    window.dispatchEvent(new Event("wishlistUpdated"));
+    window.dispatchEvent(new Event("cartUpdated"));
 
     navigate("/login-page");
   };
