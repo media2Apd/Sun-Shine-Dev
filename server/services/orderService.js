@@ -1,6 +1,6 @@
 import * as repo from "../repositories/orderRepo.js";
 import Product from "../models/Product.js";
-import razorpay from "../config/razorpay.js";
+import {razorpay} from "../config/razorpay.js";
 
 export const createOrder=async(body)=>{
 
