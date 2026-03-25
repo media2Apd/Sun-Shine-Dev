@@ -11,3 +11,4 @@ router.post("/google-login", authCtrl.googleAuth);
 router.post("/facebook-login", authCtrl.facebookAuth);
 
 export default router;
+

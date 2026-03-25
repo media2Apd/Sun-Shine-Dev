@@ -47,7 +47,7 @@ const reviews = [
 
 const UserReviews = () => {
   return (
-    <div className="bg-white-100 px-5 py-3">
+    <div className="container mx-auto bg-white py-4 px-8">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-10">

@@ -34,9 +34,12 @@ import CustomerDetail from "../PanelPages/CustomerDetail";
 import AdminDashboard from "../PanelPages/AdminDashboard";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
-import ChangePassword from "../pages/ChangePassword";
+// import ChangePassword from "../pages/ChangePassword";
 import AdminSettings from "../PanelPages/AdminSettings";
 import BlogPreview from "../PanelPages/BlogPreview";
+import BlogOverview from "../pages/BlogOverviewpage";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -55,9 +58,17 @@ const router = createBrowserRouter([
       element:<SignupPage/>
       },
       {
-       path:"change-password",
-       element:<ChangePassword/>
+       path:"forgot-password",
+       element:<ForgotPassword/>
       },
+      {
+       path:"reset-password",
+       element:<ResetPassword/>
+      },
+      // {
+      //  path:"change-password",
+      //  element:<ChangePassword/>
+      // },
       {
         path: "/category-products",
         element: <CategoryProducts />,
@@ -103,6 +114,11 @@ const router = createBrowserRouter([
         path:'blog-page',
         element:<BlogPage/>
       },
+      {
+        path:"blog-overview",
+        element:<BlogOverview/>
+      }
+      ,
       {
         path:'cart-page/checkout-page',
         element:<CheckoutPage/>
