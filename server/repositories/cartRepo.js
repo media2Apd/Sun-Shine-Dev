@@ -1,40 +1,8 @@
 import Cart from "../models/Cart.js";
 
-export const addToCart=async({
+export const addToCart = (data) => {
 
-userId,
-productId,
-variantIndex,
-quantity
-
-})=>{
-
-let cart=await Cart.findOne({userId});
-
-if(!cart){
-
-cart=await Cart.create({
-
-userId,
-items:[{productId,variantIndex,quantity}]
-
-});
-
-return cart;
-
-}
-
-cart.items.push({
-
-productId,
-variantIndex,
-quantity
-
-});
-
-await cart.save();
-
-return cart;
+return Cart.create(data);
 
 };
 
