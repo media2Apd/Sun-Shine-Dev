@@ -5,13 +5,17 @@ export const addToCart = async (req, res) => {
 const userId = req.user.id;
 
 const data = await service.addToCart({
+
 userId,
 ...req.body
+
 });
 
 res.json({
+
 success: true,
 data
+
 });
 
 };

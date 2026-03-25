@@ -84,7 +84,7 @@ const SummaryApi = {
 
     // ===================== PRODUCTS ROUTES =====================
     createProduct: {
-        url: `${backendDomain}/api/products/upload`,
+        url: `${backendDomain}/api/products/create`,
         method: "post"
     },
     getAllProducts: {
@@ -131,6 +131,10 @@ const SummaryApi = {
     getWishlistItems: {
         url: `${backendDomain}/api/wishlist/view`,
         method: "get"
+    },
+    removeWishlist: {
+        url: `${backendDomain}/api/wishlist/remove`,
+        method: "delete"
     },
     
 

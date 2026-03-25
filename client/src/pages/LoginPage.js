@@ -171,6 +171,56 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../store/userSlice";
+import { getLocalWishlist, clearLocalWishlist } from "../helpers/wishlistHelper";
+import { getLocalCart, clearLocalCart } from "../helpers/cartHelper";
+import api from "../common/apiClient";
+import { useWishlist } from "../Context/WishlistContext";
+import { useCart } from "../Context/CartContext";
+
+const syncLocalDataToBackend = async (token) => {
+  try {
+    // 🔥 WISHLIST SYNC
+    const localWishlist = getLocalWishlist();
+
+    for (const item of localWishlist) {
+      await api({
+        url: SummaryApi.addToWishlist.url,
+        method: SummaryApi.addToWishlist.method,
+        data: {
+          productId: item.productId,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+
+    // 🔥 CART SYNC
+    const localCart = getLocalCart();
+
+    for (const item of localCart) {
+      await api({
+        url: SummaryApi.addToCart.url,
+        method: "post",
+        data: {
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity || 1,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+
+    // 🔥 CLEAR LOCAL AFTER SYNC
+    clearLocalWishlist();
+    clearLocalCart();
+
+    // 🔥 REFRESH CONTEXT
+    window.dispatchEvent(new Event("wishlistUpdated"));
+    window.dispatchEvent(new Event("cartUpdated"));
+
+  } catch (err) {
+    console.log("Sync failed", err);
+  }
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -178,7 +228,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
+  const { refreshWishlist } = useWishlist();
+  const { refreshCart } = useCart();
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((preve) => ({ ...preve, [name]: value }));
@@ -199,14 +250,22 @@ const LoginPage = () => {
 
       if (dataResponse.success) {
         toast.success(dataResponse.message);
+
         localStorage.setItem("token", dataResponse.token);
         localStorage.setItem("user", JSON.stringify(dataResponse.user));
 
+        // 🔥 IMPORTANT: SYNC LOCAL DATA
+        await syncLocalDataToBackend(dataResponse.token);
+        // 🔥 THIS FIXES HEADER
+        await refreshWishlist();
+        await refreshCart();
+
+        window.dispatchEvent(new Event("wishlistUpdated"));
+        window.dispatchEvent(new Event("cartUpdated"));
         const userRes = await axios.get(SummaryApi.getProfile.url, {
           headers: { Authorization: `Bearer ${dataResponse.token}` },
         });
 
-        // 3. Update Redux
         dispatch(setUserDetails(userRes?.data?.data));
         navigate("/");
       } else {

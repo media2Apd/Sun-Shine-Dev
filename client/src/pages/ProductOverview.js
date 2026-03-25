@@ -766,7 +766,7 @@ import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { useCart } from "../Context/CartContext";
 import { useWishlist } from "../Context/WishlistContext";
-import { addToLocalWishlist, removeFromLocalWishlist } from "../helpers/wishlistHelper";
+import { addToLocalWishlist, getLocalWishlist, removeFromLocalWishlist } from "../helpers/wishlistHelper";
 
 export default function ProductOverview() {
 
@@ -774,7 +774,7 @@ export default function ProductOverview() {
   const id = location.state?.id;
 
   const { refreshCart } = useCart();
-  const { refreshWishlist } = useWishlist();
+  const { wishlist, refreshWishlist } = useWishlist();
   const { products } = useContext(ProductContext);
 
   const [product, setProduct] = useState(null);
@@ -783,35 +783,48 @@ export default function ProductOverview() {
   const [activeTab, setActiveTab] = useState("description");
   const [variantQty, setVariantQty] = useState({});
   const [liked, setLiked] = useState(false);
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
+  const [animateHeart, setAnimateHeart] = useState(false);
 
-  // 🔥 API FETCH (FIX)
+useEffect(() => {
+  if (!product) return;
+
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    setLiked(wishlist?.some((i) => i.productId === product._id));
+  } else {
+    const local = getLocalWishlist();
+    setLiked(local.some((i) => i.productId === product._id));
+  }
+}, [product, wishlist]);
+
   useEffect(() => {
     if (!id) return;
 
+    const fetchProduct = async () => {
+      try {
+        const res = await api({
+          url: SummaryApi.getOneProduct.url(id),
+          method: SummaryApi.getOneProduct.method,
+        });
+
+        const data = res.data?.data;
+
+        setProduct(data);
+        setSelectedImage(data?.images?.[0]?.url);
+
+        if (data?.variants?.length) {
+          const firstPack = `${data.variants[0].capacity}${data.variants[0].unit}`;
+          setSelectedPack(firstPack);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     fetchProduct();
   }, [id]);
-
-  const fetchProduct = async () => {
-    try {
-      const res = await api({
-        url: SummaryApi.getOneProduct.url(id),
-        method: SummaryApi.getOneProduct.method,
-      });
-
-      const data = res.data?.data;
-
-      setProduct(data);
-      setSelectedImage(data?.images?.[0]?.url);
-
-      if (data?.variants?.length) {
-        const firstPack = `${data.variants[0].capacity}${data.variants[0].unit}`;
-        setSelectedPack(firstPack);
-      }
-
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   if (!product) {
     return <div className="p-10 text-center">Loading...</div>;
@@ -828,20 +841,35 @@ export default function ProductOverview() {
 
   // 🔥 WISHLIST FIX
   const handleWishlistToggle = async () => {
+    if (loadingWishlist) return;
+
+    setLoadingWishlist(true);
+
     try {
       const token = localStorage.getItem("token");
 
       if (token) {
         if (liked) {
-          await api.delete("/api/wishlist/remove", {
+          await api({
+            url: SummaryApi.removeWishlist.url,
+            method: SummaryApi.removeWishlist.method,
             data: { productId: product._id },
           });
+
           setLiked(false);
+          toast.success("Removed from Wishlist");
         } else {
-          await api.post("/api/wishlist/add", {
-            productId: product._id,
+          await api({
+            url: SummaryApi.addToWishlist.url,
+            method: SummaryApi.addToWishlist.method,
+            data: { productId: product._id },
           });
+
           setLiked(true);
+          setAnimateHeart(true);
+          setTimeout(() => setAnimateHeart(false), 300);
+
+          toast.success("Added to Wishlist ❤️");
         }
       } else {
         if (liked) {
@@ -850,15 +878,21 @@ export default function ProductOverview() {
         } else {
           addToLocalWishlist({
             productId: product._id,
-            variantId: selectedVariant?._id
+            variantId: selectedVariant?._id,
           });
+
           setLiked(true);
+          setAnimateHeart(true);
+          setTimeout(() => setAnimateHeart(false), 300);
         }
       }
 
       refreshWishlist();
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong");
+    } finally {
+      setLoadingWishlist(false);
     }
   };
 
@@ -1017,13 +1051,22 @@ export default function ProductOverview() {
   {/* WISHLIST */}
   <button
     onClick={handleWishlistToggle}
-    className={`w-12 h-12 flex items-center justify-center rounded-full border transition ${
+    disabled={loadingWishlist}
+    className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-300 ${
       liked
-        ? "bg-green-600 text-white border-green-600"
+        ? "bg-green-600 text-white border-green-600 scale-110"
         : "text-gray-600 hover:bg-green-600 hover:text-white"
-    }`}
+    } ${loadingWishlist ? "opacity-60 cursor-not-allowed" : ""}`}
   >
-    <Heart size={18} />
+    {loadingWishlist ? (
+      <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
+    ) : (
+      <Heart
+        size={18}
+        className={`${animateHeart ? "animate-[scaleIn_0.3s_ease]" : ""}`}
+        fill={liked ? "currentColor" : "none"}
+      />
+    )}
   </button>
 
 </div>
