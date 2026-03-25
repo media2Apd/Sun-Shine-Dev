@@ -51,8 +51,8 @@ const UserReviews = () => {
       
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-3xl font-semibold">User Reviews</h2>
-        <button className="text-green-700 font-medium hover:underline">
+        <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">User Reviews</h2>
+        <button className="text-[#354A10] font-medium">
           View all
         </button>
       </div>
@@ -62,20 +62,20 @@ const UserReviews = () => {
         {reviews.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition duration-300"
+            className="bg-white p-6 rounded-lg border border-[#E1E8ED] hover:shadow-[0_0_10px_rgba(0,0,0,0.08)] transition duration-300"
           >
             {/* Profile Section */}
             <div className="flex items-center gap-4 mb-4">
               
               {/* Default User Icon */}
-              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#F2F2F2] flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6 text-gray-600"
+                  className="w-6 h-6 text-black"
                 >
                   <path
                     strokeLinecap="round"
@@ -86,13 +86,13 @@ const UserReviews = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-gray-500">{item.role}</p>
+                <h3 className="font-semibold text-[#212123]">{item.name}</h3>
+                <p className="text-sm text-[#000000]/55">{item.role}</p>
               </div>
             </div>
 
             {/* Review Text */}
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-[#212123] leading-relaxed">
               "{item.review}"
             </p>
           </div>

@@ -27,64 +27,34 @@
 //     </CategoryContext.Provider>
 //   );
 // };
-
 import { createContext, useState, useEffect, useContext } from "react";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
 
 export const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
+  const [category, setCategory] = useState([]);
 
-  // Load from localStorage first
-  const [category, setCategory] = useState(() => {
-    const savedProducts = localStorage.getItem("categoryContext");
-    return savedProducts ? JSON.parse(savedProducts) : [];
-  });
+  const fetchCategories = async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.getAllCategories.url,
+        method: SummaryApi.getAllCategories.method,
+      });
 
-  // Save to localStorage whenever category change
+      setCategory(res.data?.data || []);
+    } catch (err) {
+      console.log("Category fetch error:", err);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem("categoryContext", JSON.stringify(category));
-  }, [category]);
-
-  // ADD CATEGORY
-  const addCategory = (newCategory) => {
-    setCategory((prev) => [...prev, newCategory]);
-  };
-
-  // UPDATE CATEGORY
-  const updateCategory = (updatedCategory) => {
-    setCategory(
-      category.map((c) =>
-        c.id === updatedCategory.id ? updatedCategory : c
-      )
-    );
-  };
-
-  // DELETE CATEGORY
-  const deleteCategory = (id) => {
-    setCategory(category.filter((c) => c.id !== id));
-  };
-
-  // HIDE / SHOW CATEGORY
-  const toggleHideCategory = (id) => {
-    setCategory(
-      category.map((c) =>
-        c.id === id
-          ? { ...c, showOnWebsite: !c.showOnWebsite }
-          : c
-      )
-    );
-  };
+    fetchCategories();
+  }, []);
 
   return (
-    <CategoryContext.Provider
-      value={{
-        category,
-        addCategory,
-        updateCategory,
-        deleteCategory,
-        toggleHideCategory
-      }}
-    >
+    <CategoryContext.Provider value={{ category }}>
       {children}
     </CategoryContext.Provider>
   );

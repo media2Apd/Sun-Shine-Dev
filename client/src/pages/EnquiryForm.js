@@ -1,251 +1,18 @@
 
-// import React, { useState } from "react";
-
-// import { ArrowLeft, MapPin, Mail, Phone } from "lucide-react";
-// import { useEnquiry } from "../Context/EnquiryContext";
-// import { useCategory } from "../Context/CategoryContext";
-
-// const EnquiryForm = () => {
-//   const { category } = useCategory();
-//   const { addEnquiry } = useEnquiry();
-
-//   const [formData, setFormData] = useState({
-//     firstName: "",
-//     lastName: "",
-//     email: "",
-//     phone: "",
-//     company: "",
-//     location: "",
-//     enquiryType: "Product",
-//     product: "",
-//     quantity: "",
-//     message: "",
-//     contactMethod: "Email",
-//   });
-
-//   // HANDLE CHANGE
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   // SUBMIT
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-
-//     addEnquiry(formData);
-
-//     alert("Enquiry Submitted ✅");
-
-//     setFormData({
-//       firstName: "",
-//       lastName: "",
-//       email: "",
-//       phone: "",
-//       company: "",
-//       location: "",
-//       enquiryType: "Product",
-//       product: "",
-//       quantity: "",
-//       message: "",
-//       contactMethod: "Email",
-//     });
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 px-4 md:px-10 lg:px-24 py-8">
-
-//       {/* BACK */}
-//       <button className="flex items-center gap-2 text-gray-600 mb-6 hover:text-black">
-//         <ArrowLeft size={18} />
-//         Back
-//       </button>
-
-//       {/* HEADER */}
-//       <div className="mb-6">
-//         <h1 className="text-2xl font-semibold">Enquiry Details</h1>
-//         <p className="text-gray-500 text-sm">
-//           Fill the form below and our team will contact you shortly.
-//         </p>
-//       </div>
-
-//       {/* FORM */}
-//       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 md:p-8">
-
-//         {/* PERSONAL DETAILS */}
-//         <h2 className="text-sm font-semibold text-gray-700 mb-4">
-//           Personal Details
-//         </h2>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-//           <div>
-//             <label className="label">First Name</label>
-//             <input name="firstName" value={formData.firstName} onChange={handleChange} className="input" />
-//           </div>
-
-//           <div>
-//             <label className="label">Last Name</label>
-//             <input name="lastName" value={formData.lastName} onChange={handleChange} className="input" />
-//           </div>
-
-//           <div>
-//             <label className="label">Email Address</label>
-//             <input name="email" value={formData.email} onChange={handleChange} className="input" />
-//           </div>
-
-//           <div>
-//             <label className="label">Phone Number</label>
-//             <input name="phone" value={formData.phone} onChange={handleChange} className="input" />
-//           </div>
-
-//           <div>
-//             <label className="label">Company / Farm Name</label>
-//             <input name="company" value={formData.company} onChange={handleChange} className="input" />
-//           </div>
-
-//           <div>
-//             <label className="label">Location</label>
-//             <input name="location" value={formData.location} onChange={handleChange} className="input" />
-//           </div>
-
-//         </div>
-
-//         {/* ENQUIRY INFO */}
-//         <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-4">
-//           Enquiry Information
-//         </h2>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-//           <div>
-//             <label className="label">Enquiry Type</label>
-//             <select name="enquiryType" value={formData.enquiryType} onChange={handleChange} className="input">
-//               <option>Product</option>
-//               <option>Bulk Order</option>
-//               <option>Dealer</option>
-//             </select>
-//           </div>
-
-//           <div>
-//             <label className="label">Product Interested</label>
-//           <select
-//   name="product"
-//   value={formData.product}
-//   onChange={handleChange}
-//   className="input"
-// >
-//   <option value="">Select Category</option>
-
-//   {categories && categories.length > 0 ? (
-//     categories.map((cat, index) => (
-//       <option key={index} value={cat}>
-//         {cat}
-//       </option>
-//     ))
-//   ) : (
-//     <option disabled>No Categories</option>
-//   )}
-// </select>
-//           </div>
-
-//         </div>
-
-//         <div className="mt-5">
-//           <label className="label">Quantity</label>
-//           <input name="quantity" value={formData.quantity} onChange={handleChange} className="input" />
-//         </div>
-
-//         {/* MESSAGE */}
-//         <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-3">
-//           Message
-//         </h2>
-
-//         <textarea
-//           name="message"
-//           value={formData.message}
-//           onChange={handleChange}
-//           rows="4"
-//           className="input"
-//           placeholder="Tell us your requirement..."
-//         />
-
-//         {/* CONTACT METHOD */}
-//         <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-3">
-//           Preferred Contact Method
-//         </h2>
-
-//         <div className="flex flex-wrap gap-6 text-sm">
-
-//           <label className="radio">
-//             <input type="radio" name="contactMethod" value="Phone" onChange={handleChange} />
-//             Phone
-//           </label>
-
-//           <label className="radio">
-//             <input type="radio" name="contactMethod" value="Email" checked={formData.contactMethod === "Email"} onChange={handleChange} />
-//             Email
-//           </label>
-
-//           <label className="radio">
-//             <input type="radio" name="contactMethod" value="WhatsApp" onChange={handleChange} />
-//             WhatsApp
-//           </label>
-
-//         </div>
-
-//         {/* BUTTONS */}
-//         <div className="flex justify-between items-center mt-8">
-
-//           <button type="reset" className="border px-5 py-2 rounded-md text-sm">
-//             Reset
-//           </button>
-
-//           <button type="submit" className="bg-green-600 text-white px-8 py-3 rounded-full">
-//             Submit Enquiry
-//           </button>
-
-//         </div>
-
-//       </form>
-
-//       {/* CONTACT INFO */}
-//       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border rounded-xl p-6 text-center">
-
-//         <div>
-//           <MapPin className="mx-auto text-green-600 mb-2" size={22} />
-//           <p className="text-sm text-gray-600">Theni, Tamil Nadu</p>
-//         </div>
-
-//         <div>
-//           <Mail className="mx-auto text-green-600 mb-2" size={22} />
-//           <p className="text-sm text-gray-600">sunshineagriteech@gmail.com</p>
-//         </div>
-
-//         <div>
-//           <Phone className="mx-auto text-green-600 mb-2" size={22} />
-//           <p className="text-sm text-gray-600">(91) 84899 43519</p>
-//         </div>
-
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default EnquiryForm;
-
 import React, { useState } from "react";
 import { ArrowLeft, MapPin, Mail, Phone } from "lucide-react";
-import { useEnquiry } from "../Context/EnquiryContext";
 import { useCategory } from "../Context/CategoryContext";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 const EnquiryForm = () => {
   const { category } = useCategory(); // ✅ FIX
-  const { addEnquiry } = useEnquiry();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleReset = () => {
   setFormData({
@@ -278,6 +45,34 @@ const EnquiryForm = () => {
     status: "New"
   });
 
+  const validate = () => {
+    let newErrors = {};
+
+    // First Name
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+
+    // Email
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+    ) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Phone
+    if (!formData.phone) {
+      newErrors.phone = "Phone number required";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Enter valid 10-digit number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -287,46 +82,53 @@ const EnquiryForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    addEnquiry(formData);
+    if (!validate()) return;
 
-    alert("Enquiry Submitted ✅");
+    try {
+      setLoading(true);
 
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      company: "",
-      location: "",
-      enquiryType: "Product",
-      product: "",
-      quantity: "",
-      message: "",
-      contactMethod: "Email",
-    });
+      const response = await api.post(
+        SummaryApi.createEnquiry.url,
+        formData
+      );
+
+      if (response.data.success) {
+        setShowSuccess(true); // 🔥 popup trigger
+        handleReset();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Server Error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 md:px-10 lg:px-24 py-8">
+    <div className="min-h-screen bg-white px-4 md:px-10 lg:px-24 py-8">
 
-      <button className="flex items-center gap-2 text-gray-600 mb-6 hover:text-black">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 text-black mb-6 hover:text-black"
+      >
         <ArrowLeft size={18} />
         Back
       </button>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Enquiry Details</h1>
-        <p className="text-gray-500 text-sm">
+        <h1 className="text-2xl lg:text-3xl font-semibold text-balck">Enquiry Details</h1>
+        <p className="text-[#64748B] text-sm lg:text-base">
           Fill the form below and our team will contact you shortly.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 md:p-8">
-
-        <h2 className="text-sm font-semibold text-gray-700 mb-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.08)] border border-[#F1F5F9] p-8">
+        <h2 className="text-base lg:text-lg font-semibold text-black mb-4">
           Personal Details
         </h2>
 
@@ -334,37 +136,66 @@ const EnquiryForm = () => {
 
           <div>
             <label className="label">First Name</label>
-            <input name="firstName" value={formData.firstName} onChange={handleChange} className="input" />
+            <input
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="Ex: John"
+              className={`input ${errors.firstName ? "border-red-500" : ""}`}
+            />
+            {errors.firstName && (
+              <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+            )}
           </div>
 
           <div>
             <label className="label">Last Name</label>
-            <input name="lastName" value={formData.lastName} onChange={handleChange} className="input" />
+            <input name="lastName" placeholder="Ex: Doe" value={formData.lastName} onChange={handleChange} className="input" />
           </div>
 
           <div>
             <label className="label">Email Address</label>
-            <input name="email" value={formData.email} onChange={handleChange} className="input" />
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              className={`input ${errors.email ? "border-red-500" : ""}`}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div>
             <label className="label">Phone Number</label>
-            <input name="phone" value={formData.phone} onChange={handleChange} className="input" />
+            <input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Enter your number"
+              className={`input ${errors.phone ? "border-red-500" : ""}`}
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+            )}
           </div>
 
           <div>
             <label className="label">Company / Farm Name</label>
-            <input name="company" value={formData.company} onChange={handleChange} className="input" />
+            <input name="company" placeholder="Enter your company name" value={formData.company} onChange={handleChange} className="input" />
           </div>
 
           <div>
             <label className="label">Location</label>
-            <input name="location" value={formData.location} onChange={handleChange} className="input" />
+            <input name="location" placeholder="Enter your location" value={formData.location} onChange={handleChange} className="input" />
           </div>
 
         </div>
+      </div>
+      <div className="bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.08)] border border-[#F1F5F9] p-8">
 
-        <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-4">
+        <h2 className="text-base lg:text-lg font-semibold text-black mb-4">
           Enquiry Information
         </h2>
 
@@ -410,10 +241,12 @@ const EnquiryForm = () => {
 
         <div className="mt-5">
           <label className="label">Quantity</label>
-          <input name="quantity" value={formData.quantity} onChange={handleChange} className="input" />
+          <input name="quantity" placeholder="Enter your quantity" value={formData.quantity} onChange={handleChange} className="input" />
         </div>
+      </div>
+      <div className="bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.08)] border border-[#F1F5F9] p-8">
 
-        <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-3">
+        <h2 className="text-base lg:text-lg font-semibold text-black mb-4">
           Message
         </h2>
 
@@ -425,67 +258,162 @@ const EnquiryForm = () => {
           className="input"
           placeholder="Tell us your requirement..."
         />
+      </div>
+      <div className="bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.08)] border border-[#F1F5F9] p-8">
 
-        <h2 className="text-sm font-semibold text-gray-700 mt-8 mb-3">
+        <h2 className="text-base lg:text-lg font-semibold text-black mb-4">
           Preferred Contact Method
         </h2>
 
-        <div className="flex flex-wrap gap-6 text-sm">
+      <div className="flex flex-wrap gap-6 text-sm">
 
-          <label className="radio">
-            <input type="radio" name="contactMethod" value="Phone" onChange={handleChange} />
-            Phone
-          </label>
+        {/* Phone */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="contactMethod"
+            value="Phone"
+            checked={formData.contactMethod === "Phone"}
+            onChange={handleChange}
+            className="hidden"
+          />
+          <span className={`w-4 h-4 flex items-center justify-center rounded-full border 
+            ${formData.contactMethod === "Phone" ? "border-[#22C55E]" : "border-gray-400"}`}>
+            
+            {formData.contactMethod === "Phone" && (
+              <span className="w-2.5 h-2.5 bg-[#22C55E] rounded-full"></span>
+            )}
+          </span>
+          Phone
+        </label>
 
-          <label className="radio">
-            <input type="radio" name="contactMethod" value="Email" checked={formData.contactMethod === "Email"} onChange={handleChange} />
-            Email
-          </label>
+        {/* Email */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="contactMethod"
+            value="Email"
+            checked={formData.contactMethod === "Email"}
+            onChange={handleChange}
+            className="hidden"
+          />
+          <span className={`w-4 h-4 flex items-center justify-center rounded-full border 
+            ${formData.contactMethod === "Email" ? "border-[#22C55E]" : "border-gray-400"}`}>
+            
+            {formData.contactMethod === "Email" && (
+              <span className="w-2.5 h-2.5 bg-[#22C55E] rounded-full"></span>
+            )}
+          </span>
+          Email
+        </label>
 
-          <label className="radio">
-            <input type="radio" name="contactMethod" value="WhatsApp" onChange={handleChange} />
-            WhatsApp
-          </label>
+        {/* WhatsApp */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="contactMethod"
+            value="WhatsApp"
+            checked={formData.contactMethod === "WhatsApp"}
+            onChange={handleChange}
+            className="hidden"
+          />
+          <span className={`w-4 h-4 flex items-center justify-center rounded-full border 
+            ${formData.contactMethod === "WhatsApp" ? "border-[#22C55E]" : "border-gray-400"}`}>
+            
+            {formData.contactMethod === "WhatsApp" && (
+              <span className="w-2.5 h-2.5 bg-[#22C55E] rounded-full"></span>
+            )}
+          </span>
+          WhatsApp
+        </label>
 
-        </div>
+      </div>
+      </div>
 
-        <div className="flex justify-between items-center mt-8">
+      <div className="flex justify-between items-center mt-8">
 
-         <button
-          type="button"
-          onClick={handleReset}
-          className="border px-5 py-2 rounded-md text-sm"
-        >
-          Reset
-        </button>
+      <button
+        type="button"
+        onClick={handleReset}
+        disabled={loading}
+        className="px-8 py-2 rounded-full border text-black transition"
+      >
+        Reset
+      </button>
 
-          <button type="submit" className="bg-green-600 text-white px-8 py-3 rounded-full">
-            Submit Enquiry
-          </button>
-
-        </div>
-
-      </form>
-
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border rounded-xl p-6 text-center">
-
-        <div>
-          <MapPin className="mx-auto text-green-600 mb-2" size={22} />
-          <p className="text-sm text-gray-600">Theni, Tamil Nadu</p>
-        </div>
-
-        <div>
-          <Mail className="mx-auto text-green-600 mb-2" size={22} />
-          <p className="text-sm text-gray-600">sunshineagriteech@gmail.com</p>
-        </div>
-
-        <div>
-          <Phone className="mx-auto text-green-600 mb-2" size={22} />
-          <p className="text-sm text-gray-600">(91) 84899 43519</p>
-        </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className={`px-8 py-2 rounded-full text-white transition ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-[#17CF45] hover:bg-[#2C742F]"
+        }`}
+      >
+        {loading ? "Submitting..." : "Submit Enquiry"}
+      </button>
 
       </div>
 
+      </form>
+
+    <div className="mt-10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.08)] rounded-lg py-8">
+      <div className="flex flex-col md:flex-row items-center justify-between text-center">
+
+        {/* 📍 Address */}
+        <div className="flex-1 px-6">
+          <MapPin strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <p className="text-sm text-gray-600 leading-relaxed">
+            71/151/1, Door no W2/15/11,<br />
+            Mariyaponusami Mill Complex, Annanji Vilakku,<br />
+            Unjampatti, Theni Dist - 625 531,<br />
+            Tamilnadu.
+          </p>
+        </div>
+
+        {/* Divider */}
+        {/* <div className="hidden md:block h-20 w-px bg-gray-300"></div> */}
+
+        {/* 📧 Email */}
+        <div className="flex-1 px-6 mt-6 md:mt-0">
+          <Mail strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <p className="text-sm text-gray-600 break-all">
+            sunshineagriteech@gmail.com
+          </p>
+        </div>
+
+        {/* Divider */}
+        {/* <div className="hidden md:block h-20 w-px bg-gray-300"></div> */}
+
+        {/* 📞 Phone */}
+        <div className="flex-1 px-6 mt-6 md:mt-0">
+          <Phone strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <p className="text-sm text-gray-600 leading-relaxed">
+            (91) 84899 43519 <br />
+            (91) 84899 43523
+          </p>
+        </div>
+
+      </div>
+    </div>
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="bg-white p-8 rounded-xl text-center animate-scaleIn">
+            <div className="text-green-600 text-5xl mb-3">✔</div>
+            <h2 className="text-lg font-semibold">Enquiry Submitted!</h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Our team will contact you soon.
+            </p>
+
+            <button
+              onClick={() => setShowSuccess(false)}
+              className="mt-4 px-6 py-2 bg-green-600 text-white rounded-md"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

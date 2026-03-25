@@ -76,21 +76,27 @@ export default function Header() {
             )}
           </div>
 
-          {open && user && (
-            <div className="absolute right-0 mt-4 w-64 bg-gray-100 shadow-lg rounded-md overflow-hidden z-50">
+            {user && (
+            <div
+              className={`absolute -right-24 top-8 mt-4 w-64 bg-white border border-[#E6E6E6] rounded-md overflow-y-auto max-h-[80vh] z-50 transform ${
+                open
+                  ? "opacity-100 translate-y-0 transition-all duration-300 ease-out"
+                  : "opacity-0 -translate-y-5 pointer-events-none transition-none"
+              }`}
+            >
               <Link to="/settings-page" onClick={() => setOpen(false)}>
-                <DropdownItem icon={<FiUser />} text="My Profile" />
+                <DropdownItem delay="0ms" open={open} icon={<FiUser />} text="My Profile" />
               </Link>
 
               <Link to="/orderhistory-page" onClick={() => setOpen(false)}>
-                <DropdownItem icon={<FiRefreshCw />} text="Order History" />
+                <DropdownItem delay="50ms" open={open} icon={<FiRefreshCw />} text="Order History" />
               </Link>
 
               <Link to="/wishlist-page" onClick={() => setOpen(false)}>
                 <div className="relative">
-                  <DropdownItem icon={<FiHeart />} text="WishList" />
+                  <DropdownItem delay="100ms" open={open} icon={<FiHeart />} text="WishList" />
                   {wishlistCount > 0 && (
-                    <span className="absolute top-2 right-4 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    <span className="absolute top-5 right-4 bg-[#FF3B30] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                       {wishlistCount}
                     </span>
                   )}
@@ -99,9 +105,9 @@ export default function Header() {
 
               <Link to="/cart-page" onClick={() => setOpen(false)}>
                 <div className="relative">
-                  <DropdownItem icon={<FiShoppingCart />} text="Shopping Cart" />
+                  <DropdownItem delay="150ms" open={open} icon={<FiShoppingCart />} text="Shopping Cart" />
                   {cartCount > 0 && (
-                    <span className="absolute top-2 right-4 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    <span className="absolute top-5 right-4 bg-[#FF3B30] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                       {cartCount}
                     </span>
                   )}
@@ -111,12 +117,12 @@ export default function Header() {
               {/* ADMIN PANEL */}
               {user?.role?.toLowerCase() === "admin" && (
                 <Link to="/admin-panel" onClick={() => setOpen(false)}>
-                  <DropdownItem icon={<FiUser />} text="Admin Panel" />
+                  <DropdownItem delay="200ms" open={open} icon={<FiUser />} text="Admin Panel" />
                 </Link>
               )}
 
               {/* Logout */}
-              <DropdownItem icon={<FiLogOut />} text="Log-out" onClick={handleLogout} />
+              <DropdownItem delay="250ms" open={open} icon={<FiLogOut />} text="Log-out" onClick={handleLogout} />
             </div>
           )}
           </div>
@@ -128,7 +134,7 @@ export default function Header() {
             />
 
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-1 -right-2 bg-[#FF3B30] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {wishlistCount}
               </span>
             )}
@@ -141,7 +147,7 @@ export default function Header() {
             />
 
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-1 -right-2 bg-[#FF3B30] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {cartCount}
               </span>
             )}
@@ -152,16 +158,21 @@ export default function Header() {
   );
 }
 
-function DropdownItem({ icon, text, onClick }) {
+function DropdownItem({ icon, text, onClick, delay = "0ms", open }) {
   return (
     <div
-      className="flex items-center gap-4 px-5 py-4 hover:bg-gray-200 cursor-pointer transition"
-      onClick={(e) => {
-        if (onClick) onClick(e);
-      }}
+      onClick={onClick}
+      style={{ transitionDelay: delay }}
+      className={`flex items-center gap-4 px-5 py-4 cursor-pointer 
+      ${
+        open
+          ? "opacity-100 translate-y-0 transition-all duration-300 ease-out"
+          : "opacity-0 translate-y-3 transition-none"
+      }
+      hover:bg-gray-200`}
     >
-      <span className="text-gray-500 text-xl">{icon}</span>
-      <span className="text-gray-700 text-lg">{text}</span>
+      <span className="text-[#CCCCCC] text-xl">{icon}</span>
+      <span className="text-[#666666] text-lg">{text}</span>
     </div>
   );
 }

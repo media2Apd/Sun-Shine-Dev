@@ -436,7 +436,7 @@ import { X } from "lucide-react";
 import { ProductContext } from "../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
+import { getLocalCart, removeFromLocalCart } from "../helpers/cartHelper";
 import { LoginContext } from "../Context/LoginContext";
 import { useToken } from "../Context/TokenContext";
 import api from "../common/apiClient";
@@ -452,14 +452,26 @@ export default function CartPage() {
 
   const cartProducts = cartItems
     .map((cartItem) => {
-      const product = products.find((p) => String(p.id) === String(cartItem.productId));
+      const product = products.find(
+        (p) => String(p._id) === String(cartItem.productId)
+      );
+
       if (!product) return null;
+
+      const variant = product.variants?.find(
+        (v) => String(v._id) === String(cartItem.variantId)
+      );
+
+      if (!variant) return null;
+
       return {
         ...product,
-        cartId: cartItem.id,
+        cartId: cartItem.cartId,
         productId: cartItem.productId,
+        variantId: cartItem.variantId,
         qty: cartItem.quantity,
-        price: Number(cartItem.price),
+        price: variant.price,
+        image: product.images?.[0]?.url,
       };
     })
     .filter(Boolean);
@@ -493,40 +505,83 @@ export default function CartPage() {
     fetchCart();
   }, []);
 
-  const fetchCart = async () => {
-    try {
+const fetchCart = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (token) {
       const res = await api({
         url: SummaryApi.getCartItems.url,
         method: SummaryApi.getCartItems.method,
       });
 
-      setCartItems(res.data?.items || []);
-    } catch (err) {
-      console.log(err);
+      // 🔥 NORMALIZE DATA
+      const items = (res.data?.items || []).map((item) => ({
+        productId: item.productId?._id || item.productId,
+        variantId:
+          item.variantId ||
+          item.productId?.variants?.[item.variantIndex]?._id ||
+          null,
+        quantity: item.quantity,
+        cartId: item._id,
+      }));
+
+      setCartItems(items);
+    } else {
+      setCartItems(getLocalCart());
     }
-  };
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-  const handleRemove = async (id) => {
+const handleRemove = async (id, productId, variantId) => {
+  const token = localStorage.getItem("token");
+
   try {
-    await api.delete(SummaryApi.deleteCartItem.url, {
-      data: { cartId: id },
-    });
+    if (token) {
+      await api.delete(SummaryApi.deleteCartItem.url, {
+        data: { cartId: id },
+      });
+    } else {
+      removeFromLocalCart(productId, variantId);
+    }
 
-    toast.info("Removed from Cart ❌");
+    toast.success("Removed from Cart");
 
-    fetchCart();      // update page
-    refreshCart();    // update header
+    fetchCart();
+    refreshCart();
   } catch (err) {
     console.log(err);
   }
 };
 
   const handleIncrease = async (item) => {
+    const token = localStorage.getItem("token");
+
     try {
-      await api.put(SummaryApi.updateCartItem.url, {
-        cartId: item.cartId,
-        quantity: item.qty + 1,
-      });
+      if (token) {
+        // ✅ BACKEND
+        await api.put(SummaryApi.updateCartItem.url, {
+          cartId: item.cartId,
+          quantity: item.qty + 1,
+        });
+      } else {
+        // ✅ LOCAL
+        const cart = getLocalCart();
+
+        const updated = cart.map((c) => {
+          if (
+            c.productId === item.productId &&
+            c.variantId === item.variantId
+          ) {
+            return { ...c, quantity: c.quantity + 1 };
+          }
+          return c;
+        });
+
+        localStorage.setItem("guest_cart", JSON.stringify(updated));
+      }
 
       fetchCart();
       refreshCart();
@@ -535,21 +590,41 @@ export default function CartPage() {
     }
   };
 
-  const handleDecrease = async (item) => {
-    if (item.qty <= 1) return;
+const handleDecrease = async (item) => {
+  if (item.qty <= 1) return;
 
-    try {
+  const token = localStorage.getItem("token");
+
+  try {
+    if (token) {
+      // ✅ BACKEND
       await api.put(SummaryApi.updateCartItem.url, {
         cartId: item.cartId,
         quantity: item.qty - 1,
       });
+    } else {
+      // ✅ LOCAL
+      const cart = getLocalCart();
 
-      fetchCart();
-      refreshCart();
-    } catch (err) {
-      console.log(err);
+      const updated = cart.map((c) => {
+        if (
+          c.productId === item.productId &&
+          c.variantId === item.variantId
+        ) {
+          return { ...c, quantity: c.quantity - 1 };
+        }
+        return c;
+      });
+
+      localStorage.setItem("guest_cart", JSON.stringify(updated));
     }
-  };
+
+    fetchCart();
+    refreshCart();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-10">
@@ -570,15 +645,14 @@ export default function CartPage() {
               const itemSubtotal = item.price * item.qty;
               return (
                 <div
-                  key={item.cartId}
+                   key={item.cartId || `${item.productId}-${item.variantId}`} // ✅ SAFE KEY
                   className="relative grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] items-center gap-4 md:gap-0 p-4 border-b"
                 >
                   
                   {/* Mobile remove button */}
                   <button
                     onClick={() => {
-                      handleRemove(item.cartId);
-                      toast.info("Removed from Cart ❌");
+                      handleRemove(item.cartId, item.productId, item.variantId);
                     }}
                     className="absolute top-4 right-4 md:hidden text-gray-400 hover:text-red-500"
                   >
@@ -589,8 +663,7 @@ export default function CartPage() {
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => {
-                        handleRemove(item.cartId);
-                        toast.info("Removed from Cart ❌");
+                        handleRemove(item.cartId, item.productId, item.variantId);
                       }}
                       className="hidden md:block text-gray-400 hover:text-red-500"
                     >
@@ -598,9 +671,9 @@ export default function CartPage() {
                     </button>
 
                     <img
-                      src={item.image}
+                      src={item.image || item.images?.[0]?.url}
                       alt={item.name}
-                      className="h-16 w-16 object-cover rounded"
+                      className="h-16 w-16 object-contain rounded"
                     />
                     <p className="text-sm font-medium">{item.name}</p>
                   </div>
@@ -613,11 +686,11 @@ export default function CartPage() {
                   <div className="flex justify-between md:justify-center items-center">
                     <span className="md:hidden font-medium">Qty</span>
                     <div className="flex items-center border rounded-full px-3 py-1 gap-4">
-                      <button onClick={() => handleDecrease(item.cartId)} className="text-gray-600">
+                      <button onClick={() => handleDecrease(item)} className="text-gray-600">
                         -
                       </button>
                       <span>{item.qty}</span>
-                      <button onClick={() => handleIncrease(item.cartId)} className="text-gray-600">
+                      <button onClick={() => handleIncrease(item)} className="text-gray-600">
                         +
                       </button>
                     </div>

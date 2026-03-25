@@ -299,44 +299,49 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
+const [cart, setCart] = useState([]); // 🔥 ADD THIS
 
-  const refreshCart = async () => {
-    try {
-      const token = localStorage.getItem("token");
+const refreshCart = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-      if (token) {
-        // ✅ LOGGED IN → API CALL
-        const res = await api({
-          url: SummaryApi.getCartItems.url,
-          method: SummaryApi.getCartItems.method,
-        });
+    if (token) {
+      // ✅ BACKEND
+      const res = await api({
+        url: SummaryApi.getCartItems.url,
+        method: SummaryApi.getCartItems.method,
+      });
 
-        // 🔥 BEST: quantity based count (not length)
-        const totalQty =
-          res.data?.items?.reduce(
-            (sum, item) => sum + (item.quantity || 1),
-            0
-          ) || 0;
+      const items = res.data?.items || [];
 
-        setCartCount(totalQty);
+      setCart(items); // 🔥 ADD THIS
 
-      } else {
-        // ✅ GUEST → localStorage
-        const guestCart = getLocalCart();
+      const totalQty = items.reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0
+      );
 
-        const totalQty = guestCart.reduce(
-          (sum, item) => sum + (item.quantity || 1),
-          0
-        );
+      setCartCount(totalQty);
 
-        setCartCount(totalQty);
-      }
-    } catch (err) {
-      console.error("Cart count load failed", err);
-      setCartCount(0);
+    } else {
+      // ✅ LOCAL
+      const guestCart = getLocalCart();
+
+      setCart(guestCart); // 🔥 ADD THIS
+
+      const totalQty = guestCart.reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0
+      );
+
+      setCartCount(totalQty);
     }
-  };
-
+  } catch (err) {
+    console.error("Cart count load failed", err);
+    setCart([]);
+    setCartCount(0);
+  }
+};
   // 🔥 INITIAL LOAD
   useEffect(() => {
     refreshCart();
@@ -350,7 +355,7 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cartCount, refreshCart }}>
+    <CartContext.Provider value={{ cartCount, cart, refreshCart }}>
       {children}
     </CartContext.Provider>
   );
