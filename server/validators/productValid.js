@@ -17,7 +17,7 @@ export const createProductSchema = Joi.object({
 
 name: Joi.string().required(),
 
-categoryId: Joi.string(),
+category: Joi.string(),
 
 slug: Joi.string(),
 
