@@ -19,3 +19,26 @@ Wishlist.findOneAndUpdate(
 data,
 {new:true}
 );
+
+
+export const removeFromWishlist = (userId, productId) => {
+
+return Wishlist.findOneAndUpdate(
+
+{ userId },
+
+{
+
+$pull: {
+
+items: { productId }
+
+}
+
+},
+
+{ new: true }
+
+).populate("items.productId");
+
+};
