@@ -16,7 +16,7 @@ const ProductCard = ({ item }) => {
   const navigate = useNavigate();
   const { refreshCart } = useCart();
   const { wishlist, refreshWishlist } = useWishlist();
-
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
   // ✅ FIX: use _id
@@ -65,20 +65,28 @@ const ProductCard = ({ item }) => {
   const handleWishlist = async (e) => {
     e.stopPropagation();
 
+    if (loadingWishlist) return; // 🔥 prevent double click
+
+    setLoadingWishlist(true);
+
     try {
       const token = localStorage.getItem("token");
 
       if (token) {
         if (isLiked) {
-          await api.delete("/api/wishlist/remove", {
-            data: { productId: item._id }, // ✅ FIX
+          await api({
+            url: SummaryApi.removeWishlist.url,
+            method: SummaryApi.removeWishlist.method,
+            data: { productId: item._id },
           });
 
-          toast.success("Removed from Wishlist ");
+          toast.success("Removed from Wishlist");
           setIsLiked(false);
         } else {
-          await api.post("/api/wishlist/add", {
-            productId: item._id, // ✅ FIX
+          await api({
+            url: SummaryApi.addToWishlist.url,
+            method: SummaryApi.addToWishlist.method,
+            data: { productId: item._id },
           });
 
           toast.success("Added to Wishlist ❤️");
@@ -100,6 +108,9 @@ const ProductCard = ({ item }) => {
       refreshWishlist();
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong");
+    } finally {
+      setLoadingWishlist(false);
     }
   };
 
@@ -151,13 +162,24 @@ const ProductCard = ({ item }) => {
           {/* ❤️ Wishlist */}
           <button
             onClick={handleWishlist}
-            className={`w-9 h-9 flex items-center justify-center text-xl rounded-md transition ${
+            disabled={loadingWishlist}
+            className={`w-9 h-9 flex items-center justify-center text-xl rounded-md transition-all duration-300 
+            ${
               isLiked
-                ? "text-[#2C742F] bg-[#F2F2F2]"
+                ? "text-[#2C742F] bg-[#F2F2F2] scale-110"
                 : "bg-[#F2F2F2] text-gray-600 hover:bg-[#2C742F] hover:text-white"
-            }`}
+            }
+            ${loadingWishlist ? "opacity-60 cursor-not-allowed" : ""}
+            `}
           >
-            {isLiked ? <FaHeart /> : <CiHeart />}
+            {loadingWishlist ? (
+              // 🔥 LOADING SPINNER
+              <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
+            ) : isLiked ? (
+              <FaHeart className="transition-transform duration-300 scale-110 animate-[scaleIn_0.3s_ease]" />
+            ) : (
+              <CiHeart />
+            )}
           </button>
         </div>
       </div>
