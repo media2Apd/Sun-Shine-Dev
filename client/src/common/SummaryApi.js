@@ -133,6 +133,29 @@ const SummaryApi = {
         method: "get"
     },
     
+
+    // ===================== ENQUIRY ROUTES =====================
+    createEnquiry: {
+        url: `${backendDomain}/api/enquiries/create`,
+        method: "post"
+    },
+    getAllEnquiries: {
+        url: `${backendDomain}/api/enquiries/view-all`,
+        method: "get"
+    },
+    getOneEnquiry: {
+        url: (enquiryId) => `${backendDomain}/api/enquiries/view-one/${enquiryId}`,
+        method: "get"
+    },
+    updateStatusEnquiry: {
+        url: (enquiryId) => `${backendDomain}/api/enquiries/status-update/${enquiryId}`,
+        method: "patch"
+    },
+    deleteEnquiry: {
+        url: (enquiryId) => `${backendDomain}/api/enquiries/delete-one/${enquiryId}`,
+        method: "delete"
+    },
+
     // ===================== ADMIN PRODUCTS ROUTES =====================
     // uploadVariantImages: {
     //     url: (variantId) => `${backendDomain}/api/products/variant/${variantId}/images`,

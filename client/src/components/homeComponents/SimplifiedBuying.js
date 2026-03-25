@@ -15,22 +15,21 @@ export function SimplifiedBuyingProcess() {
 
   return (
     <div className="container mx-auto bg-white py-4 px-8">
-      <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-8 px-6">
-  Simplified Buying Process
-</h2>
-
+      <div className="flex justify-between items-center mb-10">
+        <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">Simplified Buying Process</h2>
+      </div>
       <div className=" grid grid-cols-2 md:grid-cols-4 gap-10">
         {steps.map((step, index) => (
           <div key={index} className="flex flex-col items-center">
-            <div className="bg-white rounded-full p-6 shadow-sm mb-5">
+            <div className="bg-white rounded-full p-6 mb-5">
               <img
                 src={step.img}
                 alt={step.title}
                 className="w-22 h-22 object-contain"
               />
             </div>
-            <p className="text-sm text-gray-500">Step {index + 1}</p>
-            <h3 className="font-medium">{step.title}</h3>
+            <p className="text-sm text-black">Step {index + 1}</p>
+            <h3 className="font-medium text-base text-black">{step.title}</h3>
           </div>
         ))}
       </div>

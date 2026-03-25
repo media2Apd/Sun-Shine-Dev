@@ -5,11 +5,14 @@ export const createEnquiry = async (data) => {
 };
 
 export const getAllEnquiries = async () => {
-  return await Enquiry.find().sort({ createdAt: -1 });
+  return await Enquiry.find()
+    .populate("productId", "name") // 👈 only name field
+    .sort({ createdAt: -1 });
 };
 
 export const getEnquiryById = async (id) => {
-  return await Enquiry.findById(id);
+  return await Enquiry.findById(id)
+  .populate("productId", "name");
 };
 
 // ✅ UPDATE STATUS

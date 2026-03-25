@@ -125,8 +125,14 @@ export default function Footer() {
             {category && category.length > 0 ? (
               category.map((cat) => (
                 <li
-                  key={cat.id}
-                  onClick={() => navigate(`/category-products/${cat.id}`)}
+                  key={cat._id}
+                  onClick={() => navigate(`/category-products?category=${encodeURIComponent(cat.name)}`,
+                  {
+                    state: {
+                      categoryId: cat._id,
+                      categoryName: cat.name,
+                    },
+                  })}
                   className="cursor-pointer"
                 >
                   {cat.name}
