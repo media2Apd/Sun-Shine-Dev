@@ -5,6 +5,7 @@ import {
   updateUserPassword,
   updateUserProfile,
   findAllUsers,
+  getUserOverviewRepo,
 } from "../repositories/userRepo.js";
 
 export const sendResetOtpService = async (email, otpModel) => {
@@ -39,4 +40,9 @@ export const updateUserProfileService = async (id, data) => {
 
 export const getAllUsersService = async () => {
   return await findAllUsers();
+};
+export const getUserOverview = async () => {
+
+return getUserOverviewRepo();
+
 };

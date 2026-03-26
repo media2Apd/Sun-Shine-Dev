@@ -292,3 +292,17 @@ export const updateUserRole = async (req, res) => {
     });
   }
 };
+
+
+export const getUserOverview = async (req,res)=>{
+
+const data = await userService.getUserOverview();
+
+res.json({
+
+success:true,
+data
+
+});
+
+};
