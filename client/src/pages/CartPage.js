@@ -52,7 +52,7 @@ export default function CartPage() {
     if (!user) {
       navigate("/login-page", {
         state: {
-          redirectTo: "/cart-page/checkout-page",
+          redirectTo: "/cart-page",
           orderSummary: { items: cartProducts, subtotal, total },
         },
       });
