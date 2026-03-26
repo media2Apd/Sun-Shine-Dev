@@ -7,7 +7,7 @@ import Layout from "../panelComponents/Layout";
 import CategoryList from "../PanelPages/CategoryList";
 import CreateCategory from "../PanelPages/CreateCategory";
 import ProductList from "../PanelPages/ProductList";
-import NewProduct from "../PanelPages/CreateProduct";
+import ProductForm from "../PanelPages/ProductForm";
 import CategoryProducts from "../pages/CategoryProducts";
 import ProductListing from "../pages/ProductListing";
 import ProductOverview from "../pages/ProductOverview";
@@ -149,6 +149,16 @@ const router = createBrowserRouter([
             path: "admin-settings",
             element: <AdminSettings />
           },
+
+          //Category
+          {
+            path: 'products-category',
+            element: <CategoryList />,
+          },
+          {
+            path: 'create-category',
+            element: <CreateCategory />
+          },
           {
             path: "edit-category/:id",
             element: <CreateCategory />
@@ -158,28 +168,27 @@ const router = createBrowserRouter([
             element: <CreateCategory />
           },
 
-          {
-            path: 'products-category',
-            element: <CategoryList />,
-          },
-
-          {
-            path: 'edit-product/:id',
-            element: <NewProduct />
-          }
-          ,
-          {
-            path: 'create-category',
-            element: <CreateCategory />
-          },
+          
+          //Products
           {
             path: 'product-list',
             element: <ProductList />
           },
           {
             path: 'product-list/create-product',
-            element: <NewProduct />
+            element: <ProductForm />
           },
+          {
+            path: 'product-list/edit-product/:id',
+            element: <ProductForm />
+          },
+          {
+
+            path: "product-list/view-product/:id",
+            element: <ProductForm />
+          },
+
+          //Blogs
           {
             path: 'blog-list',
             element: <AdminBloglist />
@@ -193,35 +202,31 @@ const router = createBrowserRouter([
             element: <BlogPreview />
           },
 
+          
           {
-
-            path: "/admin-panel/view-product/:id",
-            element: <NewProduct />
-          },
-          {
-            path: "/admin-panel/enquiry-list",
+            path: "enquiry-list",
             element: <EnquiryList />
           }
           , {
-            path: "/admin-panel/enquiry-list/enquiry-overview",
+            path: "enquiry-list/enquiry-overview",
             element: <EnquiryOverview />
           }
           ,
           {
-            path: "/admin-panel/order-list",
+            path: "order-list",
             element: <OrderlistPage />
           },
           {
-            path: "/admin-panel/order-list/order-overview",
+            path: "order-list/order-overview",
             element: <AdminorderOverview />
           },
           {
-            path: "/admin-panel/customer-list",
+            path: "customer-list",
             element: <CustomerList />
           }
           ,
           {
-            path: "/admin-panel/customer-list/customer-detail",
+            path: "customer-list/customer-detail",
             element: <CustomerDetail />
           },
           

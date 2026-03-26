@@ -709,7 +709,7 @@ const CategoryList = () => {
       setOpenMenuId(null);
     } else {
       const rect = btnRefs.current[id].getBoundingClientRect();
-      const menuHeight = 150; 
+      const menuHeight = 95; 
       const spaceBelow = window.innerHeight - rect.bottom;
       
       const top = spaceBelow < menuHeight ? rect.top - menuHeight - 5 : rect.bottom + 5;
@@ -771,8 +771,8 @@ const CategoryList = () => {
 
       <div className="bg-white rounded-xl overflow-x-auto min-h-[300px]">
         <table className="min-w-full border-separate border-spacing-y-3 px-2">
-          <thead className="text-sm text-gray-500">
-            <tr className="text-center bg-gray-50">
+          <thead className="text-sm">
+            <tr className="text-center bg-gray-100">
               <th className="py-4 px-4 rounded-l-lg font-semibold">Name</th>
               <th className="py-4 px-4 font-semibold">Status</th>
               <th className="py-4 px-4 font-semibold">Visibility</th>
@@ -846,7 +846,7 @@ const CategoryList = () => {
                       >
                         <button onClick={() => navigate(`/admin-panel/view-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">View Details</button>
                         <button onClick={() => navigate(`/admin-panel/edit-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">Edit Category</button>
-                        <button className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors font-medium">Delete</button>
+                        {/* <button className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors font-medium">Delete</button> */}
                       </div>
                     )}
                   </td>
