@@ -296,7 +296,7 @@ export const updateUserRole = async (req, res) => {
 
 export const getUserOverview = async (req,res)=>{
 
-const data = await userService.getUserOverview();
+const data = await userService.getUserOverview(req.params.userId);
 
 res.json({
 

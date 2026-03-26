@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
-
+import mongoose from "mongoose";
 export const findUserByEmail = async (email) => {
   return await User.findOne({ email });
 };
@@ -25,9 +25,15 @@ export const findAllUsers = async () => {
   return await User.find().select("-password"); // remove password for safety
 };
 
-export const getUserOverviewRepo = async () => {
+export const getUserOverviewRepo = async (userId) => {
 
 return User.aggregate([
+
+{
+$match:{
+_id:new mongoose.Types.ObjectId(userId)
+}
+},
 
 {
 $lookup:{
@@ -54,12 +60,16 @@ $sum:"$orders.total"
 
 {
 $project:{
-firstName:1,
-lastName:1,
+
+name:{
+$concat:["$firstName"," ","$lastName"]
+},
+
 email:1,
 phone:1,
 ordersCount:1,
 totalAmount:1
+
 }
 }
 
