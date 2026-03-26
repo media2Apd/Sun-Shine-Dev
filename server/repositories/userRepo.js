@@ -68,7 +68,8 @@ $concat:["$firstName"," ","$lastName"]
 email:1,
 phone:1,
 ordersCount:1,
-totalAmount:1
+totalAmount:1,
+createdAt:1,
 
 }
 }
