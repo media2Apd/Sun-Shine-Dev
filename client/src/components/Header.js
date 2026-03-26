@@ -125,7 +125,7 @@ export default function Header() {
 
               {/* ADMIN PANEL */}
               {user?.role?.toLowerCase() === "admin" && (
-                <Link to="/admin-panel" onClick={() => setOpen(false)}>
+                <Link to="/admin-panel/admin-dashboard" onClick={() => setOpen(false)}>
                   <DropdownItem delay="200ms" open={open} icon={<FiUser />} text="Admin Panel" />
                 </Link>
               )}

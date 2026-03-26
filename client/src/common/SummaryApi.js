@@ -160,6 +160,29 @@ const SummaryApi = {
         method: "delete"
     },
 
+    // ===================== BLOG ROUTES =====================
+
+    createBlog: {
+        url: `${backendDomain}/api/blogs/create`,
+        method: "post"
+    },
+    getAllBlogs: {
+        url: `${backendDomain}/api/blogs/view-all`,
+        method: "get"
+    },
+    getOneBlog: {
+        url: (slug) => `${backendDomain}/api/blogs/view-one/${slug}`,
+        method: "get"
+    },
+    updateBlog: {
+        url: (blogId) => `${backendDomain}/api/blogs/update-one/${blogId}`,
+        method: "put"
+    },
+    deleteBlog: {
+        url: (blogId) => `${backendDomain}/api/blogs/delete-one/${blogId}`,
+        method: "delete"
+    },
+
     // ===================== ADMIN PRODUCTS ROUTES =====================
     // uploadVariantImages: {
     //     url: (variantId) => `${backendDomain}/api/products/variant/${variantId}/images`,

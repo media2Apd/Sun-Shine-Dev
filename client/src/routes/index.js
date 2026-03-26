@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home";
 // import CategoryProducts from "../pages/CategoryProducts";
@@ -140,6 +140,7 @@ const router = createBrowserRouter([
         path: "admin-panel",
         element: <Layout />,
         children: [
+          { index: true, element: <Navigate to="admin-dashboard" replace /> },
           {
             path: "admin-dashboard",
             element: <AdminDashboard />

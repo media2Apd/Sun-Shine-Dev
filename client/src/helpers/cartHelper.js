@@ -78,11 +78,3 @@ export const mergeLocalCartToBackend = async () => {
     console.log("Merge error:", err);
   }
 };
-
-// import { mergeLocalCartToBackend } from "../helpers/cartHelper";
-
-// const handleLogin = async () => {
-//   // login success...
-
-//   await mergeLocalCartToBackend(); // 🔥 முக்கியம்
-// };

@@ -19,19 +19,19 @@ controller.createBlog
 
 
 router.get(
-"/all",
+"/view-all",
 controller.getBlogs
 );
 
 
 router.get(
-"/:slug",
+"/view-one/:slug",
 controller.getBlogBySlug
 );
 
 
 router.put(
-"/update/:id",
+"/update-one/:id",
 uploadBlogMedia,
 controller.updateBlog
 );

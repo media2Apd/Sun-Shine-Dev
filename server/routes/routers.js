@@ -18,6 +18,6 @@ router.use("/categories", categoryRoutes);
 router.use("/enquiries", enquiryRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
-router.use("/blog", blogRoutes);
+router.use("/blogs", blogRoutes);
 
 export default router;

@@ -47,19 +47,9 @@ repo.getWishlist(userId);
 
 
 
-export const removeFromWishlist=async(userId,productId)=>{
+export const removeFromWishlist = async (userId, productId) => {
 
-const wishlist=await repo.getWishlist(userId);
-
-wishlist.items=wishlist.items.filter(
-
-item=>item.productId.toString()!==productId
-
-);
-
-await wishlist.save();
-
-return wishlist;
+return repo.removeFromWishlist(userId, productId);
 
 };
 
