@@ -53,7 +53,9 @@ $size:"$orders"
 
 totalAmount:{
 $sum:"$orders.total"
-}
+},
+lastOrderDate:{ $max:"$orders.createdAt" }
+
 
 }
 },
@@ -70,6 +72,8 @@ phone:1,
 ordersCount:1,
 totalAmount:1,
 createdAt:1,
+lastOrderDate:1,
+address:1,
 
 }
 }
