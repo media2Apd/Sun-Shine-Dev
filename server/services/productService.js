@@ -1,4 +1,5 @@
 import * as repo from "../repositories/productRepo.js";
+
 import {
 uploadToCloudinary,
 deleteFromCloudinary,
@@ -6,10 +7,16 @@ uploadVideoToCloudinary
 } from "../utils/Cloudinary.js";
 
 
+/* CREATE PRODUCT */
+
 export const createProduct = async (body, files) => {
 
 if (body.variants && typeof body.variants === "string") {
 body.variants = JSON.parse(body.variants);
+}
+
+if (body.existingImages && typeof body.existingImages === "string") {
+body.existingImages = JSON.parse(body.existingImages);
 }
 
 const data = { ...body };
@@ -56,75 +63,179 @@ return repo.createProduct(data);
 
 
 
-export const updateProduct = async(id,body,files)=>{
+/* UPDATE PRODUCT */
 
-const existing=await repo.getProductById(id);
+export const updateProduct = async (id, body, files) => {
 
-if(!existing) throw new Error("Product not found");
+const existing = await repo.getProductById(id);
 
-const updateData={...body};
+if (!existing)
+throw new Error("Product not found");
 
 
-if(files?.length){
+/* =============================
+PARSE JSON FIELDS (multipart fix)
+============================= */
 
-for(const img of existing.images){
+if (body.variants && typeof body.variants === "string") {
+
+body.variants = JSON.parse(body.variants);
+
+}
+
+if (body.existingImages && typeof body.existingImages === "string") {
+
+body.existingImages = JSON.parse(body.existingImages);
+
+}
+
+
+const updateData = { ...body };
+
+
+/* =============================
+IMAGE UPDATE LOGIC
+============================= */
+
+let updatedImages = [];
+
+
+/* KEEP SELECTED EXISTING IMAGES */
+
+if (body.existingImages?.length) {
+
+updatedImages = existing.images.filter(img =>
+body.existingImages.includes(img.url)
+);
+
+
+/* DELETE REMOVED IMAGES */
+
+const removedImages = existing.images.filter(img =>
+!body.existingImages.includes(img.url)
+);
+
+for (const img of removedImages) {
 
 await deleteFromCloudinary(img.publicId);
 
 }
 
-const uploadedImages=[];
+}
 
-for(const file of files){
 
-const img=await uploadToCloudinary(
+/* IF existingImages EMPTY → REMOVE ALL OLD IMAGES */
+
+if (!body.existingImages || body.existingImages.length === 0) {
+
+for (const img of existing.images) {
+
+await deleteFromCloudinary(img.publicId);
+
+}
+
+updatedImages = [];
+
+}
+
+
+/* UPLOAD NEW IMAGES */
+
+if (files?.images?.length) {
+
+for (const file of files.images) {
+
+const uploaded = await uploadToCloudinary(
 file.buffer,
-"products"
+"products/images"
 );
 
-uploadedImages.push(img);
+updatedImages.push(uploaded);
 
 }
 
-updateData.images=uploadedImages;
-
 }
+
+
+updateData.images = updatedImages;
+
+
+/* =============================
+VIDEO UPDATE LOGIC
+============================= */
+
 if (files?.video?.[0]) {
 
-await deleteFromCloudinary(existing.video?.publicId);
+/* delete old video */
 
-const video = await uploadVideoToCloudinary(
+if (existing.video?.publicId) {
+
+await deleteFromCloudinary(existing.video.publicId);
+
+}
+
+/* upload new video */
+
+const uploadedVideo = await uploadVideoToCloudinary(
 files.video[0].buffer,
 "products/videos"
 );
 
-updateData.video = video;
+updateData.video = uploadedVideo;
 
 }
-return repo.updateProduct(id,updateData);
+
+
+/* =============================
+UPDATE PRODUCT
+============================= */
+
+return repo.updateProduct(id, updateData);
 
 };
 
 
 
-export const deleteProduct = async(id)=>{
+/* DELETE PRODUCT */
 
-const existing=await repo.getProductById(id);
+export const deleteProduct = async (id) => {
 
-if(!existing) throw new Error("Product not found");
+const existing = await repo.getProductById(id);
+
+if (!existing) throw new Error("Product not found");
 
 
-for(const img of existing.images && existing.video){
+/* DELETE IMAGES */
+
+if (existing.images?.length) {
+
+for (const img of existing.images) {
 
 await deleteFromCloudinary(img.publicId);
 
 }
+
+}
+
+
+/* DELETE VIDEO */
+
+if (existing.video?.publicId) {
+
+await deleteFromCloudinary(existing.video.publicId);
+
+}
+
 
 return repo.deleteProduct(id);
 
 };
 
 
-export const getAllProducts=()=>repo.getAllProducts();
 
-export const getProductById=(id)=>repo.getProductById(id);
+export const getAllProducts = () =>
+repo.getAllProducts();
+
+
+export const getProductById = (id) =>
+repo.getProductById(id);
