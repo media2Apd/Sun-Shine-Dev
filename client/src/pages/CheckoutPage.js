@@ -1,14 +1,14 @@
 
 
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSettings } from "../Context/SettingsContext";
 import Lottie from "lottie-react";
 import animationData from "../assets/animation.json";
 import { useOrder } from "../Context/OrderContext";
-import { LoginContext } from "../Context/LoginContext";
 import { useCart } from "../Context/CartContext";
+import { useSelector } from "react-redux";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -17,10 +17,9 @@ const CheckoutPage = () => {
   const { refreshCart } = useCart();
   const { address } = useSettings();
   const { setOrderData } = useOrder();
-  const { currentUser } = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
-
+  const user = useSelector((state) => state?.user?.user);
   // Shipping form
   const [formData, setFormData] = useState({
     firstName: "",
@@ -46,6 +45,14 @@ const CheckoutPage = () => {
     phone: "",
     email: "",
   });
+
+    useEffect(() => {
+    if (!user) {
+      navigate("/login-page", {
+        state: { redirectTo: "/cart-page/checkout-page" },
+      });
+    }
+  }, [navigate, user]);
 
   // autofill address
   useEffect(() => {
@@ -79,7 +86,7 @@ const CheckoutPage = () => {
       paymentMethod: "COD",
       createdAt: new Date().toISOString(),
 
-       customerId: currentUser?.customerId, 
+       customerId: user?._id, 
     };
 
     // context

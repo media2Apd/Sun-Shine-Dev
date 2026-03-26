@@ -1,34 +1,42 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FiSearch, FiCalendar, FiPlus, FiMoreHorizontal } from "react-icons/fi";
+import { FiSearch, FiCalendar, FiPlus, FiMoreHorizontal, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "../panelComponents/ConfirmModal";
 import SummaryApi from "../common/SummaryApi";
 import { formatDateTime } from "../helpers/formatDateTime";
+import { CiEdit } from "react-icons/ci";
+import api from "../common/apiClient";
 
 export default function AdminBloglist() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [openMenuIndex, setOpenMenuIndex] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
 
+  const buttonRefs = useRef({});
+  const DROPDOWN_HEIGHT = 100;
   const menuRef = useRef(null);
 
   const [blogs, setBlogs] = useState([]);
 
-const fetchBlogs = async () => {
-  try {
-    const res = await fetch(SummaryApi.getAllBlogs.url);
-    const data = await res.json();
+  const fetchBlogs = async () => {
+    try {
+      const response = await api({
+        url: SummaryApi.getAllBlogs.url,
+        method: SummaryApi.getAllBlogs.method,
+      });
 
-    setBlogs(data); // 🔥 important change
-  } catch (err) {
-    console.error(err);
-  }
-};
+      // 🔥 IMPORTANT (based on your API)
+      setBlogs(response.data);
+    } catch (err) {
+      console.error("Blog fetch error:", err);
+    }
+  };
 
   useEffect(() => {
     fetchBlogs();
@@ -50,11 +58,37 @@ const fetchBlogs = async () => {
     setShowModal(false);
   };
 
+  const handleToggle = (e, id) => {
+    e.stopPropagation();
+
+    const rect = buttonRefs.current[id].getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUp = spaceBelow < DROPDOWN_HEIGHT;
+
+    setMenuPos({
+      top: openUp ? rect.top - DROPDOWN_HEIGHT - 6 : rect.bottom + 6,
+      left: rect.right - 140,
+    });
+
+    setOpenMenuId((prev) => (prev === id ? null : id));
+  };
+
+  useEffect(() => {
+    const close = () => setOpenMenuId(null);
+    document.addEventListener("click", close);
+    window.addEventListener("scroll", close, true);
+
+    return () => {
+      document.removeEventListener("click", close);
+      window.removeEventListener("scroll", close, true);
+    };
+  }, []);
+
   // Close menu if clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setOpenMenuIndex(null);
+        setOpenMenuId(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -78,7 +112,7 @@ const fetchBlogs = async () => {
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
     setShowModal(true);
-    setOpenMenuIndex(null);
+    setOpenMenuId(null);
   };
 
   // Edit blog → navigate to BlogForm with state
@@ -180,30 +214,42 @@ const fetchBlogs = async () => {
                   {/* ACTION MENU */}
                   <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg relative">
                     <button
-                      onClick={() =>
-                        setOpenMenuIndex(openMenuIndex === index ? null : index)
-                      }
+                      ref={(el) => (buttonRefs.current[blog._id] = el)}
+                      onClick={(e) => handleToggle(e, blog._id)}
                     >
                       <FiMoreHorizontal />
                     </button>
 
-                    {openMenuIndex === index && (
+                    {openMenuId === blog._id && (
                       <div
-                        ref={menuRef}
-                        className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-md text-sm z-50"
+                        style={{
+                          position: "fixed",
+                          top: menuPos.top,
+                          left: menuPos.left,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-36 bg-white rounded-lg shadow-lg border z-[9999]"
                       >
                         <button
-                          onClick={() => handleEdit(blog)}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                          onClick={() => {
+                            handleEdit(blog);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-green-600 hover:bg-gray-50"
                         >
+                          <CiEdit size={16} />
                           Edit
                         </button>
+
+                        <div className="border-t"></div>
+
                         <button
                           onClick={() => handleDeleteClick(index)}
-                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                        >
-                          Delete
-                        </button>
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-gray-50"
+                  >
+                    <FiTrash2 size={16} />
+                    Delete
+                  </button>
                       </div>
                     )}
                   </td>

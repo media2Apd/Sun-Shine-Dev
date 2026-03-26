@@ -116,10 +116,9 @@ const router = createBrowserRouter([
         element: <BlogPage />
       },
       {
-        path: "blog-overview",
+        path: "blog-overview/:slug",
         element: <BlogOverview />
-      }
-      ,
+      },
       {
         path: 'cart-page/checkout-page',
         element: <CheckoutPage />

@@ -316,12 +316,12 @@ const refreshCart = async () => {
 
       setCart(items); // 🔥 ADD THIS
 
-      const totalQty = items.reduce(
-        (sum, item) => sum + (item.quantity || 1),
-        0
-      );
-
-      setCartCount(totalQty);
+      // const totalQty = items.reduce(
+      //   (sum, item) => sum + (item.quantity || 1),
+      //   0
+      // );
+      const totalProducts = items.length;
+      setCartCount(totalProducts);
 
     } else {
       // ✅ LOCAL
@@ -329,12 +329,12 @@ const refreshCart = async () => {
 
       setCart(guestCart); // 🔥 ADD THIS
 
-      const totalQty = guestCart.reduce(
-        (sum, item) => sum + (item.quantity || 1),
-        0
-      );
-
-      setCartCount(totalQty);
+      // const totalQty = guestCart.reduce(
+      //   (sum, item) => sum + (item.quantity || 1),
+      //   0
+      // );
+      const totalProducts = guestCart.length;
+      setCartCount(totalProducts);
     }
   } catch (err) {
     console.error("Cart count load failed", err);

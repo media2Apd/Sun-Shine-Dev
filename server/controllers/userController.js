@@ -116,7 +116,7 @@ export const getAllUsers = async (req, res) => {
     res.json({
       success: true,
       count: users.length,
-      users
+      data: users
     });
 
   } catch (err) {
