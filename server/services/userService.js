@@ -41,8 +41,8 @@ export const updateUserProfileService = async (id, data) => {
 export const getAllUsersService = async () => {
   return await findAllUsers();
 };
-export const getUserOverview = async () => {
+export const getUserOverview = async (userId) => {
 
-return getUserOverviewRepo();
+return getUserOverviewRepo(userId);
 
 };
