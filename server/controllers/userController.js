@@ -301,7 +301,7 @@ const data = await userService.getUserOverview(req.params.userId);
 res.json({
 
 success:true,
-data
+data:data[0] || {} // aggregate always returns an array
 
 });
 
