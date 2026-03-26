@@ -4,19 +4,18 @@ import { ProductContext } from "../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getLocalCart, removeFromLocalCart } from "../helpers/cartHelper";
-import { LoginContext } from "../Context/LoginContext";
 import { useToken } from "../Context/TokenContext";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { useCart } from "../Context/CartContext";
+import { useSelector } from "react-redux";
 export default function CartPage() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const { refreshCart } = useCart();
   const { products } = useContext(ProductContext);
-  const { currentUser } = useContext(LoginContext);
   const { getToken, generateToken } = useToken();
-
+  const user = useSelector((state) => state?.user?.user);
   const cartProducts = cartItems
     .map((cartItem) => {
       const product = products.find(
@@ -50,14 +49,20 @@ export default function CartPage() {
   const total = subtotal;
 
   const handleCheckout = () => {
-    if (!currentUser) {
-      navigate("/login-page");
+    if (!user) {
+      navigate("/login-page", {
+        state: {
+          redirectTo: "/cart-page/checkout-page",
+          orderSummary: { items: cartProducts, subtotal, total },
+        },
+      });
       return;
     }
 
-    let token = getToken(currentUser.email);
+    let token = getToken(user.email);
+
     if (!token) {
-      token = generateToken(currentUser.email);
+      token = generateToken(user.email);
     }
 
     navigate("/cart-page/checkout-page", {

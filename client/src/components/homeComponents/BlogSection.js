@@ -1,31 +1,68 @@
-
-
-import React from "react";
-import { useBlog } from "../../Context/BlogContext";
+import React, { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
+import SummaryApi from "../../common/SummaryApi";
+import api from "../../common/apiClient";
 
 function BlogSection() {
-  const { blogs } = useBlog();
-  const latestBlogs = blogs.slice(0, 4); // only first 4 blogs
+  const [blogs, setBlogs] = useState([]);
+
+  const fetchBlogs = async () => {
+    try {
+      const response = await api({
+        url: SummaryApi.getAllBlogs.url + "?status=Published",
+        method: SummaryApi.getAllBlogs.method,
+      });
+
+      // 🔥 IMPORTANT (based on your API)
+      setBlogs(response.data);
+    } catch (err) {
+      console.error("Blog fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const latestBlogs = blogs?.slice(0, 4) || [];
+
+  const getSummary = (blog) => {
+    const paragraph = blog.content?.find(
+      (item) => item.type === "paragraph"
+    );
+
+    return (
+      paragraph?.value ||
+      blog.metaDescription ||
+      "No summary available."
+    );
+  };
 
   return (
     <div className="container mx-auto bg-white py-4 px-8">
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">Latest Blogs</h2>
+        <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">
+          Latest Blogs
+        </h2>
+
         <button className="text-[#354A10] font-medium">
           View all
         </button>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {latestBlogs.map((blog, index) => {
+        {latestBlogs.map((blog) => {
           const cardData = {
             title: blog.title,
             category: blog.category,
-            summary: blog.metaDescription || "No summary available.",
-            image: blog.featuredImage || null,
+            summary: getSummary(blog), // ✅ updated
+            image: blog.featuredImage?.url || null,
+            slug: blog.slug,
           };
 
-          return <BlogCard key={index} blog={cardData} />;
+          return (
+            <BlogCard key={blog._id} blog={cardData} />
+          );
         })}
       </div>
     </div>

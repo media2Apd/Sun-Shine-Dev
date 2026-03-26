@@ -176,6 +176,7 @@ import { getLocalCart, clearLocalCart } from "../helpers/cartHelper";
 import api from "../common/apiClient";
 import { useWishlist } from "../Context/WishlistContext";
 import { useCart } from "../Context/CartContext";
+import { useLocation } from "react-router-dom";
 
 const syncLocalDataToBackend = async (token) => {
   try {
@@ -234,7 +235,9 @@ const LoginPage = () => {
     const { name, value } = e.target;
     setData((preve) => ({ ...preve, [name]: value }));
   };
+  const location = useLocation();
 
+  const redirectTo = location.state?.redirectTo || "/";
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -267,7 +270,7 @@ const LoginPage = () => {
         });
 
         dispatch(setUserDetails(userRes?.data?.data));
-        navigate("/");
+        navigate(redirectTo, { state: location.state });
       } else {
         toast.error(dataResponse.message);
       }
