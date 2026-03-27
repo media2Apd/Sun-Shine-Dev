@@ -206,23 +206,68 @@ export const deleteOrder = (id) => repo.deleteOrder(id);
 // };
 export const createRazorpayOrder = async (body, userId) => {
 
+  const itemsWithSnapshot = [];
+
+  for (const item of body.items) {
+
+    const product = await Product.findById(item.productId);
+
+    if (!product) throw new Error("Product not found");
+
+    const variant = product.variants.find(
+      (v) => v._id.toString() === item.variantId
+    );
+
+    if (!variant) throw new Error("Invalid variant");
+
+    if (variant.stock < item.quantity)
+      throw new Error("Insufficient stock");
+
+    // reduce stock
+    variant.stock -= item.quantity;
+
+    await product.save();
+
+    itemsWithSnapshot.push({
+      productId: item.productId,
+      variantId: item.variantId,
+      quantity: item.quantity,
+      price: item.price,
+      name: product.name,
+      image: product.images?.[0]?.url,
+    });
+  }
+
+  // create razorpay order
   const razorpayOrder = await razorpay.orders.create({
     amount: body.total * 100,
     currency: "INR",
     receipt: "receipt_" + Date.now(),
   });
 
+  // create DB order
   const order = await Order.create({
     ...body,
-    customerId: userId,
-    paymentMethod: "ONLINE",
+
     orderId: razorpayOrder.id,
+
+    customerId: userId,
+
+    items: itemsWithSnapshot,
+
+    paymentMethod: "ONLINE",
+
+    razorpayOrderId: razorpayOrder.id,
+
+    paymentStatus: "Pending",
   });
 
-  return { order, razorpayOrder };
-};
 
-export const verifyRazorpayPayment = async (body) => {
+
+  return { order, razorpayOrder };
+
+};
+export const verifyRazorpayPayment = async (body, userId) => {
 
   const {
     razorpay_order_id,
@@ -250,6 +295,9 @@ export const verifyRazorpayPayment = async (body) => {
     },
     { new: true }
   );
+
+    // clear cart after order creation
+  await Cart.deleteMany({ userId });
 
   return order;
 };
