@@ -1036,7 +1036,7 @@ import toast from "react-hot-toast";
 import SummaryApi from "../common/SummaryApi";
 import api from "../common/apiClient";
 
-const CreateCategory = () => {
+const CategoryForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -1306,4 +1306,4 @@ const CreateCategory = () => {
   );
 };
 
-export default CreateCategory;
+export default CategoryForm;
