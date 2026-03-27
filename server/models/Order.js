@@ -127,7 +127,11 @@ const orderSchema = new mongoose.Schema(
       default: "Placed",
     },
 
-    // 🔥 optional future use
+    // ✅ ADD THESE FOR RAZORPAY
+    razorpayOrderId: String,
+    razorpayPaymentId: String,
+    razorpaySignature: String,
+
     transactionId: String,
 
     // 🔥 soft delete

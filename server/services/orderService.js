@@ -102,6 +102,7 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import { razorpay } from "../config/razorpay.js";
 import Cart from "../models/Cart.js";
+import * as crypto from "crypto";
 
 // ✅ CREATE ORDER
 export const createOrder = async (body, userId) => {
@@ -215,7 +216,7 @@ export const createRazorpayOrder = async (body, userId) => {
     ...body,
     customerId: userId,
     paymentMethod: "ONLINE",
-    razorpayOrderId: razorpayOrder.id,
+    orderId: razorpayOrder.id,
   });
 
   return { order, razorpayOrder };
@@ -241,7 +242,7 @@ export const verifyRazorpayPayment = async (body) => {
   }
 
   const order = await Order.findOneAndUpdate(
-    { razorpayOrderId: razorpay_order_id },
+    { orderId: razorpay_order_id },
     {
       razorpayPaymentId: razorpay_payment_id,
       razorpaySignature: razorpay_signature,
