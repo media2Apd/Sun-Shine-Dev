@@ -271,7 +271,7 @@ export default function OrderHistoryPage() {
 
                     {/* VIEW DETAILS */}
                     <button
-                      onClick={() => navigate(`/order-page`, { state: { orderId: order._id }})}
+                      onClick={() => navigate(`/order-page/order-details`, { state: { orderId: order._id }})}
                       className="flex-1 border border-[#E3E3E3] bg-white py-2 rounded-md text-sm text-[#747484] hover:bg-gray-100"
                     >
                       View Details

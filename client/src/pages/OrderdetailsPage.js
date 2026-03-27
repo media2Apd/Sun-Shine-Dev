@@ -1,33 +1,126 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { formatDateTime } from "../helpers/formatDateTime";
+import ConfirmModal from "../panelComponents/ConfirmModal";
 
 export default function OrderDetails() {
   const location = useLocation();
   const id = location.state?.orderId;
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await api({
-          url: SummaryApi.getOrderById.url(id),
-          method: SummaryApi.getOrderById.method,
-        });
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const fetchOrder = useCallback(async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.getOrderById.url(id),
+        method: SummaryApi.getOrderById.method,
+      });
 
-        setOrder(res.data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchOrder();
+      setOrder(res.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    if (id) fetchOrder();
+  }, [fetchOrder, id]);
+
+  const handleAddReview = (item) => {
+    setSelectedItem(item);
+    setRating(0);
+    setComment("");
+    setShowReviewModal(true);
+  };
+
+  const handleEditReview = (item) => {
+    setSelectedItem(item);
+    setRating(item.rating || 0);
+    setComment(item.comment || "");
+    setShowReviewModal(true);
+  };
+
+  const handleSubmitReview = async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.addReview.url,
+        method: SummaryApi.addReview.method,
+        data: {
+          productId: selectedItem.productId._id,
+          orderId: order._id,
+          rating,
+          comment,
+        },
+      });
+
+      if (res.data.success) {
+        setShowReviewModal(false);
+        await fetchOrder(); // 🔥 refresh
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const items = order?.items || [];
+  const billingAddress = order?.billingAddress || {};
+  const shippingAddress = order?.shippingAddress || {};
+  const paymentMethod = order?.paymentMethod || "";
+  const orderId = order?.orderId || "";
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  const total = order?.total || subtotal;
+
+  const stepMap = {
+    Placed: 0,
+    Packaged: 1,
+    Shipped: 2,
+    Delivered: 3,
+  };
+
+  const steps = [
+    "Order received",
+    "Packaged",
+    "On the way",
+    "Delivered",
+  ];
+  const currentStep = stepMap[order?.status] ?? 0;
+  const cancelStep = currentStep;
+  const canCancel = ["Placed", "Packaged"].includes(order?.status);
+
+  const handleCancelOrder = async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.cancelOrder.url(order._id),
+        method: SummaryApi.cancelOrder.method,
+      });
+
+      if (res.data.success) {
+        setOrder((prev) => ({
+          ...prev,
+          status: "Cancelled",
+        }));
+        await fetchOrder(); 
+      }
+
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setShowCancelModal(false); // 🔥 close modal
+    }
+  };
 
   if (loading) {
     return <div className="p-6 text-center">Loading...</div>;
@@ -36,33 +129,6 @@ export default function OrderDetails() {
   if (!order) {
     return <div className="p-6 text-red-500">Order not found</div>;
   }
-
-  const items = order.items || [];
-  const billingAddress = order.billingAddress || {};
-  const shippingAddress = order.shippingAddress || {};
-  const paymentMethod = order.paymentMethod || "";
-  const orderId = order.orderId || "";
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  const total = order.total || subtotal;
-
-const stepMap = {
-  Placed: 0,
-  Processing: 1,
-  Shipped: 2,
-  Delivered: 3,
-};
-
-const steps = [
-  "Order received",
-  "Processing",
-  "On the way",
-  "Delivered",
-];
-  const currentStep = stepMap[order.status] ?? 0;
 
   return (
     <div className="container mx-auto bg-white min-h-screen px-8 py-10">
@@ -93,13 +159,26 @@ const steps = [
         </div>
 
           {/* RIGHT SIDE */}
-          <div className="text-left md:text-right">
+          <div className="text-left md:text-right flex gap-3 justify-end">
+
+            {/* Cancel Button */}
+            {canCancel && (
+              <button
+                onClick={() => setShowCancelModal(true)}
+                className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md"
+              >
+                Cancel Order
+              </button>
+            )}
+
+            {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
               className="text-[#00B207] text-sm font-semibold"
             >
               Back to List
             </button>
+
           </div>
 
         </div>
@@ -219,7 +298,7 @@ const steps = [
           {/* PROGRESS LINE */}
           {order.status !== "Cancelled" && (
             <div
-              className="absolute top-4 h-[6px] bg-green-600 transition-all"
+              className="absolute top-4 h-[6px] mx-6 bg-green-600 transition-all"
               style={{
                 left: "16px",
                 right: `${(steps.length - 1 - currentStep) * (100 / (steps.length - 1))}%`,
@@ -229,7 +308,13 @@ const steps = [
 
           {/* ❌ CANCEL LINE */}
           {order.status === "Cancelled" && (
-            <div className="absolute top-4 left-0 w-full h-1 bg-red-400"></div>
+            <div
+              className="absolute top-4 h-[6px] mx-6 bg-red-500"
+              style={{
+                left: "16px",
+                right: `${(steps.length - 1 - cancelStep) * (100 / (steps.length - 1))}%`,
+              }}
+            ></div>
           )}
 
           {steps.map((label, index) => {
@@ -243,18 +328,19 @@ const steps = [
                 <div
                   className={`w-8 h-8 flex items-center justify-center rounded-full text-xs border-2 transition-all
 
-                    ${
-                      order.status === "Cancelled"
-                        ? "border-red-400 text-red-500 bg-white"
-
-                        : isCompleted
-                        ? "bg-green-600 text-white border-green-600"
-
-                        : isCurrent
-                        ? "bg-green-600 text-white border-green-600"
-
-                        : "border-green-500 text-green-600 bg-white border-dashed"
-                    }
+                  ${
+                    order.status === "Cancelled"
+                      ? index < cancelStep
+                        ? "bg-green-600 text-white border-green-600" // completed
+                        : index === cancelStep
+                        ? "bg-red-500 text-white border-red-500" // cancelled point
+                        : "border-gray-300 text-gray-400 bg-white" // future steps
+                      : isCompleted
+                      ? "bg-green-600 text-white border-green-600"
+                      : isCurrent
+                      ? "bg-green-600 text-white border-green-600"
+                      : "border-green-500 text-green-600 bg-white border-dashed"
+                  }
                   `}
                 >
                   {isCompleted ? "✓" : (index + 1).toString().padStart(2, "0")}
@@ -266,7 +352,11 @@ const steps = [
 
                     ${
                       order.status === "Cancelled"
-                        ? "text-red-500"
+                        ? index < cancelStep
+                          ? "text-green-600 font-medium"
+                          : index === cancelStep
+                          ? "text-red-500 font-semibold"
+                          : "text-gray-400"
                         : index <= currentStep
                         ? "text-green-600 font-medium"
                         : "text-gray-400"
@@ -285,7 +375,7 @@ const steps = [
         {/* ❌ CANCEL TEXT */}
         {order.status === "Cancelled" && (
           <p className="text-center text-sm text-red-500 mt-4 font-medium">
-            Order Cancelled
+            Order Cancelled at "{steps[cancelStep]}"
           </p>
         )}
       </div>
@@ -303,6 +393,7 @@ const steps = [
                 <th className="px-4 text-center">Price</th>
                 <th className="px-4 text-center">Quantity</th>
                 <th className="px-4 text-right">Subtotal</th>
+                <th className="px-4 text-center">Review</th>
               </tr>
             </thead>
 
@@ -313,32 +404,47 @@ const steps = [
                   key={i}
                   className="border-b last:border-none hover:bg-gray-50 transition"
                 >
-                  
+
                   {/* PRODUCT */}
                   <td className="py-4 px-4 flex items-center gap-3">
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-12 h-12 rounded-md object-cover border"
-                    />
-                    <span className="text-gray-800 font-medium">
-                      {item.name}
-                    </span>
+                    <img src={item.image} alt={item.name} className="w-12 h-12" />
+                    <span>{item.name}</span>
                   </td>
 
                   {/* PRICE */}
-                  <td className="px-4 text-center text-gray-700">
+                  <td className="px-4 text-center">
                     ₹{item.price}
                   </td>
 
                   {/* QTY */}
-                  <td className="px-4 text-center text-gray-600">
+                  <td className="px-4 text-center">
                     x{item.quantity}
                   </td>
 
                   {/* SUBTOTAL */}
-                  <td className="px-4 text-right font-medium text-gray-800">
+                  <td className="px-4 text-right">
                     ₹{item.price * item.quantity}
+                  </td>
+
+                  {/* 🔥 ADD THIS HERE */}
+                  <td className="px-4 text-center">
+                    {order.status === "Delivered" && (
+                      item.reviewed ? (
+                        <button
+                          onClick={() => handleEditReview(item)}
+                          className="text-blue-600 text-xs"
+                        >
+                          Edit Review
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAddReview(item)}
+                          className="text-green-600 text-xs"
+                        >
+                          Add Review
+                        </button>
+                      )
+                    )}
                   </td>
 
                 </tr>
@@ -349,6 +455,66 @@ const steps = [
         </div>
       </div>
       </div>
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-[90%] max-w-md">
+
+            <h2 className="text-lg font-semibold mb-4 text-center">
+              {selectedItem?.reviewed ? "Edit Review" : "Add Review"}
+            </h2>
+
+            {/* ⭐ STAR RATING */}
+            <div className="flex justify-center gap-2 mb-4">
+              {[1,2,3,4,5].map((star) => (
+                <span
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className={`cursor-pointer text-2xl ${
+                    star <= rating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+
+            {/* COMMENT */}
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Write your review..."
+              className="w-full border rounded-md p-2 text-sm"
+            />
+
+            {/* BUTTONS */}
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setShowReviewModal(false)}
+                className="w-full border py-2 rounded-md"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSubmitReview}
+                className="w-full bg-green-600 text-white py-2 rounded-md"
+              >
+                Submit
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+      <ConfirmModal
+        open={showCancelModal}
+        title="Cancel Order"
+        message="Are you sure you want to cancel this order?"
+        confirmText="Yes, Cancel"
+        cancelText="No"
+        onConfirm={handleCancelOrder}
+        onCancel={() => setShowCancelModal(false)}
+      />
     </div>
   );
 }

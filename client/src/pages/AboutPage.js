@@ -7,8 +7,11 @@ import farm2 from "../assets/about2.png";
 import farm3 from "../assets/about3.png";
 import UserReviews from "../components/homeComponents/UserReviews";
 import Newsletter from "../components/homeComponents/NewsLetter";
+import { useNavigate } from "react-router-dom";
 
 const AboutPage = () => {
+  const navigate = useNavigate();
+
   return (
     <>
 
@@ -16,7 +19,7 @@ const AboutPage = () => {
       <div className="min-h-screen px-5 md:px-10 lg:px-24 py-6">
 
         {/* Back Button */}
-        <button className="flex items-center gap-2 text-gray-500 mb-8 hover:text-black">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-500 mb-8 hover:text-black">
           <ArrowLeft size={18} /> Back
         </button>
 
