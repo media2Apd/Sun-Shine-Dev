@@ -292,3 +292,17 @@ export const updateUserRole = async (req, res) => {
     });
   }
 };
+
+
+export const getUserOverview = async (req,res)=>{
+
+const data = await userService.getUserOverview(req.params.userId);
+
+res.json({
+
+success:true,
+data:data[0] || {} // aggregate always returns an array
+
+});
+
+};

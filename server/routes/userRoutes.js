@@ -14,5 +14,6 @@ router.get("/customers", authMiddleware, userCtrl.getAdminCustomers);
 router.get("/stats", authMiddleware, authorize("admin"), userCtrl.getCustomerStats);
 router.put("/update-role/:userId", authMiddleware, authorize("admin"), userCtrl.updateUserRole);
 router.put("/update-status/:userId", authMiddleware, authorize("admin"), userCtrl.updateUserStatus);
+router.get("/overview/:userId", authMiddleware, authorize("admin"), userCtrl.getUserOverview);
 
 export default router;

@@ -120,6 +120,7 @@
 
 import * as service from "../services/orderService.js";
 
+
 // ✅ CREATE
 export const createOrder = async (req, res) => {
   try {
@@ -171,11 +172,94 @@ export const deleteOrder = async (req, res) => {
 };
 
 // ✅ RAZORPAY
-export const createRazorpayOrder = async (req, res) => {
-  const data = await service.createRazorpayOrder(
-    req.body,
-    req.user._id
-  );
+// export const createRazorpayOrder = async (req, res) => {
+//   const data = await service.createRazorpayOrder(
+//     req.body,
+//     req.user._id
+//   );
 
-  res.json({ success: true, data });
+//   res.json({ success: true, data });
+// };
+export const createRazorpayOrder = async (req, res) => {
+
+  try {
+
+    const data = await service.createRazorpayOrder(
+      req.body,
+      req.user._id
+    );
+
+    res.json({
+      success: true,
+      message: "Order created successfully",
+      data,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+
+};
+
+export const verifyPayment = async (req, res) => {
+
+  try {
+
+    const order = await service.verifyRazorpayPayment(
+      req.body
+    );
+
+    res.json({
+      success: true,
+      message: "Payment verified successfully",
+      data: order,
+    });
+
+  } catch (error) {
+
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+
+};
+
+export const getAllOrders = async (req, res) => {
+
+try {
+
+const { startDate, endDate, status } = req.query;
+
+const data = await service.getAllOrders({
+
+startDate,
+endDate,
+status
+
+});
+
+res.json({
+success: true,
+data
+});
+
+}
+catch (err) {
+
+res.status(400).json({
+
+success: false,
+message: err.message
+
+});
+
+}
+
 };
