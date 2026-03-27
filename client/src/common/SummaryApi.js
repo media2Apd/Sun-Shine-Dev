@@ -51,7 +51,11 @@ const SummaryApi = {
         method: "put"
     },
     getAllUsers: {
-        url: `${backendDomain}/api/user/customers`,
+        url: `${backendDomain}/api/user/view-all`,
+        method: "get"
+    },
+    getOneUser: {
+        url: (userId) => `${backendDomain}/api/user/overview/${userId}`,
         method: "get"
     },
     updateUserRole: {

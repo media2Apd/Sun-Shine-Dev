@@ -762,7 +762,7 @@ const CategoryList = () => {
           />
         </div>
         <button 
-          onClick={() => navigate("/admin-panel/create-category")} 
+          onClick={() => navigate("/admin-panel/products-category/create-category")} 
           className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-700 transition-all shadow-md"
         >
           <FiPlus size={26} />
@@ -802,7 +802,7 @@ const CategoryList = () => {
                     <FiInbox size={48} className="opacity-20" />
                     <p className="text-sm font-medium">No categories found</p>
                     <button 
-                      onClick={() => navigate("/admin-panel/create-category")}
+                      onClick={() => navigate("/admin-panel/products-category/create-category")}
                       className="text-green-600 text-xs hover:underline mt-2"
                     >
                       + Create your first category
@@ -844,8 +844,8 @@ const CategoryList = () => {
                         className="fixed w-36 bg-white border border-gray-100 rounded-xl shadow-xl text-sm z-[9999] overflow-hidden"
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                       >
-                        <button onClick={() => navigate(`/admin-panel/view-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">View Details</button>
-                        <button onClick={() => navigate(`/admin-panel/edit-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">Edit Category</button>
+                        <button onClick={() => navigate(`/admin-panel/products-category/view-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">View Details</button>
+                        <button onClick={() => navigate(`/admin-panel/products-category/edit-category/${item._id}`)} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 transition-colors">Edit Category</button>
                         {/* <button className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors font-medium">Delete</button> */}
                       </div>
                     )}

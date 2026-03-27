@@ -5,7 +5,7 @@ import Home from "../pages/Home";
 // import CategoryProducts from "../pages/CategoryProducts";
 import Layout from "../panelComponents/Layout";
 import CategoryList from "../PanelPages/CategoryList";
-import CreateCategory from "../PanelPages/CreateCategory";
+import CategoryForm from "../PanelPages/CategoryForm";
 import ProductList from "../PanelPages/ProductList";
 import ProductForm from "../PanelPages/ProductForm";
 import CategoryProducts from "../pages/CategoryProducts";
@@ -155,16 +155,16 @@ const router = createBrowserRouter([
             element: <CategoryList />,
           },
           {
-            path: 'create-category',
-            element: <CreateCategory />
+            path: 'products-category/create-category',
+            element: <CategoryForm />
           },
           {
-            path: "edit-category/:id",
-            element: <CreateCategory />
+            path: "products-category/edit-category/:id",
+            element: <CategoryForm />
           },
           {
-            path: "view-category/:id",
-            element: <CreateCategory />
+            path: "products-category/view-category/:id",
+            element: <CategoryForm />
           },
 
           
@@ -201,16 +201,14 @@ const router = createBrowserRouter([
             element: <BlogPreview />
           },
 
-          
           {
             path: "enquiry-list",
             element: <EnquiryList />
-          }
-          , {
+          }, 
+          {
             path: "enquiry-list/enquiry-overview",
             element: <EnquiryOverview />
-          }
-          ,
+          },
           {
             path: "order-list",
             element: <OrderlistPage />
@@ -222,10 +220,9 @@ const router = createBrowserRouter([
           {
             path: "customer-list",
             element: <CustomerList />
-          }
-          ,
+          },
           {
-            path: "customer-list/customer-detail",
+            path: "customer-list/customer-detail/:id",
             element: <CustomerDetail />
           },
           
