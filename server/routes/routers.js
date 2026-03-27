@@ -7,6 +7,8 @@ import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import blogRoutes from "./blogRoutes.js";
 import wishlistRoutes from "./wishlistRoutes.js";
+import addressRoutes from "./addressRoutes.js";
+import reviewRoutes from "./reviewRoutes.js";
 import express from "express";
 
 const router = express.Router();
