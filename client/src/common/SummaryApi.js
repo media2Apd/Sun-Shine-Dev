@@ -187,6 +187,29 @@ const SummaryApi = {
         method: "delete"
     },
 
+    // ===================== ORDER ROUTES =====================
+
+    createOrder: {
+        url: `${backendDomain}/api/orders/create`,
+        method: "post"
+    },
+    getOrders: {
+        url: `${backendDomain}/api/orders/view-all`,
+        method: "get"
+    },
+    getOrderById: {
+        url: (orderId) => `${backendDomain}/api/orders/view-one/${orderId}`,
+        method: "get"
+    },
+    updateOrderStatus: {
+        url: (orderId) => `${backendDomain}/api/orders/status-update/${orderId}`,
+        method: "patch"
+    },
+    cancelOrder: {
+        url: (orderId) => `${backendDomain}/api/orders/cancel/${orderId}`,
+        method: "patch"
+    },
+
     // ===================== ADMIN PRODUCTS ROUTES =====================
     // uploadVariantImages: {
     //     url: (variantId) => `${backendDomain}/api/products/variant/${variantId}/images`,
