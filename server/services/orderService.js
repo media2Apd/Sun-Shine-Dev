@@ -203,3 +203,10 @@ export const createRazorpayOrder = async (body, userId) => {
 
   return { order, razorpayOrder };
 };
+
+
+export const getAllOrders = (filters) => {
+
+return repo.getAllOrders(filters);
+
+};

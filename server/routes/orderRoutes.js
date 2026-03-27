@@ -14,6 +14,6 @@ router.patch("/cancel/:id", authMiddleware, controller.cancelOrder);
 router.delete("/delete/:id", authMiddleware, controller.deleteOrder);
 
 router.post("/razorpay/create", authMiddleware, controller.createRazorpayOrder);
-
+router.get("/all", authMiddleware, controller.getAllOrders);
 
 export default router;
