@@ -120,6 +120,7 @@
 
 import * as service from "../services/orderService.js";
 
+
 // ✅ CREATE
 export const createOrder = async (req, res) => {
   try {
@@ -178,4 +179,38 @@ export const createRazorpayOrder = async (req, res) => {
   );
 
   res.json({ success: true, data });
+};
+
+
+export const getAllOrders = async (req, res) => {
+
+try {
+
+const { startDate, endDate, status } = req.query;
+
+const data = await service.getAllOrders({
+
+startDate,
+endDate,
+status
+
+});
+
+res.json({
+success: true,
+data
+});
+
+}
+catch (err) {
+
+res.status(400).json({
+
+success: false,
+message: err.message
+
+});
+
+}
+
 };

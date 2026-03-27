@@ -17,6 +17,7 @@
 
 import Order from "../models/Order.js";
 
+
 export const createOrder = (data) => Order.create(data);
 
 export const getOrders = (userId) =>
@@ -32,3 +33,57 @@ export const updateOrder = (id, data) =>
 
 export const deleteOrder = (id) =>
   Order.findByIdAndUpdate(id, { isDeleted: true });
+
+export const getAllOrders = async (filters) => {
+
+const { startDate, endDate, status } = filters;
+
+let query = {
+
+isDeleted: false
+
+};
+
+
+/*
+STATUS FILTER
+*/
+if (status) {
+
+query.status = status;
+
+}
+
+
+/*
+DATE FILTER
+*/
+if (startDate || endDate) {
+
+query.createdAt = {};
+
+if (startDate) {
+
+query.createdAt.$gte = new Date(startDate);
+
+}
+
+if (endDate) {
+
+query.createdAt.$lte = new Date(endDate);
+
+}
+
+}
+
+
+/*
+FINAL QUERY
+*/
+return await Order.find(query)
+
+.populate("items.productId")
+
+.sort({ createdAt: -1 });
+
+};

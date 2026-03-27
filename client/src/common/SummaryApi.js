@@ -209,6 +209,7 @@ const SummaryApi = {
         url: (orderId) => `${backendDomain}/api/orders/cancel/${orderId}`,
         method: "patch"
     },
+    
 
     // ===================== ADMIN PRODUCTS ROUTES =====================
     // uploadVariantImages: {

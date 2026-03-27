@@ -96,3 +96,4 @@ req.params.id
 return successResponse(res,200,"Product fetched",data);
 
 };
+
