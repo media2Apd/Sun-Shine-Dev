@@ -4,7 +4,6 @@ import { ProductContext } from "../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getLocalCart, removeFromLocalCart } from "../helpers/cartHelper";
-import { useToken } from "../Context/TokenContext";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { useCart } from "../Context/CartContext";
@@ -14,7 +13,7 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const { refreshCart } = useCart();
   const { products } = useContext(ProductContext);
-  const { getToken, generateToken } = useToken();
+  const [loadingItemId, setLoadingItemId] = useState(null);
   const user = useSelector((state) => state?.user?.user);
   const cartProducts = cartItems
     .map((cartItem) => {
@@ -48,30 +47,24 @@ export default function CartPage() {
   );
   const total = subtotal;
 
-  const handleCheckout = () => {
-    if (!user) {
-      navigate("/login-page", {
-        state: {
-          redirectTo: "/cart-page",
-          orderSummary: { items: cartProducts, subtotal, total },
-        },
-      });
-      return;
-    }
-
-    let token = getToken(user.email);
-
-    if (!token) {
-      token = generateToken(user.email);
-    }
-
-    navigate("/cart-page/checkout-page", {
+const handleCheckout = () => {
+  if (!user) {
+    navigate("/login-page", {
       state: {
-        token,
+        redirectTo: "/cart-page",
         orderSummary: { items: cartProducts, subtotal, total },
       },
     });
-  };
+    return;
+  }
+
+  // ✅ No token logic here
+  navigate("/cart-page/checkout-page", {
+    state: {
+      orderSummary: { items: cartProducts, subtotal, total },
+    },
+  });
+};
 
   useEffect(() => {
     fetchCart();
@@ -113,7 +106,7 @@ const handleRemove = async (id, productId, variantId) => {
   try {
     if (token) {
       await api.delete(SummaryApi.deleteCartItem.url, {
-        data: { cartId: id },
+        data: { cartId: id, productId, variantId },
       });
     } else {
       removeFromLocalCart(productId, variantId);
@@ -129,17 +122,19 @@ const handleRemove = async (id, productId, variantId) => {
 };
 
   const handleIncrease = async (item) => {
-    const token = localStorage.getItem("token");
+    setLoadingItemId(item.cartId);
 
     try {
+      const token = localStorage.getItem("token");
+
       if (token) {
-        // ✅ BACKEND
         await api.put(SummaryApi.updateCartItem.url, {
           cartId: item.cartId,
+          productId: item.productId,
+          variantId: item.variantId,
           quantity: item.qty + 1,
         });
       } else {
-        // ✅ LOCAL
         const cart = getLocalCart();
 
         const updated = cart.map((c) => {
@@ -159,51 +154,57 @@ const handleRemove = async (id, productId, variantId) => {
       refreshCart();
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoadingItemId(null);
     }
   };
 
-const handleDecrease = async (item) => {
-  if (item.qty <= 1) return;
+  const handleDecrease = async (item) => {
+    if (item.qty <= 1) return;
 
-  const token = localStorage.getItem("token");
+    setLoadingItemId(item.cartId);
 
-  try {
-    if (token) {
-      // ✅ BACKEND
-      await api.put(SummaryApi.updateCartItem.url, {
-        cartId: item.cartId,
-        quantity: item.qty - 1,
-      });
-    } else {
-      // ✅ LOCAL
-      const cart = getLocalCart();
+    try {
+      const token = localStorage.getItem("token");
 
-      const updated = cart.map((c) => {
-        if (
-          c.productId === item.productId &&
-          c.variantId === item.variantId
-        ) {
-          return { ...c, quantity: c.quantity - 1 };
-        }
-        return c;
-      });
+      if (token) {
+        await api.put(SummaryApi.updateCartItem.url, {
+          cartId: item.cartId,
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.qty - 1,
+        });
+      } else {
+        const cart = getLocalCart();
 
-      localStorage.setItem("guest_cart", JSON.stringify(updated));
+        const updated = cart.map((c) => {
+          if (
+            c.productId === item.productId &&
+            c.variantId === item.variantId
+          ) {
+            return { ...c, quantity: c.quantity - 1 };
+          }
+          return c;
+        });
+
+        localStorage.setItem("guest_cart", JSON.stringify(updated));
+      }
+
+      await fetchCart();
+      await refreshCart();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingItemId(null);
     }
-
-    fetchCart();
-    refreshCart();
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-10">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="lg:col-span-2 bg-white border rounded-xl overflow-hidden">
-          <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] p-4 border-b text-gray-500 text-sm font-medium">
+        <div className="lg:col-span-2 bg-white border border-[#E6E6E6] rounded-lg overflow-hidden">
+          <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] p-4 border-b text-black text-base font-medium">
             <p>Product</p>
             <p className="text-center">Price</p>
             <p className="text-center">Quantity</p>
@@ -211,7 +212,36 @@ const handleDecrease = async (item) => {
           </div>
 
           {cartProducts.length === 0 ? (
-            <p className="p-6 text-center text-gray-500">Cart is empty</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              
+              {/* ICON */}
+              <div className="w-24 h-24 mb-6">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
+                  alt="empty cart"
+                  className="w-full h-full object-contain opacity-70"
+                />
+              </div>
+
+              {/* TITLE */}
+              <h2 className="text-xl font-semibold mb-2">
+                Your cart is empty 
+              </h2>
+
+              {/* DESCRIPTION */}
+              <p className="text-gray-500 mb-6 max-w-sm">
+                Looks like you haven’t added anything yet. Start exploring products and add items to your cart.
+              </p>
+
+              {/* BUTTON */}
+              <button
+                onClick={() => navigate("/")}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full font-medium transition"
+              >
+                Continue Shopping →
+              </button>
+
+            </div>
           ) : (
             cartProducts.map((item) => {
               const itemSubtotal = item.price * item.qty;
@@ -247,30 +277,60 @@ const handleDecrease = async (item) => {
                       alt={item.name}
                       className="h-16 w-16 object-contain rounded"
                     />
-                    <p className="text-sm font-medium">{item.name}</p>
-                  </div>
+                    <div className="flex flex-col space-y-1">
 
+
+                    <p className="text-sm text-black font-medium">{item.name}</p>
+                    <p className="text-sm text-[#A9A9A9] font-medium">{item.category?.name}</p>
+                    </div>
+                  </div>
                   <div className="flex justify-between md:justify-center text-sm">
                     <span className="md:hidden font-medium">Price</span>
-                    <span>Rs.{item.price}</span>
+                    <span className="text-base text-black font-semibold">Rs.{item.price}</span>
                   </div>
 
                   <div className="flex justify-between md:justify-center items-center">
                     <span className="md:hidden font-medium">Qty</span>
-                    <div className="flex items-center border rounded-full px-3 py-1 gap-4">
-                      <button onClick={() => handleDecrease(item)} className="text-gray-600">
+
+                    <div className="flex items-center border border-gray-300 rounded-full overflow-hidden">
+
+                      {/* MINUS */}
+                      <button
+                        onClick={() => handleDecrease(item)}
+                        disabled={loadingItemId === item.cartId || item.qty <= 1}
+                        className={`px-4 py-1.5 text-lg border-r ${
+                          loadingItemId === item.cartId
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
                         -
                       </button>
-                      <span>{item.qty}</span>
-                      <button onClick={() => handleIncrease(item)} className="text-gray-600">
+
+                      {/* VALUE */}
+                      <span className="px-5 py-1.5 text-lg font-medium text-gray-800 border-r">
+                        {item.qty}
+                      </span>
+
+                      {/* PLUS */}
+                      <button
+                        onClick={() => handleIncrease(item)}
+                        disabled={loadingItemId === item.cartId}
+                        className={`px-4 py-1.5 text-lg ${
+                          loadingItemId === item.cartId
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
                         +
                       </button>
+
                     </div>
                   </div>
 
                   <div className="flex justify-between md:justify-center text-sm">
                     <span className="md:hidden font-medium">Subtotal</span>
-                    <span className="font-medium">Rs.{itemSubtotal}</span>
+                    <span className="text-base text-black font-semibold">Rs.{itemSubtotal}</span>
                   </div>
                 </div>
               );
@@ -278,29 +338,34 @@ const handleDecrease = async (item) => {
           )}
         </div>
 
-        <div className="bg-white border rounded-xl p-6 h-fit">
-          <h2 className="font-semibold text-lg mb-6">Order summary</h2>
-
-          <div className="space-y-4 text-sm text-gray-600">
+        <div className="bg-white border border-[#E6E6E6] rounded-lg p-6 h-fit">
+          <h2 className="font-semibold text-lg mb-2">Order summary</h2>
+          <hr className="mb-6 border-t border-[#E3E3E3]" />
+          <div className="space-y-4 text-sm text-[#A9A9A9]">
             <div className="flex justify-between">
               <span>Items</span>
-              <span>{cartProducts.length}</span>
+              <span className="text-black text-sm font-semibold">{cartProducts.length}</span>
             </div>
 
             <div className="flex justify-between">
               <span>Sub Total</span>
-              <span>Rs.{subtotal}</span>
+              <span className="text-black text-sm font-semibold">Rs.{subtotal}</span>
             </div>
             <hr />
 
             <div className="flex justify-between font-semibold text-black">
-              <span>Total</span>
-              <span>Rs.{total}</span>
+              <span className="text-black text-base font-semibold">Total</span>
+              <span className="text-black text-base font-semibold">Rs.{total}</span>
             </div>
           </div>
 
           <button
-            className="mt-6 w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition"
+            disabled={cartProducts.length === 0}
+            className={`mt-6 w-full py-3 rounded-full font-medium transition ${
+              cartProducts.length === 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-green-600 text-white hover:bg-green-700"
+            }`}
             onClick={handleCheckout}
           >
             Proceed to checkout

@@ -1,22 +1,42 @@
-
-
-import { useOrder } from "../Context/OrderContext";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
 
 export default function OrderDetails() {
+  const location = useLocation();
+  const id = location.state?.orderId;
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const { orderData } = useOrder();
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const res = await api({
+          url: SummaryApi.getOrderById.url(id),
+          method: SummaryApi.getOrderById.method,
+        });
 
-  // ✅ same logic as success page (latest order)
-  const order = Array.isArray(orderData)
-    ? orderData[orderData.length - 1]
-    : orderData;
+        setOrder(res.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchOrder();
+  }, [id]);
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading...</div>;
+  }
 
   if (!order) {
     return <div className="p-6 text-red-500">Order not found</div>;
   }
 
   const items = order.items || [];
-
   const billing = order.billingAddress || {};
   const shipping = order.shippingAddress || {};
 
@@ -33,18 +53,21 @@ export default function OrderDetails() {
     "On the way",
     "Delivered",
   ];
-const currentStep = steps.indexOf(order.status || "Order received");
+
+  const currentStep = steps.indexOf(order.status || "Order received");
+
   return (
     <div className="bg-gray-100 min-h-screen p-3 sm:p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-sm p-4 sm:p-6">
 
-        {/* Header */}
+        {/* HEADER */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Order Details</h2>
           <p className="text-sm text-gray-500">
             {new Date(order.createdAt).toDateString()} • {items.length} Products
           </p>
         </div>
+
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -71,38 +94,38 @@ const currentStep = steps.indexOf(order.status || "Order received");
 
         {/* Stepper */}
         <div className="overflow-x-auto mb-6">
-  <div className="min-w-[500px] flex justify-between relative">
+          <div className="min-w-[500px] flex justify-between relative">
 
-    {/* background line */}
-    <div className="absolute top-4 left-0 w-full h-1 bg-gray-200"></div>
+            {/* background line */}
+            <div className="absolute top-4 left-0 w-full h-1 bg-gray-200"></div>
 
-    {/* ✅ dynamic progress */}
-    <div
-      className="absolute top-4 left-0 h-1 bg-green-500"
-      style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-    ></div>
+            {/* ✅ dynamic progress */}
+            <div
+              className="absolute top-4 left-0 h-1 bg-green-500"
+              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            ></div>
 
-    {steps.map((label, index) => (
-      <div key={index} className="flex flex-col items-center w-full z-10">
+            {steps.map((label, index) => (
+              <div key={index} className="flex flex-col items-center w-full z-10">
 
-        {/* ✅ active step color */}
-        <div
-          className={`w-8 h-8 flex items-center justify-center rounded-full text-xs border
-          ${index <= currentStep
-            ? "bg-green-600 text-white"
-            : "text-gray-500"}
-          `}
-        >
-          {(index + 1).toString().padStart(2, "0")}
+                {/* ✅ active step color */}
+                <div
+                  className={`w-8 h-8 flex items-center justify-center rounded-full text-xs border
+                  ${index <= currentStep
+                      ? "bg-green-600 text-white"
+                      : "text-gray-500"}
+                  `}
+                >
+                  {(index + 1).toString().padStart(2, "0")}
+                </div>
+
+                <p className="text-xs mt-2 text-gray-500">{label}</p>
+
+              </div>
+            ))}
+
+          </div>
         </div>
-
-        <p className="text-xs mt-2 text-gray-500">{label}</p>
-
-      </div>
-    ))}
-
-  </div>
-</div>
 
         {/* Table */}
         <div className="overflow-x-auto">
@@ -137,13 +160,11 @@ const currentStep = steps.indexOf(order.status || "Order received");
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );
 }
 
-/* 🔁 Address Component */
 
 const AddressCard = ({ title, data }) => (
   <div className="border rounded-lg p-4 text-sm">
@@ -175,6 +196,4 @@ const Row = ({ label, value }) => (
     <span>{value}</span>
   </div>
 );
-
-
 
