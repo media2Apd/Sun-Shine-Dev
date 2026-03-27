@@ -187,7 +187,24 @@ export const updateOrderStatus = (id, data) =>
 export const deleteOrder = (id) => repo.deleteOrder(id);
 
 // ✅ RAZORPAY
+// export const createRazorpayOrder = async (body, userId) => {
+//   const razorpayOrder = await razorpay.orders.create({
+//     amount: body.total * 100,
+//     currency: "INR",
+//     receipt: "receipt_" + Date.now(),
+//   });
+
+//   const order = await Order.create({
+//     ...body,
+//     customerId: userId,
+//     paymentMethod: "ONLINE",
+//     razorpayOrderId: razorpayOrder.id,
+//   });
+
+//   return { order, razorpayOrder };
+// };
 export const createRazorpayOrder = async (body, userId) => {
+
   const razorpayOrder = await razorpay.orders.create({
     amount: body.total * 100,
     currency: "INR",
@@ -202,6 +219,38 @@ export const createRazorpayOrder = async (body, userId) => {
   });
 
   return { order, razorpayOrder };
+};
+
+export const verifyRazorpayPayment = async (body) => {
+
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+  } = body;
+
+  const generatedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(
+      razorpay_order_id + "|" + razorpay_payment_id
+    )
+    .digest("hex");
+
+  if (generatedSignature !== razorpay_signature) {
+    throw new Error("Payment verification failed");
+  }
+
+  const order = await Order.findOneAndUpdate(
+    { razorpayOrderId: razorpay_order_id },
+    {
+      razorpayPaymentId: razorpay_payment_id,
+      razorpaySignature: razorpay_signature,
+      paymentStatus: "SUCCESS",
+    },
+    { new: true }
+  );
+
+  return order;
 };
 
 
