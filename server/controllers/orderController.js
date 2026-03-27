@@ -211,7 +211,8 @@ export const verifyPayment = async (req, res) => {
   try {
 
     const order = await service.verifyRazorpayPayment(
-      req.body
+      req.body,
+      req.user._id
     );
 
     res.json({
