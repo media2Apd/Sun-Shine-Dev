@@ -97,7 +97,7 @@ export default function Header() {
                 <DropdownItem delay="0ms" open={open} icon={<FiUser />} text="My Profile" />
               </Link>
 
-              <Link to="/orderhistory-page" onClick={() => setOpen(false)}>
+              <Link to="/order-history" onClick={() => setOpen(false)}>
                 <DropdownItem delay="50ms" open={open} icon={<FiRefreshCw />} text="Order History" />
               </Link>
 

@@ -128,11 +128,11 @@ const router = createBrowserRouter([
         element: <OrderSuccess />
       },
       {
-        path: 'orderhistory-page',
+        path: 'order-history',
         element: <OrderHistoryPage />
       },
       {
-        path: 'order-page/orderdetails-page',
+        path: 'order-page/order-details',
         element: <OrderDetails />
       }
       , {

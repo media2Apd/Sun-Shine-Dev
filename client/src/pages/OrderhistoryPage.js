@@ -236,7 +236,7 @@ export default function OrderHistoryPage() {
                   <ul className="text-sm text-gray-600 space-y-1">
                     {order.items.map((item, idx) => (
                       <li key={idx}>
-                        {item.name} – {item.quantity}
+                        {item.name} / Qty-{item.quantity}
                       </li>
                     ))}
                   </ul>
@@ -259,7 +259,7 @@ export default function OrderHistoryPage() {
                     </button>
                   ) : order.status !== "Cancelled" ? (
                     <button
-                      onClick={() => navigate(`/order-page/${order._id}`)}
+                      onClick={() => navigate(`/order-page/order-details`, { state: { orderId: order._id }})}
                       className="w-56 bg-[#00B207] hover:bg-green-700 text-white py-1.5 rounded-full font-medium"
                     >
                       Track Order
@@ -271,7 +271,7 @@ export default function OrderHistoryPage() {
 
                     {/* VIEW DETAILS */}
                     <button
-                      onClick={() => navigate(`/order-page/${order._id}`)}
+                      onClick={() => navigate(`/order-page`, { state: { orderId: order._id }})}
                       className="flex-1 border border-[#E3E3E3] bg-white py-2 rounded-md text-sm text-[#747484] hover:bg-gray-100"
                     >
                       View Details

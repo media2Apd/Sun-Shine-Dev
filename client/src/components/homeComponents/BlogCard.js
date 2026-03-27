@@ -104,7 +104,6 @@ function BlogCard({ blog }) {
   const navigate = useNavigate();
 
   if (!blog) return null;
-console.log(blog);
 
   const handleClick = () => {
     navigate(`/blog-overview/${blog.slug}`); // ✅ slug based navigation

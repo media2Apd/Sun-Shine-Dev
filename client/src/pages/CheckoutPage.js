@@ -13,7 +13,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const orderSummary = location.state?.orderSummary;
-  console.log(orderSummary);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   
   const { refreshCart } = useCart();
   const { address } = useSettings();
@@ -56,12 +56,33 @@ const CheckoutPage = () => {
   }, [navigate, user]);
 
   // autofill address
-  useEffect(() => {
-    if (address) {
-      setFormData(address);
-      setBillingData(address);
-    }
-  }, [address]);
+useEffect(() => {
+  if (address) {
+    setFormData({
+      firstName: address.firstName || "",
+      lastName: address.lastName || "",
+      country: address.country || "",
+      street: address.street || "",
+      city: address.city || "",
+      state: address.state || "",
+      zip: address.zip || "",
+      phone: address.phone || "",
+      email: address.email || "",
+    });
+
+    setBillingData({
+      firstName: address.firstName || "",
+      lastName: address.lastName || "",
+      country: address.country || "",
+      street: address.street || "",
+      city: address.city || "",
+      state: address.state || "",
+      zip: address.zip || "",
+      phone: address.phone || "",
+      email: address.email || "",
+    });
+  }
+}, [address]);
 
   const handleBillingToggle = (value) => {
     setUseDifferentBilling(value);
@@ -71,48 +92,176 @@ const CheckoutPage = () => {
   };
 
   // ✅ FINAL ORDER LOGIC
+  // const handlePlaceOrder = async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     const finalOrder = {
+  //       items: orderSummary.items.map((item) => ({
+  //         productId: item.productId,
+  //         variantId: item.variantId, // ✅ MUST BE PRESENT
+  //         quantity: item.qty,        // ✅ map qty → quantity
+  //         price: item.price,
+  //       })),
+  //       total: orderSummary.total,
+  //       shippingAddress: formData,
+  //       billingAddress: useDifferentBilling ? billingData : formData,
+  //       paymentMethod: "COD",
+  //       customerId: user?._id,
+  //     };
+
+  //     const response = await api({
+  //       url: SummaryApi.createOrder.url,
+  //       method: SummaryApi.createOrder.method,
+  //       data: finalOrder,
+  //     });
+
+  //     // ✅ correct data access
+  //     const order = response.data.data;
+
+  //     setOrderData(order);
+
+  //     await refreshCart();
+
+  //     // ✅ navigate using correct id
+  //     navigate(`/order-page`, {
+  //       state: { orderId: order._id },
+  //     });
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handlePlaceOrder = async () => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const finalOrder = {
-        items: orderSummary.items.map((item) => ({
-          productId: item.productId,
-          variantId: item.variantId, // ✅ MUST BE PRESENT
-          quantity: item.qty,        // ✅ map qty → quantity
-          price: item.price,
-        })),
-        total: orderSummary.total,
-        shippingAddress: formData,
-        billingAddress: useDifferentBilling ? billingData : formData,
-        paymentMethod: "COD",
-        customerId: user?._id,
-      };
+    const finalOrder = {
+      items: orderSummary.items.map((item) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.qty,
+        price: item.price,
+      })),
+      total: orderSummary.total,
+      shippingAddress: formData,
+      billingAddress: useDifferentBilling ? billingData : formData,
+      paymentMethod: paymentMethod, // ✅ dynamic
+      customerId: user?._id,
+    };
 
-      const response = await api({
+    let response;
+
+    // ✅ CONDITION BASED API CALL
+    if (paymentMethod === "COD") {
+      response = await api({
         url: SummaryApi.createOrder.url,
         method: SummaryApi.createOrder.method,
         data: finalOrder,
       });
+    }else {
+  const res = await api({
+    url: SummaryApi.createOnlineOrder.url,
+    method: SummaryApi.createOnlineOrder.method,
+    data: finalOrder,
+  });
 
-      // ✅ correct data access
-      const order = response.data.data;
+  if (!res.data.success) {
+    alert("Failed to create Razorpay order");
+    setLoading(false);
+    return;
+  }
 
-      setOrderData(order);
+  const razorpayData = res.data.data;
 
-      await refreshCart();
+  console.log("RAZOR DATA:", razorpayData);
 
-      // ✅ navigate using correct id
-      navigate(`/order-page`, {
-        state: { orderId: order._id },
+  const options = {
+    key: razorpayData.key,
+    amount: razorpayData.amount,
+    currency: razorpayData.currency,
+    name: "Your Company Name",
+    description: "Order Payment",
+    order_id: razorpayData.orderId,
+
+    handler: async function (response) {
+      setLoading(true);
+
+      const verifyRes = await api({
+        url: SummaryApi.verifyOrder.url,
+        method: SummaryApi.verifyOrder.method,
+        data: {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        },
       });
 
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+      if (verifyRes.data.success) {
+        setOrderData(verifyRes.data.order);
+        await refreshCart();
+
+        navigate(`/order-page`, {
+          state: { orderId: verifyRes.data.order._id },
+        });
+      } else {
+        alert("Payment verification failed");
+      }
+    },
+
+    modal: {
+      ondismiss: function () {
+        setLoading(false);
+      },
+    },
+
+    prefill: {
+      name: formData.firstName + " " + formData.lastName,
+      email: formData.email,
+      contact: formData.phone,
+    },
+
+    theme: {
+      color: "#16a34a",
+    },
   };
+
+  if (!window.Razorpay) {
+    console.error("Razorpay not loaded");
+    alert("Payment system not loaded. Please refresh ❌");
+    setLoading(false);
+    return;
+  }
+  const rzp = new window.Razorpay(options);
+  rzp.open();
+
+  rzp.on("payment.failed", function (response) {
+    console.log(response.error);
+    alert("Payment Failed ❌");
+  });
+
+  setLoading(false);
+  return;
+}
+
+    const order = response.data.data;
+
+    setOrderData(order);
+    await refreshCart();
+
+    navigate(`/order-page`, {
+      state: { orderId: order._id },
+    });
+
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!orderSummary) {
     return <div className="p-10 text-center">No order summary found!</div>;
@@ -451,19 +600,41 @@ const CheckoutPage = () => {
 
           <div className="border-t my-4"></div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Payment Method</span>
-              <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
-                COD
-              </span>
-            </div>
+            <div className="space-y-3">
+              <div className="text-sm text-gray-600 mb-2">Payment Method</div>
 
-            <div className="font-medium">Cash on Delivery (COD)</div>
-            <div className="text-xs text-gray-500">
-              Pay when your order is delivered.
+              {/* COD */}
+              <label
+                className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${
+                  paymentMethod === "COD" ? "border-green-500 bg-green-50" : ""
+                }`}
+                onClick={() => setPaymentMethod("COD")}
+              >
+                <div>
+                  <div className="font-medium">Cash on Delivery</div>
+                  <div className="text-xs text-gray-500">
+                    Pay when order is delivered
+                  </div>
+                </div>
+                <input type="radio" checked={paymentMethod === "COD"} readOnly />
+              </label>
+
+              {/* ONLINE */}
+              <label
+                className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${
+                  paymentMethod === "ONLINE" ? "border-green-500 bg-green-50" : ""
+                }`}
+                onClick={() => setPaymentMethod("ONLINE")}
+              >
+                <div>
+                  <div className="font-medium">Online Payment</div>
+                  <div className="text-xs text-gray-500">
+                    Pay using Razorpay / UPI / Card
+                  </div>
+                </div>
+                <input type="radio" checked={paymentMethod === "ONLINE"} readOnly />
+              </label>
             </div>
-          </div>
 
           <button
             onClick={handlePlaceOrder}

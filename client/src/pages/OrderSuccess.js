@@ -254,7 +254,7 @@ const {
         {/* TRACK ORDER */}
         <button
           onClick={() =>
-            navigate('/order-page/orderdetails-page', {
+            navigate('/order-page/order-details', {
               state: { orderId: orderData._id },
             })
           }
