@@ -80,11 +80,11 @@ const filteredProducts = categoryId
     <div>
       <img src={banner} alt="Banner" className="w-full" />
 
-      <div className="px-6 py-10">
+      <div className="px-8 py-10">
         
         <CategoriesSection />
 
-        <div className="md:px-10">
+        <div className="container mx-auto px-8">
           <h2 className="text-2xl lg:text-3xl font-semibold mb-8 mt-10">
             {categoryName || "All Products"}
           </h2>
@@ -101,7 +101,7 @@ const filteredProducts = categoryId
             )}
           </div>
         </div>
-
+      <div className="container mx-auto px">
         <NewLaunch 
           categoryName={categoryName} 
           isCategoryPage={true}
@@ -112,6 +112,7 @@ const filteredProducts = categoryId
           isCategoryPage={true}
         />
         {/* </div> */}
+      </div>
       </div>
     </div>
   );

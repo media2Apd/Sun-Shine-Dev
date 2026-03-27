@@ -37,7 +37,15 @@ const HomeProducts = () => {
 
               <button
                 onClick={() =>
-                  navigate(`/category-products?category=${cat._id}`)
+                  navigate(
+                    `/category-products?category=${encodeURIComponent(cat.name)}`,
+                    {
+                      state: {
+                        categoryId: cat._id,
+                        categoryName: cat.name,
+                      },
+                    }
+                  )
                 }
                 className="text-[#354A10] font-medium"
               >

@@ -781,7 +781,7 @@ export default function ProductOverview() {
   const [selectedPack, setSelectedPack] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [activeTab, setActiveTab] = useState("description");
-  const [variantQty, setVariantQty] = useState({});
+  const currentQty = 1;
   const [liked, setLiked] = useState(false);
   const [loadingWishlist, setLoadingWishlist] = useState(false);
   const [animateHeart, setAnimateHeart] = useState(false);
@@ -836,8 +836,6 @@ useEffect(() => {
   const selectedVariant = product.variants?.find(
     (v) => `${v.capacity}${v.unit}` === selectedPack
   );
-
-  const currentQty = variantQty[selectedPack] || 1;
 
   // 🔥 WISHLIST FIX
   const handleWishlistToggle = async () => {
@@ -1132,9 +1130,11 @@ useEffect(() => {
                       className="w-full h-56 object-cover rounded-xl"
                     />
                   ) : (
-                    <div className="h-56 bg-gray-100 flex items-center justify-center rounded-xl">
-                      No Video
-                    </div>
+                    <img
+                      src={product.images?.[0]?.url || selectedImage}
+                      alt={product.name}
+                      className="w-full h-56 object-cover rounded-xl"
+                    />
                   )}
                 </div>
 
@@ -1175,11 +1175,15 @@ useEffect(() => {
 
               <div className="text-gray-600 text-sm space-y-2">
                 <p>Weight : {selectedVariant?.capacity} {selectedVariant?.unit}</p>
-                <p>Type : {selectedVariant?.type || "-"}</p>
-                <p>Color : {selectedVariant?.color || "-"}</p>
                 <p>Category : {product.category?.name}</p>
                 <p>Stock : {selectedVariant?.stock}</p>
-                <p>Tags : {selectedVariant?.tags || "-"}</p>
+
+                {/* 🔥 Dynamic Additional Info */}
+                {selectedVariant?.additionalInfo?.map((info) => (
+                  <p key={info._id}>
+                    {info.key} : {info.value}
+                  </p>
+                ))}
               </div>
 
               <div>
@@ -1191,9 +1195,11 @@ useEffect(() => {
                       className="w-full h-56 object-cover rounded-xl"
                     />
                   ) : (
-                    <div className="h-56 bg-gray-100 flex items-center justify-center rounded-xl">
-                      No Video
-                    </div>
+                    <img
+                      src={product.images?.[0]?.url || selectedImage}
+                      alt={product.name}
+                      className="w-full h-56 object-cover rounded-xl"
+                    />
                   )}
                 </div>
 

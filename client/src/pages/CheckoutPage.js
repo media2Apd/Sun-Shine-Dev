@@ -200,11 +200,13 @@ useEffect(() => {
       });
 
       if (verifyRes.data.success) {
-        setOrderData(verifyRes.data.order);
+        const order = verifyRes.data.data;
+
+        setOrderData(order);
         await refreshCart();
 
         navigate(`/order-page`, {
-          state: { orderId: verifyRes.data.order._id },
+          state: { orderId: order._id },
         });
       } else {
         alert("Payment verification failed");
