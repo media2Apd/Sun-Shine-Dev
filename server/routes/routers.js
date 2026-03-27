@@ -9,6 +9,7 @@ import blogRoutes from "./blogRoutes.js";
 import wishlistRoutes from "./wishlistRoutes.js";
 import addressRoutes from "./addressRoutes.js";
 import reviewRoutes from "./reviewRoutes.js";
+import dashBoardRoutes from "./dashBoardRoutes.js";
 import express from "express";
 
 const router = express.Router();
@@ -21,5 +22,7 @@ router.use("/enquiries", enquiryRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
 router.use("/blogs", blogRoutes);
-
+router.use("/address", addressRoutes);
+router.use("/reviews", reviewRoutes);
+router.use("/dashboard", dashBoardRoutes);
 export default router;
