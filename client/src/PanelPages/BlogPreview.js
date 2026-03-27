@@ -17,7 +17,7 @@ export default function BlogPreview({ blog, onBack }) {
   }
 
   return (
-    <div className="p-6 md:p-10 bg-white min-h-screen max-w-4xl mx-auto">
+    <div className=" bg-white min-h-screen mx-auto">
       {/* BACK BUTTON */}
       <button
         onClick={onBack}

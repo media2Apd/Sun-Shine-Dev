@@ -1,24 +1,19 @@
 import express from "express";
 
 import * as controller from "../controllers/orderController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router=express.Router();
 
 
-router.post("/create", controller.createOrder);
+router.post("/create", authMiddleware, controller.createOrder);
+router.get("/view-all", authMiddleware, controller.getOrders);
+router.get("/view-one/:id", authMiddleware, controller.getOrderById);
+router.patch("/status-update/:id", authMiddleware, controller.updateOrderStatus);
+router.patch("/cancel/:id", authMiddleware, controller.cancelOrder);
+router.delete("/delete/:id", authMiddleware, controller.deleteOrder);
 
-router.get("/all", controller.getOrders );
+router.post("/razorpay/create", authMiddleware, controller.createRazorpayOrder);
 
-router.get("/single/:id", controller.getOrderById);
-
-router.put("/status/:id", controller.updateOrderStatus);
-
-router.put("/cancel/:id", controller.cancelOrder);
-
-router.delete("/delete/:id", controller.deleteOrder );
-
-router.post("/razorpay/create", controller.createRazorpayOrder);
-
-router.post("/razorpay/verify", controller.verifyPayment);
 
 export default router;

@@ -1,26 +1,26 @@
-
-
-
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSettings } from "../Context/SettingsContext";
 import Lottie from "lottie-react";
 import animationData from "../assets/animation.json";
 import { useOrder } from "../Context/OrderContext";
-import { LoginContext } from "../Context/LoginContext";
 import { useCart } from "../Context/CartContext";
+import { useSelector } from "react-redux";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const orderSummary = location.state?.orderSummary;
+  console.log(orderSummary);
+  
   const { refreshCart } = useCart();
   const { address } = useSettings();
   const { setOrderData } = useOrder();
-  const { currentUser } = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
-
+  const user = useSelector((state) => state?.user?.user);
   // Shipping form
   const [formData, setFormData] = useState({
     firstName: "",
@@ -47,6 +47,14 @@ const CheckoutPage = () => {
     email: "",
   });
 
+    useEffect(() => {
+    if (!user) {
+      navigate("/login-page", {
+        state: { redirectTo: "/cart-page/checkout-page" },
+      });
+    }
+  }, [navigate, user]);
+
   // autofill address
   useEffect(() => {
     if (address) {
@@ -63,40 +71,47 @@ const CheckoutPage = () => {
   };
 
   // ✅ FINAL ORDER LOGIC
-  const handlePlaceOrder = () => {
-    setLoading(true);
+  const handlePlaceOrder = async () => {
+    try {
+      setLoading(true);
 
-    const orderId = "ORD-" + Date.now();
+      const finalOrder = {
+        items: orderSummary.items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId, // ✅ MUST BE PRESENT
+          quantity: item.qty,        // ✅ map qty → quantity
+          price: item.price,
+        })),
+        total: orderSummary.total,
+        shippingAddress: formData,
+        billingAddress: useDifferentBilling ? billingData : formData,
+        paymentMethod: "COD",
+        customerId: user?._id,
+      };
 
-    const finalOrder = {
-      orderId,
-      items: orderSummary.items,
-      total: orderSummary.total,
+      const response = await api({
+        url: SummaryApi.createOrder.url,
+        method: SummaryApi.createOrder.method,
+        data: finalOrder,
+      });
 
-      shippingAddress: formData,
-      billingAddress: useDifferentBilling ? billingData : formData,
+      // ✅ correct data access
+      const order = response.data.data;
 
-      paymentMethod: "COD",
-      createdAt: new Date().toISOString(),
+      setOrderData(order);
 
-       customerId: currentUser?.customerId, 
-    };
+      await refreshCart();
 
-    // context
-    setOrderData(finalOrder);
-    
-    // localStorage (multiple orders)
-    const existingOrders =
-      JSON.parse(localStorage.getItem("orders")) || [];
+      // ✅ navigate using correct id
+      navigate(`/order-page`, {
+        state: { orderId: order._id },
+      });
 
-    localStorage.setItem(
-      "orders",
-      JSON.stringify([...existingOrders, finalOrder])
-    );
-    refreshCart();
-    setTimeout(() => {
-      navigate("/order-page");
-    }, 4000);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!orderSummary) {
