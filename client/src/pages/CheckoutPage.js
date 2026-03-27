@@ -8,7 +8,7 @@ import { useCart } from "../Context/CartContext";
 import { useSelector } from "react-redux";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
-
+import logo from "../assets/logo.png";
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -175,17 +175,16 @@ useEffect(() => {
     return;
   }
 
-  const razorpayData = res.data.data;
-
-  console.log("RAZOR DATA:", razorpayData);
+  const razorpayData = res.data.data.razorpayOrder;
 
   const options = {
-    key: razorpayData.key,
+    key: "rzp_test_RyBnpI4IJfC1QM",
     amount: razorpayData.amount,
     currency: razorpayData.currency,
-    name: "Your Company Name",
-    description: "Order Payment",
-    order_id: razorpayData.orderId,
+    name: "Sunshine International Agritech",
+    description: "Secure Payment for Your Order",
+    image: logo, // 🔥 change this
+    order_id: razorpayData.id,
 
     handler: async function (response) {
       setLoading(true);
@@ -222,6 +221,11 @@ useEffect(() => {
       name: formData.firstName + " " + formData.lastName,
       email: formData.email,
       contact: formData.phone,
+    },
+
+    notes: {
+      customerId: user?._id,
+      company: "Sunshine International Agritech",
     },
 
     theme: {

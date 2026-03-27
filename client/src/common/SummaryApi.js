@@ -198,7 +198,7 @@ const SummaryApi = {
         method: "post"
     },
     verifyOrder: {
-        url: `${backendDomain}/api/orders/verify`,
+        url: `${backendDomain}/api/orders/razorpay/verify`,
         method: "post"
     },
     getOrders: {
