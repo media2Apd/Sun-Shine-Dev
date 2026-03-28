@@ -268,6 +268,7 @@ export const createRazorpayOrder = async (body, userId) => {
       price: item.price,
       name: product.name,
       image: product.images?.[0]?.url,
+      
     });
   }
 
@@ -293,6 +294,8 @@ export const createRazorpayOrder = async (body, userId) => {
     razorpayOrderId: razorpayOrder.id,
 
     paymentStatus: "Pending",
+
+    status: "Pending",
   });
 
 
@@ -325,6 +328,7 @@ export const verifyRazorpayPayment = async (body, userId) => {
       razorpayPaymentId: razorpay_payment_id,
       razorpaySignature: razorpay_signature,
       paymentStatus: "SUCCESS",
+      status: "Placed"
     },
     { new: true }
   );

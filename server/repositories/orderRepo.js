@@ -36,54 +36,49 @@ export const deleteOrder = (id) =>
 
 export const getAllOrders = async (filters) => {
 
-const { startDate, endDate, status } = filters;
+  const { startDate, endDate, status } = filters;
 
-let query = {
+  let query = {
+    isDeleted: false
+  };
 
-isDeleted: false
+  /*
+  STATUS FILTER
+  */
+  if (status) {
+    query.status = status;
+  }
 
-};
+  /*
+  DATE FILTER
+  */
+  if (startDate || endDate) {
 
+    query.createdAt = {};
 
-/*
-STATUS FILTER
-*/
-if (status) {
+    if (startDate) {
 
-query.status = status;
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
 
-}
+      query.createdAt.$gte = start;
+    }
 
+    if (endDate) {
 
-/*
-DATE FILTER
-*/
-if (startDate || endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
 
-query.createdAt = {};
+      query.createdAt.$lte = end;
+    }
 
-if (startDate) {
+  }
 
-query.createdAt.$gte = new Date(startDate);
-
-}
-
-if (endDate) {
-
-query.createdAt.$lte = new Date(endDate);
-
-}
-
-}
-
-
-/*
-FINAL QUERY
-*/
-return await Order.find(query)
-
-.populate("items.productId")
-
-.sort({ createdAt: -1 });
+  /*
+  FINAL QUERY
+  */
+  return await Order.find(query)
+    .populate("items.productId")
+    .sort({ createdAt: -1 });
 
 };
