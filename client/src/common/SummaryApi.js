@@ -1,3 +1,4 @@
+
 const isLocalNetwork = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
 const backendDomain = process.env.NODE_ENV === 'development'
@@ -238,6 +239,27 @@ const SummaryApi = {
         method: "get"
     },
 
+    // ===================== ADDRESS ROUTES =====================
+    createAddress: {
+        url: `${backendDomain}/api/address/add`,
+        method: "post"
+    },
+    viewAddresses: {
+        url: `${backendDomain}/api/address/view`,
+        method: "get"
+    },
+    setDefaultAddress: {
+        url: (addressId) => `${backendDomain}/api/address/set-default/${addressId}`,
+        method: "patch"
+    },
+    updateAddress: {
+        url: (addressId) => `${backendDomain}/api/address/update/${addressId}`,
+        method: "put"
+    },
+    deleteAddress: {
+        url: (addressId) => `${backendDomain}/api/address/delete-one/${addressId}`,
+        method: "delete"
+    },
 
 
 };
