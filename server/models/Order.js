@@ -117,13 +117,6 @@ const orderSchema = new mongoose.Schema(
     // 🔥 STATUS (frontend match)
     status: {
       type: String,
-      enum: [
-        "Placed",
-        "Packaged",
-        "Shipped",
-        "Delivered",
-        "Cancelled",
-      ],
       default: "Placed",
     },
 
