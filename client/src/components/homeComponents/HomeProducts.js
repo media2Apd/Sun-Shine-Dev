@@ -12,7 +12,7 @@ const HomeProducts = () => {
     const navigate = useNavigate();
   
   return (
-    <div className="px-10 py-5">
+    <div className="py-5">
 
       {category.map((cat, index) => {
 
@@ -22,7 +22,7 @@ const HomeProducts = () => {
               String(p.category?._id) === String(cat._id) &&
               p.showOnWebsite === true
           )
-          .slice(0, 4);
+          .slice(0, 6);
 
         if (categoryProducts.length === 0) {
           return null;
@@ -37,7 +37,15 @@ const HomeProducts = () => {
 
               <button
                 onClick={() =>
-                  navigate(`/category-products?category=${cat._id}`)
+                  navigate(
+                    `/category-products?category=${encodeURIComponent(cat.name)}`,
+                    {
+                      state: {
+                        categoryId: cat._id,
+                        categoryName: cat.name,
+                      },
+                    }
+                  )
                 }
                 className="text-[#354A10] font-medium"
               >
@@ -46,7 +54,7 @@ const HomeProducts = () => {
             </div>
 
             {/* Products */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
               {categoryProducts.map((item) => (
                 <ProductCard key={item._id} item={item} />
               ))}

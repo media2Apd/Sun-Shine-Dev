@@ -190,7 +190,7 @@ const NewLaunch = ({ categoryName, isCategoryPage }) => {
   if (newLaunchProducts.length === 0) return null;
 
   return (
-    <div className="bg-white-100 md:px-10 py-10">
+    <div className="bg-white-100 md:px-8 py-10">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -210,7 +210,7 @@ const NewLaunch = ({ categoryName, isCategoryPage }) => {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
         {newLaunchProducts.map((item) => (
           <ProductCard key={item._id} item={item} />
         ))}

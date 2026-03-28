@@ -102,6 +102,7 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import { razorpay } from "../config/razorpay.js";
 import Cart from "../models/Cart.js";
+import * as crypto from "crypto";
 
 // ✅ CREATE ORDER
 export const createOrder = async (body, userId) => {
@@ -187,21 +188,118 @@ export const updateOrderStatus = (id, data) =>
 export const deleteOrder = (id) => repo.deleteOrder(id);
 
 // ✅ RAZORPAY
+// export const createRazorpayOrder = async (body, userId) => {
+//   const razorpayOrder = await razorpay.orders.create({
+//     amount: body.total * 100,
+//     currency: "INR",
+//     receipt: "receipt_" + Date.now(),
+//   });
+
+//   const order = await Order.create({
+//     ...body,
+//     customerId: userId,
+//     paymentMethod: "ONLINE",
+//     razorpayOrderId: razorpayOrder.id,
+//   });
+
+//   return { order, razorpayOrder };
+// };
 export const createRazorpayOrder = async (body, userId) => {
+
+  const itemsWithSnapshot = [];
+
+  for (const item of body.items) {
+
+    const product = await Product.findById(item.productId);
+
+    if (!product) throw new Error("Product not found");
+
+    const variant = product.variants.find(
+      (v) => v._id.toString() === item.variantId
+    );
+
+    if (!variant) throw new Error("Invalid variant");
+
+    if (variant.stock < item.quantity)
+      throw new Error("Insufficient stock");
+
+    // reduce stock
+    variant.stock -= item.quantity;
+
+    await product.save();
+
+    itemsWithSnapshot.push({
+      productId: item.productId,
+      variantId: item.variantId,
+      quantity: item.quantity,
+      price: item.price,
+      name: product.name,
+      image: product.images?.[0]?.url,
+    });
+  }
+
+  // create razorpay order
   const razorpayOrder = await razorpay.orders.create({
     amount: body.total * 100,
     currency: "INR",
     receipt: "receipt_" + Date.now(),
   });
 
+  // create DB order
   const order = await Order.create({
     ...body,
+
+    orderId: razorpayOrder.id,
+
     customerId: userId,
+
+    items: itemsWithSnapshot,
+
     paymentMethod: "ONLINE",
+
     razorpayOrderId: razorpayOrder.id,
+
+    paymentStatus: "Pending",
   });
 
+
+
   return { order, razorpayOrder };
+
+};
+export const verifyRazorpayPayment = async (body, userId) => {
+
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+  } = body;
+
+  const generatedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(
+      razorpay_order_id + "|" + razorpay_payment_id
+    )
+    .digest("hex");
+
+  if (generatedSignature !== razorpay_signature) {
+    throw new Error("Payment verification failed");
+  }
+
+  const order = await Order.findOneAndUpdate(
+    { orderId: razorpay_order_id },
+    {
+      razorpayPaymentId: razorpay_payment_id,
+      razorpaySignature: razorpay_signature,
+      paymentStatus: "SUCCESS",
+    },
+    { new: true }
+  );
+
+    // clear cart after order creation
+  await Cart.deleteMany({ userId });
+
+  return order;
 };
 
 

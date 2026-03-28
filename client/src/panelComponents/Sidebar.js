@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.jpg';
 
 import {
   FiGrid,

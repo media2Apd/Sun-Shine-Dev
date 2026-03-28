@@ -21,7 +21,9 @@ function Home() {
       <FeaturesSection />
       <CategoriesSection />
       <BannerSection />
+      <div className="container mx-auto">
       <FeaturedProducts />
+      </div>
       <BannerSection2 />
       <HomeProducts />
       <UserReviews />
