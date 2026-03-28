@@ -232,6 +232,12 @@ const SummaryApi = {
         method: "get"
     },
 
+    // ===================== DASHBOARD ROUTES =====================
+    getDashboardData: {
+        url: `${backendDomain}/api/dashboard/overview`,
+        method: "get"
+    },
+
 
 
 };

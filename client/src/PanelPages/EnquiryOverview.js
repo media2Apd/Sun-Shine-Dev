@@ -164,11 +164,23 @@ if (!enquiry) return <div className="p-6">No Enquiry Found</div>;
               </div>
               <div>
                 <p className="text-[#747484]">Phone</p>
-                <p className="font-semibold text-base text-black">{enquiry.phone}</p>
+                <a
+                  href={`tel:${enquiry.phone}`}
+                  className="font-semibold text-base text-black hover:underline"
+                >
+                  {enquiry.phone}
+                </a>
               </div>
+
               <div>
                 <p className="text-[#747484]">Email</p>
-                <p className="font-semibold text-base text-black">{enquiry.email}</p>
+                <a
+                  href={`mailto:${enquiry.email}`}
+                  className="font-semibold text-base text-black truncate hover:underline block"
+                  title={enquiry.email}
+                >
+                  {enquiry.email}
+                </a>
               </div>
               <div>
                 <p className="text-[#747484]">Location</p>
@@ -262,19 +274,27 @@ if (!enquiry) return <div className="p-6">No Enquiry Found</div>;
 
             <div className="grid grid-cols-2 gap-3 mb-3">
 
-              {/* CALL */}
-              <button className="flex flex-col items-center justify-center gap-2 bg-[#F8FAFC] py-4 rounded-lg hover:bg-[#f5f8fc] transition">
-                <Phone size={18} className="text-[#00B207]" />
-                <span className="text-xs">Call Customer</span>
-              </button>
+  {/* CALL */}
+  <a
+    href={`tel:${enquiry.phone}`}
+    title={enquiry.phone}
+    className="flex flex-col items-center justify-center gap-2 bg-[#F8FAFC] py-4 rounded-lg hover:bg-[#f5f8fc] transition"
+  >
+    <Phone size={18} className="text-[#00B207]" />
+    <span className="text-xs">Call Customer</span>
+  </a>
 
-              {/* EMAIL */}
-              <button className="flex flex-col items-center justify-center gap-2 bg-[#F8FAFC] py-4 rounded-lg hover:bg-[#f5f8fc] transition">
-                <Mail size={18} className="text-[#00B207]" />
-                <span className="text-xs">Send Email</span>
-              </button>
+  {/* EMAIL */}
+  <a
+    href={`mailto:${enquiry.email}`}
+    title={enquiry.email}
+    className="flex flex-col items-center justify-center gap-2 bg-[#F8FAFC] py-4 rounded-lg hover:bg-[#f5f8fc] transition"
+  >
+    <Mail size={18} className="text-[#00B207]" />
+    <span className="text-xs">Send Email</span>
+  </a>
 
-            </div>
+</div>
 
             <button
               onClick={() => setConfirmBox({ open: true, type: "Contacted" })}

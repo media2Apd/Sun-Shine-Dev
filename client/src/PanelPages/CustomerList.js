@@ -133,7 +133,7 @@ const CustomerList = () => {
       <div className="bg-white rounded-xl overflow-x-auto ">
         <table className="min-w-full border-separate border-spacing-y-3 px-2">
           <thead className="text-sm">
-            <tr className="text-center bg-gray-100">
+            <tr className="text-left bg-gray-100">
               <th className="py-4 px-4 rounded-l-lg font-semibold text-gray-600">User</th>
               <th className="py-4 px-4 font-semibold text-gray-600">Email</th>
               <th className="py-4 px-4 font-semibold text-gray-600">Role</th>
@@ -164,9 +164,9 @@ const CustomerList = () => {
               </tr>
             ) : (
               usersList.map((userItem) => (
-                <tr key={userItem._id} className="text-sm text-center group">
+                <tr key={userItem._id} className="text-sm text-left group">
                   <td className="py-4 px-4 bg-white border-y border-l border-gray-100 rounded-l-xl font-medium text-gray-700">
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600">
                         <FiUser size={14} />
                       </div>
@@ -194,7 +194,7 @@ const CustomerList = () => {
                     <button
                       ref={(el) => (btnRefs.current[userItem._id] = el)}
                       onClick={() => handleToggle(userItem._id)}
-                      className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 transition-colors"
+                      className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 transition-colors text-center"
                     >
                       <FiMoreHorizontal size={20} />
                     </button>

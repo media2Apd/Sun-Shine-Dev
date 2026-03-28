@@ -3375,12 +3375,401 @@
 
 
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"; // Added useRef
+// import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"; // Added useRef
+// import { useNavigate, useSearchParams } from "react-router-dom";
+// import { 
+//   FiSearch, FiCalendar, FiUpload, FiMoreHorizontal, 
+//   FiChevronLeft, FiChevronRight, FiAlertCircle, FiChevronDown 
+// } from "react-icons/fi";
+// import api from "../common/apiClient";
+// import SummaryApi from "../common/SummaryApi";
+// import toast from "react-hot-toast";
+
+// const OrderlistPage = () => {
+//   const navigate = useNavigate();
+//   const [searchParams, setSearchParams] = useSearchParams();
+
+//   // --- Initializing States from URL Query Parameters ---
+//   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+//   const [startDate, setStartDate] = useState(searchParams.get("start") || "");
+//   const [endDate, setEndDate] = useState(searchParams.get("end") || "");
+//   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "All orders");
+//   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
+
+//   // Data states
+//   const [orders, setOrders] = useState([]); 
+//   const [loading, setLoading] = useState(true);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const itemsPerPage = 10;
+
+//   // Dropdown States for Action Menu
+//   const [openMenuId, setOpenMenuId] = useState(null);
+//   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+
+//   // Refs for positioning and outside click
+//   const btnRefs = useRef({});
+//   const menuRef = useRef(null);
+
+//   // Status Update Modal States
+//   const [showModal, setShowModal] = useState(false);
+//   const [statusUpdateData, setStatusUpdateData] = useState({ id: null, newStatus: "" });
+
+//   const tabs = ["All orders", "Completed", "Pending", "Cancelled"];
+
+//   // --- Dropdown Logic (Same as ProductList) ---
+//   useEffect(() => {
+//     const handleScroll = () => setOpenMenuId(null);
+//     window.addEventListener("scroll", handleScroll, true);
+//     return () => window.removeEventListener("scroll", handleScroll, true);
+//   }, []);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (menuRef.current && !menuRef.current.contains(event.target) && 
+//           !Object.values(btnRefs.current).some((btn) => btn?.contains(event.target))) {
+//         setOpenMenuId(null);
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+
+//   const handleToggle = (id) => {
+//     if (openMenuId === id) {
+//       setOpenMenuId(null);
+//     } else {
+//       const rect = btnRefs.current[id].getBoundingClientRect();
+//       const menuHeight = 50; // Height for single "View Order" option
+//       const spaceBelow = window.innerHeight - rect.bottom;
+      
+//       const top = spaceBelow < menuHeight ? rect.top - menuHeight - 5 : rect.bottom + 5;
+//       const left = rect.right - 150;
+
+//       setMenuPosition({ top, left });
+//       setOpenMenuId(id);
+//     }
+//   };
+
+//   // --- Sync State to URL Query Parameters ---
+//   useEffect(() => {
+//     const params = {};
+//     if (searchTerm) params.search = searchTerm;
+//     if (startDate) params.start = startDate;
+//     if (endDate) params.end = endDate;
+//     if (activeTab !== "All orders") params.tab = activeTab;
+//     if (currentPage > 1) params.page = currentPage;
+    
+//     setSearchParams(params, { replace: true });
+//   }, [searchTerm, startDate, endDate, activeTab, currentPage, setSearchParams]);
+
+//   // --- Fetch Data ---
+//   const fetchOrders = useCallback(async () => {
+//     setLoading(true);
+//     try {
+//       let statusParam = "";
+//       if (activeTab === "Completed") statusParam = "Delivered";
+//       else if (activeTab === "Pending") statusParam = "Placed,Packaged,Shipped";
+//       else if (activeTab === "Cancelled") statusParam = "Cancelled";
+
+//       const response = await api({
+//         url: SummaryApi.getAllOrders.url,
+//         method: SummaryApi.getAllOrders.method,
+//         params: {
+//           page: currentPage,
+//           limit: itemsPerPage,
+//           startDate: startDate,
+//           endDate: endDate,
+//           status: statusParam
+//         }
+//       });
+
+//       if (response.data.success) {
+//         setOrders(response.data.data);
+//         setTotalPages(response.data.totalPages || 1); 
+//       }
+//     } catch (error) {
+//       toast.error("Failed to fetch orders");
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [currentPage, startDate, endDate, activeTab]);
+
+//   useEffect(() => {
+//     fetchOrders();
+//   }, [fetchOrders]);
+
+//   // --- Frontend Filter ---
+//   const filteredOrders = useMemo(() => {
+//     return orders.filter((order) => {
+//       const customerName = `${order.billingAddress?.firstName || ""} ${order.billingAddress?.lastName || ""}`.toLowerCase();
+//       const orderId = (order.orderId || "").toLowerCase();
+//       const search = searchTerm.toLowerCase();
+//       return customerName.includes(search) || orderId.includes(search);
+//     });
+//   }, [orders, searchTerm]);
+
+//   // --- Status Update Handler ---
+//   const openUpdateModal = (id, newStatus) => {
+//     setStatusUpdateData({ id, newStatus });
+//     setShowModal(true);
+//   };
+
+//   const handleStatusUpdate = async () => {
+//     try {
+//       const response = await api({
+//         url: SummaryApi.updateOrderStatus.url(statusUpdateData.id),
+//         method: SummaryApi.updateOrderStatus.method,
+//         data: { status: statusUpdateData.newStatus }
+//       });
+
+//         setOrders(prevOrders => 
+//           prevOrders.map(order => 
+//             order._id === statusUpdateData.id 
+//               ? { ...order, status: response.data.status } 
+//               : order
+//           )
+//         );
+//         setShowModal(false);
+//         setStatusUpdateData({ id: null, newStatus: "" });
+//         toast.success("Order status updated");
+//     } catch (error) {
+//       toast.error(error?.response?.data?.message || "Error updating status");
+//     }
+//   };
+
+//   const handleExport = () => {
+//     if (filteredOrders.length === 0) return toast.error("No data to export");
+//     const headers = "Order ID,Customer,Amount,Date,Status\n";
+//     const csvRows = filteredOrders.map(o => (
+//       `${o.orderId},${o.billingAddress?.firstName} ${o.billingAddress?.lastName},${o.total},${new Date(o.createdAt).toLocaleDateString()},${o.status}`
+//     )).join("\n");
+//     const blob = new Blob([headers + csvRows], { type: "text/csv" });
+//     const url = window.URL.createObjectURL(blob);
+//     const a = document.createElement("a");
+//     a.href = url; a.download = `Orders_Report.csv`;
+//     a.click();
+//     window.URL.revokeObjectURL(url);
+//   };
+
+//   const getStatusStyle = (status) => {
+//     switch (status) {
+//       case "Delivered":
+//       case "Completed": return "bg-[#E6FFF0] text-[#00B037] border-[#B3FFCC]";
+//       case "Cancelled": return "bg-[#FFF0F0] text-[#FF4D4D] border-[#FFCCCC]";
+//       default: return "bg-[#FFF7E6] text-[#FF9900] border-[#FFE5B3]";
+//     }
+//   };
+
+//   return (
+//     <div>
+      
+//       {/* Header */}
+//       <div className="flex justify-between items-center mb-6">
+//         <h1 className="text-2xl font-bold text-[#1A1A1A]">Orders</h1>
+//         <button onClick={handleExport} className="bg-[#6DC40B] text-white px-5 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold hover:opacity-90 transition-all shadow-sm">
+//           <FiUpload size={14} className="rotate-180" /> Export
+//         </button>
+//       </div>
+
+//       {/* Tabs */}
+//       <div className="flex items-center gap-6 border-b border-gray-100 mb-6 overflow-x-auto no-scrollbar">
+//         {tabs.map((tab) => (
+//           <button
+//             key={tab}
+//             onClick={() => { setActiveTab(tab); setCurrentPage(1); }}
+//             className={`pb-3 text-[15px] font-medium transition-all relative whitespace-nowrap ${activeTab === tab ? "text-[#6DC40B]" : "text-gray-400"}`}
+//           >
+//             {tab}
+//             {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6DC40B]" />}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* Filters */}
+//       <div className="flex flex-col xl:flex-row items-end gap-4 mb-8">
+//         <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
+//           <div className="flex flex-col gap-1 flex-1 sm:w-48">
+//             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">START DATE</label>
+//             <div className="relative">
+//               <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+//               <input 
+//                 type="date" 
+//                 className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full focus:outline-none focus:border-[#6DC40B] transition-all shadow-sm" 
+//                 value={startDate} 
+//                 onChange={(e) => { setStartDate(e.target.value); setCurrentPage(1); }} 
+//               />
+//             </div>
+//           </div>
+//           <div className="flex flex-col gap-1 flex-1 sm:w-48">
+//             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">END DATE</label>
+//             <div className="relative">
+//               <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+//               <input 
+//                 type="date" 
+//                 className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full focus:outline-none focus:border-[#6DC40B] transition-all shadow-sm" 
+//                 value={endDate} 
+//                 onChange={(e) => { setEndDate(e.target.value); setCurrentPage(1); }} 
+//               />
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="flex flex-col gap-1 w-full xl:flex-1">
+//           <div className="relative">
+//             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+//             <input 
+//               type="text" 
+//               placeholder="Search by ID or Name...." 
+//               className="pl-10 pr-4 py-2.5 bg-white border border-[#6DC40B] rounded-xl text-sm w-full focus:outline-none shadow-sm" 
+//               value={searchTerm} 
+//               onChange={(e) => setSearchTerm(e.target.value)} 
+//             />
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Table */}
+//       <div className="overflow-x-auto min-h-[400px]">
+//         <table className="w-full border-separate border-spacing-y-3 min-w-[1100px]">
+//           <thead>
+//             <tr className="text-[14px] font-semibold text-[#2D3748] bg-gray-100">
+//               <th className="px-4 py-4 text-left rounded-l-lg">Order ID</th>
+//               <th className="px-4 py-4 text-left">Customer</th>
+//               <th className="px-4 py-4 text-left">Order Type</th>
+//               <th className="px-4 py-4 text-center">Items</th>
+//               <th className="px-4 py-4 text-left">Payment</th>
+//               <th className="px-4 py-4 text-left">Amount</th>
+//               <th className="px-4 py-4 text-left">Order date</th>
+//               <th className="px-4 py-4 text-left min-w-[150px]">Status</th>
+//               <th className="px-4 py-4 text-center rounded-r-lg">Actions</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {!loading && filteredOrders.map((order) => (
+//               <tr key={order._id} className="text-[13px] group">
+//                 <td className="px-4 py-4 bg-white border-y border-l border-gray-100 rounded-l-2xl text-gray-500 font-medium">
+//                    #{order.orderId}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-600 font-medium">
+//                   {order.billingAddress?.firstName} {order.billingAddress?.lastName}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-500">
+//                   {order.total > 5000 ? "Bulk" : "Retail"}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100 text-center text-gray-500">
+//                   {order.items?.length || 0}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100">
+//                   <span className={`px-2 py-1 rounded-md text-[11px] font-bold ${order.paymentStatus === 'Paid' ? 'text-green-600 bg-green-50' : 'text-orange-600 bg-orange-50'}`}>
+//                     {order.paymentStatus}
+//                   </span>
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100 font-bold text-[#1A1A1A]">
+//                   ₹{order.total?.toLocaleString()}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-500 whitespace-nowrap">
+//                   {new Date(order.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}
+//                 </td>
+//                 <td className="px-4 py-4 bg-white border-y border-gray-100">
+//                    <div className="relative w-full max-w-[130px]">
+//                     <select 
+//                       value={order.status === 'Delivered' ? 'Delivered' : order.status} 
+//                       onChange={(e) => openUpdateModal(order._id, e.target.value)}
+//                       className={`flex items-center justify-between px-3 pr-8 py-1.5 rounded-lg border text-[11px] font-bold w-full outline-none cursor-pointer appearance-none transition-all ${getStatusStyle(order.status)}`}
+//                     >
+//                       <option value="Placed">Placed</option>
+//                       <option value="Packaged">Packaged</option>
+//                       <option value="Shipped">Shipped</option>
+//                       <option value="Delivered">Completed</option>
+//                       <option value="Cancelled">Cancelled</option>
+//                     </select>
+//                     <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-70" size={14} />
+//                    </div>
+//                 </td>
+
+//                 {/* UPDATED ACTION COLUMN */}
+//                 <td className="px-4 py-4 bg-white border-y border-r border-gray-100 rounded-r-2xl text-center relative">
+//                    <button
+//                       ref={(el) => (btnRefs.current[order._id] = el)}
+//                       onClick={() => handleToggle(order._id)}
+//                       className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 transition-colors"
+//                     >
+//                       <FiMoreHorizontal size={20} />
+//                     </button>
+
+//                     {openMenuId === order._id && (
+//                       <div
+//                         ref={menuRef}
+//                         className="fixed w-40 bg-white border border-gray-100 rounded-xl shadow-xl text-sm z-[9999] overflow-hidden"
+//                         style={{ top: menuPosition.top, left: menuPosition.left }}
+//                       >
+//                         <button 
+//                           onClick={() => { setOpenMenuId(null); navigate(`/admin-panel/order-list/order-overview/${order._id}`); }} 
+//                           className="block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors"
+//                         >
+//                           View Order
+//                         </button>
+//                       </div>
+//                     )}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//         {loading && <div className="text-center py-20 text-gray-400 font-medium">Loading orders...</div>}
+//         {!loading && filteredOrders.length === 0 && (
+//           <div className="py-24 text-center border-2 border-dashed border-gray-100 rounded-3xl text-gray-400">
+//             No orders found for the selected criteria.
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Pagination & Modal remain unchanged... */}
+//       {!loading && totalPages > 1 && (
+//         <div className="flex justify-end items-center gap-2 mt-8">
+//           <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] transition-all"><FiChevronLeft size={22} /></button>
+//           {[...Array(totalPages)].map((_, i) => (
+//             <button key={i} onClick={() => setCurrentPage(i + 1)} className={`w-9 h-9 rounded-xl text-sm font-bold shadow-sm ${currentPage === i + 1 ? "bg-[#6DC40B] text-white" : "text-gray-400 bg-white border border-gray-100"}`}>
+//               {i + 1}
+//             </button>
+//           ))}
+//           <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] transition-all"><FiChevronRight size={22} /></button>
+//         </div>
+//       )}
+
+//       {showModal && (
+//         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+//           <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+//             <div className="p-8 flex flex-col items-center text-center">
+//               <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mb-4">
+//                 <FiAlertCircle size={32} />
+//               </div>
+//               <h3 className="text-xl font-bold text-gray-800 mb-2">Update Status?</h3>
+//               <p className="text-gray-500 text-sm leading-relaxed">
+//                 Change order status to <span className="font-bold text-[#6DC40B]">{statusUpdateData.newStatus === 'Delivered' ? 'Completed' : statusUpdateData.newStatus}</span>?
+//               </p>
+//             </div>
+//             <div className="flex border-t border-gray-100">
+//               <button onClick={() => setShowModal(false)} className="flex-1 py-4 text-sm font-bold text-gray-400 hover:bg-gray-50 transition-colors border-r border-gray-100">Cancel</button>
+//               <button onClick={handleStatusUpdate} className="flex-1 py-4 text-sm font-bold text-[#6DC40B] hover:bg-green-50 transition-colors">Apply Change</button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default OrderlistPage;
+
+
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { 
-  FiSearch, FiCalendar, FiUpload, FiMoreHorizontal, 
+  FiSearch, FiCalendar, FiDownload, FiMoreHorizontal, 
   FiChevronLeft, FiChevronRight, FiAlertCircle, FiChevronDown 
 } from "react-icons/fi";
+import * as XLSX from 'xlsx'; // Import the Excel library
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import toast from "react-hot-toast";
@@ -3389,34 +3778,28 @@ const OrderlistPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // --- Initializing States from URL Query Parameters ---
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [startDate, setStartDate] = useState(searchParams.get("start") || "");
   const [endDate, setEndDate] = useState(searchParams.get("end") || "");
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "All orders");
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
 
-  // Data states
   const [orders, setOrders] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
 
-  // Dropdown States for Action Menu
   const [openMenuId, setOpenMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
-  // Refs for positioning and outside click
   const btnRefs = useRef({});
   const menuRef = useRef(null);
 
-  // Status Update Modal States
   const [showModal, setShowModal] = useState(false);
   const [statusUpdateData, setStatusUpdateData] = useState({ id: null, newStatus: "" });
 
   const tabs = ["All orders", "Completed", "Pending", "Cancelled"];
 
-  // --- Dropdown Logic (Same as ProductList) ---
+  // --- Dropdown Logic ---
   useEffect(() => {
     const handleScroll = () => setOpenMenuId(null);
     window.addEventListener("scroll", handleScroll, true);
@@ -3439,28 +3822,14 @@ const OrderlistPage = () => {
       setOpenMenuId(null);
     } else {
       const rect = btnRefs.current[id].getBoundingClientRect();
-      const menuHeight = 50; // Height for single "View Order" option
+      const menuHeight = 50;
       const spaceBelow = window.innerHeight - rect.bottom;
-      
       const top = spaceBelow < menuHeight ? rect.top - menuHeight - 5 : rect.bottom + 5;
       const left = rect.right - 150;
-
       setMenuPosition({ top, left });
       setOpenMenuId(id);
     }
   };
-
-  // --- Sync State to URL Query Parameters ---
-  useEffect(() => {
-    const params = {};
-    if (searchTerm) params.search = searchTerm;
-    if (startDate) params.start = startDate;
-    if (endDate) params.end = endDate;
-    if (activeTab !== "All orders") params.tab = activeTab;
-    if (currentPage > 1) params.page = currentPage;
-    
-    setSearchParams(params, { replace: true });
-  }, [searchTerm, startDate, endDate, activeTab, currentPage, setSearchParams]);
 
   // --- Fetch Data ---
   const fetchOrders = useCallback(async () => {
@@ -3468,7 +3837,7 @@ const OrderlistPage = () => {
     try {
       let statusParam = "";
       if (activeTab === "Completed") statusParam = "Delivered";
-      else if (activeTab === "Pending") statusParam = "Placed,Packaged,Shipped";
+      else if (activeTab === "Pending") statusParam = "Placed,Packaged,Shipped,Processing";
       else if (activeTab === "Cancelled") statusParam = "Cancelled";
 
       const response = await api({
@@ -3494,11 +3863,19 @@ const OrderlistPage = () => {
     }
   }, [currentPage, startDate, endDate, activeTab]);
 
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+  useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
-  // --- Frontend Filter ---
+  // --- Sync State to URL ---
+  useEffect(() => {
+    const params = {};
+    if (searchTerm) params.search = searchTerm;
+    if (startDate) params.start = startDate;
+    if (endDate) params.end = endDate;
+    if (activeTab !== "All orders") params.tab = activeTab;
+    if (currentPage > 1) params.page = currentPage;
+    setSearchParams(params, { replace: true });
+  }, [searchTerm, startDate, endDate, activeTab, currentPage, setSearchParams]);
+
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const customerName = `${order.billingAddress?.firstName || ""} ${order.billingAddress?.lastName || ""}`.toLowerCase();
@@ -3508,10 +3885,45 @@ const OrderlistPage = () => {
     });
   }, [orders, searchTerm]);
 
-  // --- Status Update Handler ---
-  const openUpdateModal = (id, newStatus) => {
-    setStatusUpdateData({ id, newStatus });
-    setShowModal(true);
+  // --- Excel Export with Column Width Auto-Adjustment ---
+  const handleExportExcel = () => {
+    if (filteredOrders.length === 0) return toast.error("No data to export");
+
+    // Prepare the data
+    const exportData = filteredOrders.map((o, index) => ({
+      "S.No": index + 1,
+      "Order ID": o.orderId,
+      "Customer Name": `${o.billingAddress?.firstName || "N/A"} ${o.billingAddress?.lastName || ""}`.trim(),
+      "Contact": o.billingAddress?.phone || "N/A",
+      "Total Amount": o.total,
+      "Items Count": o.items?.length || 0,
+      "Payment Method": o.paymentMethod,
+      "Payment Status": o.paymentStatus,
+      "Status": o.status,
+      "Order Date": new Date(o.createdAt).toLocaleDateString('en-GB')
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // --- Dynamic Column Width Calculation ---
+    const objectMaxLength = [];
+    exportData.forEach((row) => {
+        Object.keys(row).forEach((key, i) => {
+            const value = row[key] ? row[key].toString() : "";
+            const currentWidth = Math.max(key.length, value.length);
+            objectMaxLength[i] = Math.max(objectMaxLength[i] || 0, currentWidth);
+        });
+    });
+
+    // Set width (adding 2 for padding)
+    worksheet["!cols"] = objectMaxLength.map(w => ({ wch: w + 2 }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders Report");
+
+    // Download file
+    XLSX.writeFile(workbook, `Orders_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    toast.success("Excel file generated!");
   };
 
   const handleStatusUpdate = async () => {
@@ -3521,53 +3933,31 @@ const OrderlistPage = () => {
         method: SummaryApi.updateOrderStatus.method,
         data: { status: statusUpdateData.newStatus }
       });
-
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
-            order._id === statusUpdateData.id 
-              ? { ...order, status: response.data.status } 
-              : order
-          )
-        );
-        setShowModal(false);
-        setStatusUpdateData({ id: null, newStatus: "" });
-        toast.success("Order status updated");
+      setOrders(prev => prev.map(o => o._id === statusUpdateData.id ? { ...o, status: response.data.status } : o));
+      setShowModal(false);
+      toast.success("Status updated");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error updating status");
+      toast.error("Error updating status");
     }
-  };
-
-  const handleExport = () => {
-    if (filteredOrders.length === 0) return toast.error("No data to export");
-    const headers = "Order ID,Customer,Amount,Date,Status\n";
-    const csvRows = filteredOrders.map(o => (
-      `${o.orderId},${o.billingAddress?.firstName} ${o.billingAddress?.lastName},${o.total},${new Date(o.createdAt).toLocaleDateString()},${o.status}`
-    )).join("\n");
-    const blob = new Blob([headers + csvRows], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `Orders_Report.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
   };
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "Delivered":
-      case "Completed": return "bg-[#E6FFF0] text-[#00B037] border-[#B3FFCC]";
-      case "Cancelled": return "bg-[#FFF0F0] text-[#FF4D4D] border-[#FFCCCC]";
-      default: return "bg-[#FFF7E6] text-[#FF9900] border-[#FFE5B3]";
+      case "Delivered": return "bg-green-50 text-green-600 border-green-100";
+      case "Cancelled": return "bg-red-50 text-red-600 border-red-100";
+      default: return "bg-orange-50 text-orange-600 border-orange-100";
     }
   };
 
   return (
-    <div>
-      
-      {/* Header */}
+    <div className="p-1">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#1A1A1A]">Orders</h1>
-        <button onClick={handleExport} className="bg-[#6DC40B] text-white px-5 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold hover:opacity-90 transition-all shadow-sm">
-          <FiUpload size={14} className="rotate-180" /> Export
+        <h1 className="text-2xl font-bold text-[#1A1A1A]">Order List</h1>
+        <button 
+          onClick={handleExportExcel} 
+          className="bg-[#6DC40B] text-white px-5 py-2.5 rounded-xl flex items-center gap-2 text-sm font-bold hover:bg-[#5da70a] transition-all shadow-md"
+        >
+          <FiDownload size={16} /> Export Excel
         </button>
       </div>
 
@@ -3577,54 +3967,35 @@ const OrderlistPage = () => {
           <button
             key={tab}
             onClick={() => { setActiveTab(tab); setCurrentPage(1); }}
-            className={`pb-3 text-[15px] font-medium transition-all relative whitespace-nowrap ${activeTab === tab ? "text-[#6DC40B]" : "text-gray-400"}`}
+            className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${activeTab === tab ? "text-[#6DC40B]" : "text-gray-400"}`}
           >
             {tab}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6DC40B]" />}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#6DC40B] rounded-full" />}
           </button>
         ))}
       </div>
 
-      {/* Filters */}
+      {/* Filters (Date & Search) Code remains same as yours... */}
       <div className="flex flex-col xl:flex-row items-end gap-4 mb-8">
         <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
-          <div className="flex flex-col gap-1 flex-1 sm:w-48">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">START DATE</label>
+          <div className="flex flex-col gap-1 sm:w-48">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Start Date</label>
             <div className="relative">
-              <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              <input 
-                type="date" 
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full focus:outline-none focus:border-[#6DC40B] transition-all shadow-sm" 
-                value={startDate} 
-                onChange={(e) => { setStartDate(e.target.value); setCurrentPage(1); }} 
-              />
+              <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input type="date" className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-[#6DC40B]" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </div>
           </div>
-          <div className="flex flex-col gap-1 flex-1 sm:w-48">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">END DATE</label>
+          <div className="flex flex-col gap-1 sm:w-48">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">End Date</label>
             <div className="relative">
-              <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              <input 
-                type="date" 
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full focus:outline-none focus:border-[#6DC40B] transition-all shadow-sm" 
-                value={endDate} 
-                onChange={(e) => { setEndDate(e.target.value); setCurrentPage(1); }} 
-              />
+              <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input type="date" className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-[#6DC40B]" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
           </div>
         </div>
-
-        <div className="flex flex-col gap-1 w-full xl:flex-1">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            <input 
-              type="text" 
-              placeholder="Search by ID or Name...." 
-              className="pl-10 pr-4 py-2.5 bg-white border border-[#6DC40B] rounded-xl text-sm w-full focus:outline-none shadow-sm" 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-          </div>
+        <div className="relative flex-1 w-full">
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input type="text" placeholder="Search by Order ID or Name..." className="pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-[#6DC40B] shadow-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
       </div>
 
@@ -3632,82 +4003,75 @@ const OrderlistPage = () => {
       <div className="overflow-x-auto min-h-[400px]">
         <table className="w-full border-separate border-spacing-y-3 min-w-[1100px]">
           <thead>
-            <tr className="text-[14px] font-semibold text-[#2D3748] bg-gray-100">
-              <th className="px-4 py-4 text-left rounded-l-lg">Order ID</th>
+            <tr className="text-[14px] font-bold text-gray-500 bg-gray-100">
+              <th className="px-4 py-4 text-left w-16 rounded-l-lg">S.No</th>
+              <th className="px-4 py-4 text-left">Order ID</th>
               <th className="px-4 py-4 text-left">Customer</th>
-              <th className="px-4 py-4 text-left">Order Type</th>
               <th className="px-4 py-4 text-center">Items</th>
-              <th className="px-4 py-4 text-left">Payment</th>
               <th className="px-4 py-4 text-left">Amount</th>
-              <th className="px-4 py-4 text-left">Order date</th>
-              <th className="px-4 py-4 text-left min-w-[150px]">Status</th>
+              <th className="px-4 py-4 text-left">Date</th>
+              <th className="px-4 py-4 text-left">Status</th>
               <th className="px-4 py-4 text-center rounded-r-lg">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {!loading && filteredOrders.map((order) => (
-              <tr key={order._id} className="text-[13px] group">
-                <td className="px-4 py-4 bg-white border-y border-l border-gray-100 rounded-l-2xl text-gray-500 font-medium">
+            {!loading && filteredOrders.map((order, index) => (
+              <tr key={order._id} className="text-sm group">
+                {/* Serial Number */}
+                <td className="px-4 py-5 bg-white border-y border-l border-gray-100 rounded-l-2xl font-bold text-gray-400">
+                  {((currentPage - 1) * itemsPerPage) + index + 1}.
+                </td>
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100 font-bold text-gray-700">
                    #{order.orderId}
                 </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-600 font-medium">
-                  {order.billingAddress?.firstName} {order.billingAddress?.lastName}
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100">
+                  <div className="font-bold text-gray-800 truncate max-w-[180px]">
+                    {order.billingAddress?.firstName ? `${order.billingAddress.firstName} ${order.billingAddress.lastName}` : "Guest Customer"}
+                  </div>
+                  <div className="text-[11px] text-gray-400">{order.billingAddress?.phone || "No Phone"}</div>
                 </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-500">
-                  {order.total > 5000 ? "Bulk" : "Retail"}
-                </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100 text-center text-gray-500">
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100 text-center font-bold text-gray-600">
                   {order.items?.length || 0}
                 </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100">
-                  <span className={`px-2 py-1 rounded-md text-[11px] font-bold ${order.paymentStatus === 'Paid' ? 'text-green-600 bg-green-50' : 'text-orange-600 bg-orange-50'}`}>
-                    {order.paymentStatus}
-                  </span>
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100">
+                  <div className="font-black text-gray-800">₹{order.total?.toLocaleString()}</div>
+                  <div className="text-[10px] font-bold text-green-600 uppercase">{order.paymentMethod}</div>
                 </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100 font-bold text-[#1A1A1A]">
-                  ₹{order.total?.toLocaleString()}
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100 text-gray-500 font-medium">
+                  {new Date(order.createdAt).toLocaleDateString('en-GB')}
                 </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100 text-gray-500 whitespace-nowrap">
-                  {new Date(order.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                </td>
-                <td className="px-4 py-4 bg-white border-y border-gray-100">
-                   <div className="relative w-full max-w-[130px]">
+
+                <td className="px-4 py-5 bg-white border-y border-gray-100">
+                   <div className="relative w-[130px]">
                     <select 
-                      value={order.status === 'Delivered' ? 'Delivered' : order.status} 
-                      onChange={(e) => openUpdateModal(order._id, e.target.value)}
-                      className={`flex items-center justify-between px-3 pr-8 py-1.5 rounded-lg border text-[11px] font-bold w-full outline-none cursor-pointer appearance-none transition-all ${getStatusStyle(order.status)}`}
+                      value={order.status} 
+                      onChange={(e) => { setStatusUpdateData({ id: order._id, newStatus: e.target.value }); setShowModal(true); }}
+                      className={`w-full px-3 py-1.5 rounded-lg border text-[11px] font-bold outline-none cursor-pointer appearance-none ${getStatusStyle(order.status)}`}
                     >
                       <option value="Placed">Placed</option>
+                      <option value="Processing">Processing</option>
                       <option value="Packaged">Packaged</option>
                       <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Completed</option>
+                      <option value="Delivered">Delivered</option>
                       <option value="Cancelled">Cancelled</option>
                     </select>
-                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-70" size={14} />
+                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" />
                    </div>
                 </td>
 
-                {/* UPDATED ACTION COLUMN */}
-                <td className="px-4 py-4 bg-white border-y border-r border-gray-100 rounded-r-2xl text-center relative">
-                   <button
-                      ref={(el) => (btnRefs.current[order._id] = el)}
-                      onClick={() => handleToggle(order._id)}
-                      className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 transition-colors"
-                    >
+                <td className="px-4 py-5 bg-white border-y border-r border-gray-100 rounded-r-2xl text-center relative">
+                   <button ref={(el) => (btnRefs.current[order._id] = el)} onClick={() => handleToggle(order._id)} className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 transition-all">
                       <FiMoreHorizontal size={20} />
                     </button>
-
                     {openMenuId === order._id && (
-                      <div
-                        ref={menuRef}
-                        className="fixed w-40 bg-white border border-gray-100 rounded-xl shadow-xl text-sm z-[9999] overflow-hidden"
-                        style={{ top: menuPosition.top, left: menuPosition.left }}
-                      >
-                        <button 
-                          onClick={() => { setOpenMenuId(null); navigate(`/admin-panel/order-list/order-overview/${order._id}`); }} 
-                          className="block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors"
-                        >
-                          View Order
+                      <div ref={menuRef} className="fixed w-40 bg-white border border-gray-100 rounded-xl shadow-2xl text-xs font-bold z-[9999] overflow-hidden" style={{ top: menuPosition.top, left: menuPosition.left }}>
+                        <button onClick={() => { setOpenMenuId(null); navigate(`/admin-panel/order-list/order-overview/${order._id}`); }} className="block w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 text-gray-700">
+                          VIEW ORDER
                         </button>
                       </div>
                     )}
@@ -3716,42 +4080,33 @@ const OrderlistPage = () => {
             ))}
           </tbody>
         </table>
-        {loading && <div className="text-center py-20 text-gray-400 font-medium">Loading orders...</div>}
-        {!loading && filteredOrders.length === 0 && (
-          <div className="py-24 text-center border-2 border-dashed border-gray-100 rounded-3xl text-gray-400">
-            No orders found for the selected criteria.
-          </div>
-        )}
+        {loading && <div className="text-center py-20 text-gray-400 font-bold animate-pulse">Fetching Orders...</div>}
+        {!loading && filteredOrders.length === 0 && <div className="py-20 text-center text-gray-400 font-medium border-2 border-dashed rounded-3xl">No matching orders found.</div>}
       </div>
 
-      {/* Pagination & Modal remain unchanged... */}
+      {/* Pagination & Status Modal code... */}
+      {/* ... keeping your existing pagination/modal logic below ... */}
       {!loading && totalPages > 1 && (
         <div className="flex justify-end items-center gap-2 mt-8">
-          <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] transition-all"><FiChevronLeft size={22} /></button>
+          <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] disabled:opacity-30"><FiChevronLeft size={22} /></button>
           {[...Array(totalPages)].map((_, i) => (
-            <button key={i} onClick={() => setCurrentPage(i + 1)} className={`w-9 h-9 rounded-xl text-sm font-bold shadow-sm ${currentPage === i + 1 ? "bg-[#6DC40B] text-white" : "text-gray-400 bg-white border border-gray-100"}`}>
-              {i + 1}
-            </button>
+            <button key={i} onClick={() => setCurrentPage(i + 1)} className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${currentPage === i + 1 ? "bg-[#6DC40B] text-white shadow-lg" : "text-gray-400 bg-white border border-gray-100 hover:border-gray-300"}`}>{i + 1}</button>
           ))}
-          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] transition-all"><FiChevronRight size={22} /></button>
+          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} className="p-2 text-gray-400 hover:text-[#6DC40B] disabled:opacity-30"><FiChevronRight size={22} /></button>
         </div>
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in duration-200">
-            <div className="p-8 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mb-4">
-                <FiAlertCircle size={32} />
-              </div>
+            <div className="p-8 text-center">
+              <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4"><FiAlertCircle size={32} /></div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Update Status?</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Change order status to <span className="font-bold text-[#6DC40B]">{statusUpdateData.newStatus === 'Delivered' ? 'Completed' : statusUpdateData.newStatus}</span>?
-              </p>
+              <p className="text-sm text-gray-500">Change order status to <span className="font-bold text-[#6DC40B]">{statusUpdateData.newStatus}</span>?</p>
             </div>
             <div className="flex border-t border-gray-100">
               <button onClick={() => setShowModal(false)} className="flex-1 py-4 text-sm font-bold text-gray-400 hover:bg-gray-50 transition-colors border-r border-gray-100">Cancel</button>
-              <button onClick={handleStatusUpdate} className="flex-1 py-4 text-sm font-bold text-[#6DC40B] hover:bg-green-50 transition-colors">Apply Change</button>
+              <button onClick={handleStatusUpdate} className="flex-1 py-4 text-sm font-bold text-[#6DC40B] hover:bg-green-50 transition-colors">Apply</button>
             </div>
           </div>
         </div>

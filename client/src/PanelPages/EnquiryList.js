@@ -174,14 +174,14 @@ const filteredData = (enquiries || []).filter((item) => {
 
           {/* HEADER */}
           <thead className="text-sm text-gray-600">
-            <tr className="text-center bg-gray-100">
+            <tr className="text-left bg-gray-100">
               <th className="py-4 px-4 rounded-l-lg">Name</th>
               <th className="py-4 px-4">Type</th>
               <th className="py-4 px-4">Product</th>
               <th className="py-4 px-4">Contact</th>
               <th className="py-4 px-4">Date</th>
               <th className="py-4 px-4">Status</th>
-              <th className="py-4 px-4 rounded-r-lg">Action</th>
+              <th className="py-4 px-4 rounded-r-lg text-center">Action</th>
             </tr>
           </thead>
 
@@ -196,9 +196,9 @@ const filteredData = (enquiries || []).filter((item) => {
             ) : (
               filteredData.map((item) => (
 
-                <tr key={item._id} className="text-sm text-center relative ">
+                <tr key={item._id} className="text-sm text-left relative ">
 
-                  <td className="py-4 px-4 bg-white border-y border-l rounded-l-lg border-gray-200 ">
+                  <td className="py-4 px-4 bg-white border-y border-l rounded-l-lg border-gray-200 whitespace-nowrap">
                     {item.firstName} {item.lastName}
                   </td>
 
@@ -214,7 +214,7 @@ const filteredData = (enquiries || []).filter((item) => {
                     {item.contactMethod}
                   </td>
 
-                  <td className="py-4 px-4 bg-white border-y border-gray-200">
+                  <td className="py-4 px-4 bg-white border-y border-gray-200 whitespace-nowrap">
                     {formatDateTime(item.createdAt, false)}
                   </td>
 
@@ -243,7 +243,7 @@ const filteredData = (enquiries || []).filter((item) => {
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg relative">
+                  <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg relative text-center">
 
                 <button
                   ref={(el) => (buttonRefs.current[item._id] = el)}

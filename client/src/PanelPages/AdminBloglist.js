@@ -173,13 +173,13 @@ export default function AdminBloglist() {
       <div className="bg-white rounded-xl overflow-x-auto">
         <table className="min-w-full border-separate border-spacing-y-3">
           <thead className="text-sm text-gray-600">
-            <tr className="text-center bg-gray-100">
+            <tr className="text-left bg-gray-100">
               <th className="py-4 px-4 rounded-l-lg">Blog Title</th>
               <th className="py-4 px-4">Category</th>
               <th className="py-4 px-4">Author</th>
               <th className="py-4 px-4">Publish Date</th>
               <th className="py-4 px-4">Status</th>
-              <th className="py-4 px-4 rounded-r-lg">Action</th>
+              <th className="py-4 px-4 rounded-r-lg text-center">Action</th>
             </tr>
           </thead>
 
@@ -192,7 +192,7 @@ export default function AdminBloglist() {
               </tr>
             ) : (
               filteredBlogs.map((blog, index) => (
-                <tr key={index} className="text-sm text-center relative">
+                <tr key={index} className="text-sm text-left relative">
                   <td className="py-4 px-4 bg-white border-y border-l border-gray-200 rounded-l-lg">
                     {blog.title}
                   </td>
@@ -212,7 +212,7 @@ export default function AdminBloglist() {
                   </td>
 
                   {/* ACTION MENU */}
-                  <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg relative">
+                  <td className="py-4 px-4 bg-white border-y border-r border-gray-200 rounded-r-lg relative text-center">
                     <button
                       ref={(el) => (buttonRefs.current[blog._id] = el)}
                       onClick={(e) => handleToggle(e, blog._id)}

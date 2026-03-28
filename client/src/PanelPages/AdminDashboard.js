@@ -578,57 +578,413 @@
 //   );
 // }
 
-import React, { useContext, useEffect, useState } from "react";
+// import React, { useContext, useEffect, useState } from "react";
+// import {
+//   ShoppingCart,
+//   Package,
+//   Truck,
+//   CheckCircle,
+//   MessageCircle,
+// } from "lucide-react";
+
+// import { useOrder } from "../Context/OrderContext";
+// import { ProductContext } from "../Context/ProductContext";
+// import { useEnquiry } from "../Context/EnquiryContext";
+// import { useNavigate } from "react-router-dom";
+// import SummaryApi from "../common/SummaryApi";
+// import api from "../common/apiClient";
+// import toast from "react-hot-toast";
+
+
+// export default function AdminDashboard() {
+//   const { orderData } = useOrder();
+//   const { products } = useContext(ProductContext);
+//   const { enquiries } = useEnquiry();
+
+//   const orders = orderData || [];
+//   const [dashboardData, setDashboardData] = useState({});
+//   const [loading, setLoading] = useState(false);
+  
+  
+// const navigate = useNavigate();
+
+// const getProductStockCount = (product) => {
+//   if (!product?.variants) return 0;
+
+//   return product.variants.reduce(
+//     (total, variant) => total + Number(variant.stock || 0),
+//     0
+//   );
+// };
+
+// const fetchDashboardData = async () => {
+//     setLoading(true);
+//     try {
+//       const response = await api({
+//         url: SummaryApi.getDashboardData.url,
+//         method: SummaryApi.getDashboardData.method,
+//       });
+
+//       setDashboardData(response.data.data);
+
+//     } catch (error) {
+//       toast.error("Failed to fetch products");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchDashboardData();
+//   }, []);
+//   /* ===== TOP STATS ===== */
+
+//   const totalOrders = orders.length;
+
+//   const totalRevenue = orders.reduce(
+//     (sum, order) => sum + (order.total || 0),
+//     0
+//   );
+
+//   const productsAvailable = products?.length || 0;
+
+//   const stats = [
+//     { title: "Total Orders", value: totalOrders },
+//     { title: "Total Revenue", value: `₹${totalRevenue.toLocaleString()}` },
+//     { title: "Active Customers", value: "1,247" },
+//     { title: "Products Available", value: productsAvailable },
+//   ];
+
+//   /* ===== ORDER LIFECYCLE ===== */
+
+//   const lifecycle = [
+//     {
+//       label: "New Orders",
+//       value: orders.filter((o) => o.status === "Order received").length,
+//       icon: ShoppingCart,
+//       color: "text-blue-500",
+//     },
+//     {
+//       label: "Processing",
+//       value: orders.filter((o) => o.status === "Processing").length,
+//       icon: Package,
+//       color: "text-orange-500",
+//     },
+//     {
+//       label: "Dispatched",
+//       value: orders.filter((o) => o.status === "On the way").length,
+//       icon: Truck,
+//       color: "text-purple-500",
+//     },
+//     {
+//       label: "Delivered",
+//       value: orders.filter((o) => o.status === "Delivered").length,
+//       icon: CheckCircle,
+//       color: "text-green-500",
+//     },
+//   ];
+
+//   const totalLifecycle =
+//     lifecycle.reduce((sum, item) => sum + item.value, 0) || 1;
+
+//   /* ===== INVENTORY ===== */
+
+//  const inventory = products?.map((p) => {
+//   const stockCount = getProductStockCount(p);
+
+//   return {
+//     name: p.name,
+//     available: stockCount,
+//     status:
+//       stockCount === 0
+//         ? "Out of Stock"
+//         : stockCount < 10
+//         ? "Low Stock"
+//         : "In Stock",
+//   };
+// });
+
+//   /* ===== RECENT ORDERS ===== */
+
+//   const recentOrders = [...orders]
+//     .reverse()
+//     .slice(0, 6)
+//     .map((o) => ({
+//       id: o.orderId,
+//       customer: o.billingAddress?.firstName || "Customer",
+//       amount: o.total,
+//       status: o.status,
+//     }));
+
+//   /* ===== RECENT ENQUIRIES ===== */
+
+//   const recentEnquiries = [...(enquiries || [])].reverse().slice(0, 5);
+
+//   /* ===== CUSTOMER INSIGHTS ===== */
+
+//   const customerInsights = {
+//     totalCustomers: 1247,
+//     newCustomers: 156,
+//     thisWeek: 28,
+//     topCustomer: {
+//       name: "Abirami K",
+//       orders: 45,
+//       spent: "₹45,000",
+//       avatar: "https://i.pravatar.cc/100?img=5",
+//     },
+//   };
+
+//   return (
+//     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+//       {/* TOP STATS */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+//         {stats.map((item, i) => (
+//           <div key={i} className="bg-white p-5 rounded-xl border shadow-sm">
+//             <p className="text-gray-500 text-sm">{item.title}</p>
+//             <h2 className="text-2xl font-semibold mt-2">{item.value}</h2>
+//             <p className="text-green-500 text-xs mt-2">Live Data</p>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* ORDER LIFECYCLE */}
+//       <div className="bg-white mt-6 p-6 rounded-xl border shadow-sm">
+//         <h3 className="font-semibold mb-5">Orders Lifecycle</h3>
+
+//         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+//           {lifecycle.map((item, i) => {
+//             const Icon = item.icon;
+//             const progress = (item.value / totalLifecycle) * 100;
+
+//             return (
+//               <div key={i}>
+//                 <div className="flex items-center gap-3">
+//                   <div className="p-2 bg-gray-100 rounded-lg">
+//                     <Icon size={18} className={item.color} />
+//                   </div>
+
+//                   <div>
+//                     <h2 className="font-semibold">{item.value}</h2>
+//                     <p className="text-sm text-gray-500">{item.label}</p>
+//                   </div>
+//                 </div>
+
+//                 {/* Progress bar */}
+//                 <div className="mt-2 h-1.5 bg-gray-200 rounded-full">
+//                   <div
+//                     className={`h-1.5 rounded-full ${item.color.replace(
+//                       "text",
+//                       "bg"
+//                     )}`}
+//                     style={{ width: `${progress}%` }}
+//                   />
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* TABLES */}
+//       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+//         {/* INVENTORY */}
+//         <div className="bg-white p-6 rounded-xl border shadow-sm overflow-auto">
+//           <div className="flex justify-between mb-4">
+//             <h3 className="font-semibold">Inventory</h3>
+//              <span
+//               onClick={() => navigate("/admin-panel/product-list")}
+//       className="text-green-600 text-sm cursor-pointer"
+//     >
+//       View Inventory →
+//     </span>
+//           </div>
+
+//           <table className="w-full text-sm">
+//             <thead className="text-gray-400 border-b">
+//               <tr>
+//                 <th className="text-left pb-2">Product Name</th>
+//                 <th>Available</th>
+//                 <th>Stock Status</th>
+//               </tr>
+//             </thead>
+
+//             <tbody>
+//               {inventory?.map((item, i) => (
+//                 <tr key={i} className="border-b">
+//                   <td className="py-3">{item.name}</td>
+//                   <td className="text-center">{item.available}</td>
+//                   <td className="text-center">
+//                     <span
+//   className={
+//     item.status === "Low Stock"
+//       ? "text-orange-500"
+//       : item.status === "Out of Stock"
+//       ? "text-red-500"
+//       : "text-green-600"
+//   }
+// >
+//   ● {item.status}
+// </span>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         {/* RECENT ORDERS */}
+//         <div className="bg-white p-6 rounded-xl border shadow-sm overflow-auto">
+//           <div className="flex justify-between mb-4">
+//             <h3 className="font-semibold">Recent Orders</h3>
+//             <span 
+//             onClick={() => navigate("/admin-panel/order-list")}
+//             className="text-green-600 text-sm cursor-pointer">
+//               View All Orders →
+//             </span>
+//           </div>
+
+//           <table className="w-full text-sm">
+//             <thead className="text-gray-400 border-b">
+//               <tr>
+//                 <th className="text-left pb-2">Order ID</th>
+//                 <th>Customer</th>
+//                 <th>Amount</th>
+//                 <th>Status</th>
+//               </tr>
+//             </thead>
+
+//             <tbody>
+//               {recentOrders.map((item, i) => (
+//                 <tr key={i} className="border-b">
+//                   <td className="py-3">{item.id}</td>
+//                   <td>{item.customer}</td>
+//                   <td>₹{item.amount}</td>
+//                   <td>
+//                     <span
+//                       className={
+//                         item.status === "Delivered"
+//                           ? "text-green-600"
+//                           : "text-orange-500"
+//                       }
+//                     >
+//                       {item.status}
+//                     </span>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+
+//       {/* BOTTOM SECTION */}
+//       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+//         {/* ENQUIRIES */}
+//         <div className="bg-white p-6 rounded-xl border shadow-sm">
+//           <h3 className="font-semibold mb-4">Recent Enquiries</h3>
+
+//           {recentEnquiries.map((item, i) => (
+//             <div key={i} className="flex items-center justify-between py-3 border-b">
+//               <div className="flex items-center gap-3">
+//                 <div className="bg-green-100 p-2 rounded-full">
+//                   <MessageCircle size={16} className="text-green-600" />
+//                 </div>
+//                 <div>
+//                   <p className="font-medium">{item.name}</p>
+//                   <p className="text-gray-500 text-sm">{item.message}</p>
+//                 </div>
+//               </div>
+//               <span className="text-xs text-gray-400">{item.time}</span>
+//             </div>
+//           ))}
+//         </div>
+
+//         {/* CUSTOMER INSIGHTS */}
+//         <div className="bg-white p-6 rounded-xl border shadow-sm">
+//           <div className="flex justify-between mb-6">
+//             <h3 className="font-semibold">Customer Insights</h3>
+//             <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">
+//               This Week
+//             </span>
+//           </div>
+
+//           <div className="space-y-4">
+//             <div className="flex justify-between">
+//               <span>Total Customers</span>
+//               <span className="font-semibold">
+//                 {customerInsights.totalCustomers}
+//               </span>
+//             </div>
+
+//             <div className="flex justify-between">
+//               <span>New Customers</span>
+//               <span className="font-semibold">
+//                 {customerInsights.newCustomers}
+//               </span>
+//             </div>
+
+//             <div className="flex justify-between">
+//               <span>This Week</span>
+//               <span className="font-semibold">
+//                 {customerInsights.thisWeek}
+//               </span>
+//             </div>
+
+//             <div className="flex items-center gap-3 pt-4 border-t">
+//               <img
+//                 src={customerInsights.topCustomer.avatar}
+//                 alt="profile"
+//                 className="w-10 h-10 rounded-full object-cover"
+//               />
+//               <div>
+//                 <p className="font-medium">
+//                   {customerInsights.topCustomer.name}
+//                 </p>
+//                 <p className="text-sm text-gray-500">
+//                   {customerInsights.topCustomer.orders} orders •{" "}
+//                   {customerInsights.topCustomer.spent}
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+import React, { useEffect, useState } from "react";
 import {
   ShoppingCart,
   Package,
   Truck,
   CheckCircle,
   MessageCircle,
+  Loader2,
 } from "lucide-react";
-
-import { useOrder } from "../Context/OrderContext";
-import { ProductContext } from "../Context/ProductContext";
-import { useEnquiry } from "../Context/EnquiryContext";
 import { useNavigate } from "react-router-dom";
 import SummaryApi from "../common/SummaryApi";
 import api from "../common/apiClient";
 import toast from "react-hot-toast";
 
-
 export default function AdminDashboard() {
-  const { orderData } = useOrder();
-  const { products } = useContext(ProductContext);
-  const { enquiries } = useEnquiry();
+  const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const orders = orderData || [];
-  const [dashboardData, setDashboardData] = useState({});
-  const [loading, setLoading] = useState(false);
-  
-  
-const navigate = useNavigate();
-
-const getProductStockCount = (product) => {
-  if (!product?.variants) return 0;
-
-  return product.variants.reduce(
-    (total, variant) => total + Number(variant.stock || 0),
-    0
-  );
-};
-
-const fetchDashboardData = async () => {
+  const fetchDashboardData = async () => {
     setLoading(true);
     try {
       const response = await api({
-        url: SummaryApi.getAllProducts.url,
-        method: SummaryApi.getAllProducts.method,
+        url: SummaryApi.getDashboardData.url,
+        method: SummaryApi.getDashboardData.method,
       });
-
-      setDashboardData(response.data.data);
-
+      if (response.data.success) {
+        setDashboardData(response.data.data);
+      }
     } catch (error) {
-      toast.error("Failed to fetch products");
+      toast.error("Failed to fetch dashboard data");
     } finally {
       setLoading(false);
     }
@@ -637,145 +993,117 @@ const fetchDashboardData = async () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-  /* ===== TOP STATS ===== */
 
-  const totalOrders = orders.length;
+  if (loading || !dashboardData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="animate-spin text-green-600" size={40} />
+          <p className="text-gray-500 font-medium">Loading Dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const totalRevenue = orders.reduce(
-    (sum, order) => sum + (order.total || 0),
-    0
-  );
-
-  const productsAvailable = products?.length || 0;
+  /* ===== DATA MAPPING ===== */
 
   const stats = [
-    { title: "Total Orders", value: totalOrders },
-    { title: "Total Revenue", value: `₹${totalRevenue.toLocaleString()}` },
-    { title: "Active Customers", value: "1,247" },
-    { title: "Products Available", value: productsAvailable },
+    { title: "Total Orders", value: dashboardData.totalOrders || 0 },
+    { title: "Total Revenue", value: `₹${(dashboardData.totalRevenue || 0).toLocaleString()}` },
+    { title: "Active Customers", value: dashboardData.activeCustomers || 0 },
+    { title: "Products Available", value: dashboardData.productsAvailable || 0 },
   ];
 
-  /* ===== ORDER LIFECYCLE ===== */
-
-  const lifecycle = [
+  const lifecycleData = [
     {
       label: "New Orders",
-      value: orders.filter((o) => o.status === "Order received").length,
+      value: dashboardData.lifecycle?.newOrders || 0,
       icon: ShoppingCart,
       color: "text-blue-500",
+      bgColor: "bg-blue-500",
     },
     {
-      label: "Processing",
-      value: orders.filter((o) => o.status === "Processing").length,
+      label: "Packaged",
+      value: dashboardData.lifecycle?.packagedOrders || 0,
       icon: Package,
       color: "text-orange-500",
+      bgColor: "bg-orange-500",
     },
     {
       label: "Dispatched",
-      value: orders.filter((o) => o.status === "On the way").length,
+      value: dashboardData.lifecycle?.dispatchedOrders || 0,
       icon: Truck,
       color: "text-purple-500",
+      bgColor: "bg-purple-500",
     },
     {
       label: "Delivered",
-      value: orders.filter((o) => o.status === "Delivered").length,
+      value: dashboardData.lifecycle?.deliveredOrders || 0,
       icon: CheckCircle,
       color: "text-green-500",
+      bgColor: "bg-green-500",
     },
   ];
 
-  const totalLifecycle =
-    lifecycle.reduce((sum, item) => sum + item.value, 0) || 1;
+  const totalLifecycleCount = lifecycleData.reduce((sum, item) => sum + item.value, 0) || 1;
 
-  /* ===== INVENTORY ===== */
+  const inventory = dashboardData.inventory?.map((p) => {
+    const stockCount = p.variants?.reduce((total, v) => total + Number(v.stock || 0), 0) || 0;
+    return {
+      name: p.name,
+      available: stockCount,
+      status: stockCount === 0 ? "Out of Stock" : stockCount < 10 ? "Low Stock" : "In Stock",
+    };
+  });
 
- const inventory = products?.map((p) => {
-  const stockCount = getProductStockCount(p);
-
-  return {
-    name: p.name,
-    available: stockCount,
-    status:
-      stockCount === 0
-        ? "Out of Stock"
-        : stockCount < 10
-        ? "Low Stock"
-        : "In Stock",
-  };
-});
-
-  /* ===== RECENT ORDERS ===== */
-
-  const recentOrders = [...orders]
-    .reverse()
-    .slice(0, 6)
-    .map((o) => ({
-      id: o.orderId,
-      customer: o.billingAddress?.firstName || "Customer",
-      amount: o.total,
-      status: o.status,
-    }));
-
-  /* ===== RECENT ENQUIRIES ===== */
-
-  const recentEnquiries = [...(enquiries || [])].reverse().slice(0, 5);
-
-  /* ===== CUSTOMER INSIGHTS ===== */
-
-  const customerInsights = {
-    totalCustomers: 1247,
-    newCustomers: 156,
-    thisWeek: 28,
-    topCustomer: {
-      name: "Abirami K",
-      orders: 45,
-      spent: "₹45,000",
-      avatar: "https://i.pravatar.cc/100?img=5",
-    },
-  };
+  const recentOrders = dashboardData.recentOrders?.map((o) => ({
+    id: o.orderId,
+    customer: o.billingAddress?.firstName ? `${o.billingAddress.firstName} ${o.billingAddress.lastName}` : "Guest Customer",
+    amount: o.total,
+    status: o.status,
+  }));
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       {/* TOP STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {stats.map((item, i) => (
-          <div key={i} className="bg-white p-5 rounded-xl border shadow-sm">
-            <p className="text-gray-500 text-sm">{item.title}</p>
-            <h2 className="text-2xl font-semibold mt-2">{item.value}</h2>
-            <p className="text-green-500 text-xs mt-2">Live Data</p>
+          <div key={i} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">{item.title}</p>
+            <h2 className="text-2xl font-bold mt-2 text-gray-800">{item.value}</h2>
+            <div className="flex items-center gap-1 mt-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                <p className="text-green-600 text-[10px] font-bold">LIVE DATA</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* ORDER LIFECYCLE */}
-      <div className="bg-white mt-6 p-6 rounded-xl border shadow-sm">
-        <h3 className="font-semibold mb-5">Orders Lifecycle</h3>
+      <div className="bg-white mt-6 p-6 rounded-xl border border-gray-100 shadow-sm">
+        <h3 className="font-bold text-gray-700 mb-6 flex items-center gap-2">
+            <span className="w-1 h-4 bg-green-500 rounded-full"></span> Orders Lifecycle
+        </h3>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {lifecycle.map((item, i) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          {lifecycleData.map((item, i) => {
             const Icon = item.icon;
-            const progress = (item.value / totalLifecycle) * 100;
+            const progress = (item.value / totalLifecycleCount) * 100;
 
             return (
-              <div key={i}>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-100 rounded-lg">
-                    <Icon size={18} className={item.color} />
+              <div key={i} className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gray-50 rounded-xl">
+                    <Icon size={20} className={item.color} />
                   </div>
-
                   <div>
-                    <h2 className="font-semibold">{item.value}</h2>
-                    <p className="text-sm text-gray-500">{item.label}</p>
+                    <h2 className="text-xl font-bold text-gray-800">{item.value}</h2>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-tight">{item.label}</p>
                   </div>
                 </div>
-
-                {/* Progress bar */}
-                <div className="mt-2 h-1.5 bg-gray-200 rounded-full">
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className={`h-1.5 rounded-full ${item.color.replace(
-                      "text",
-                      "bg"
-                    )}`}
+                    className={`h-full transition-all duration-500 ${item.bgColor}`}
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -788,163 +1116,127 @@ const fetchDashboardData = async () => {
       {/* TABLES */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         {/* INVENTORY */}
-        <div className="bg-white p-6 rounded-xl border shadow-sm overflow-auto">
-          <div className="flex justify-between mb-4">
-            <h3 className="font-semibold">Inventory</h3>
-             <span
-              onClick={() => navigate("/admin-panel/product-list")}
-      className="text-green-600 text-sm cursor-pointer"
-    >
-      View Inventory →
-    </span>
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-gray-700">Stock Inventory</h3>
+            <button 
+                onClick={() => navigate("/admin-panel/product-list")}
+                className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
+            >
+              VIEW ALL →
+            </button>
           </div>
 
-          <table className="w-full text-sm">
-            <thead className="text-gray-400 border-b">
-              <tr>
-                <th className="text-left pb-2">Product Name</th>
-                <th>Available</th>
-                <th>Stock Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {inventory?.map((item, i) => (
-                <tr key={i} className="border-b">
-                  <td className="py-3">{item.name}</td>
-                  <td className="text-center">{item.available}</td>
-                  <td className="text-center">
-                    <span
-  className={
-    item.status === "Low Stock"
-      ? "text-orange-500"
-      : item.status === "Out of Stock"
-      ? "text-red-500"
-      : "text-green-600"
-  }
->
-  ● {item.status}
-</span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
+                <tr>
+                    <th className="text-left pb-3">Product Name</th>
+                    <th className="text-center pb-3">Stock</th>
+                    <th className="text-right pb-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                {inventory?.map((item, i) => (
+                    <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="py-4 font-medium text-gray-700">{item.name}</td>
+                    <td className="text-center font-bold text-gray-600">{item.available}</td>
+                    <td className="text-right">
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                            item.status === "Low Stock" ? "bg-orange-50 text-orange-500" : 
+                            item.status === "Out of Stock" ? "bg-red-50 text-red-500" : 
+                            "bg-green-50 text-green-600"
+                        }`}>
+                        ● {item.status}
+                        </span>
+                    </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+          </div>
         </div>
 
         {/* RECENT ORDERS */}
-        <div className="bg-white p-6 rounded-xl border shadow-sm overflow-auto">
-          <div className="flex justify-between mb-4">
-            <h3 className="font-semibold">Recent Orders</h3>
-            <span 
-            onClick={() => navigate("/admin-panel/order-list")}
-            className="text-green-600 text-sm cursor-pointer">
-              View All Orders →
-            </span>
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-gray-700">Recent Sales</h3>
+            <button 
+                onClick={() => navigate("/admin-panel/order-list")}
+                className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
+            >
+              VIEW ALL →
+            </button>
           </div>
 
-          <table className="w-full text-sm">
-            <thead className="text-gray-400 border-b">
-              <tr>
-                <th className="text-left pb-2">Order ID</th>
-                <th>Customer</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {recentOrders.map((item, i) => (
-                <tr key={i} className="border-b">
-                  <td className="py-3">{item.id}</td>
-                  <td>{item.customer}</td>
-                  <td>₹{item.amount}</td>
-                  <td>
-                    <span
-                      className={
-                        item.status === "Delivered"
-                          ? "text-green-600"
-                          : "text-orange-500"
-                      }
-                    >
-                      {item.status}
-                    </span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
+                <tr>
+                    <th className="text-left pb-3">Order ID</th>
+                    <th className="text-left pb-3">Customer</th>
+                    <th className="text-center pb-3">Amount</th>
+                    <th className="text-right pb-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                {recentOrders?.map((item, i) => (
+                    <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="py-4 font-bold text-gray-500 text-[12px]">#{item.id?.slice(-8)}</td>
+                    <td className="font-medium text-gray-700 truncate max-w-[120px]">{item.customer}</td>
+                    <td className="text-center font-bold text-gray-900">₹{item.amount}</td>
+                    <td className="text-right">
+                        <span className={`text-[10px] font-bold ${
+                            item.status === "Delivered" ? "text-green-600" : "text-orange-500"
+                        }`}>
+                        {item.status}
+                        </span>
+                    </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* BOTTOM SECTION */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        {/* ENQUIRIES */}
-        <div className="bg-white p-6 rounded-xl border shadow-sm">
-          <h3 className="font-semibold mb-4">Recent Enquiries</h3>
-
-          {recentEnquiries.map((item, i) => (
-            <div key={i} className="flex items-center justify-between py-3 border-b">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 p-2 rounded-full">
-                  <MessageCircle size={16} className="text-green-600" />
-                </div>
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-gray-500 text-sm">{item.message}</p>
-                </div>
-              </div>
-              <span className="text-xs text-gray-400">{item.time}</span>
-            </div>
-          ))}
+        {/* ENQUIRIES PLACEHOLDER (Update API to include this if needed) */}
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <h3 className="font-bold text-gray-700 mb-6">Recent Enquiries</h3>
+          <div className="flex flex-col items-center justify-center py-10 text-gray-300">
+             <MessageCircle size={40} className="mb-2 opacity-20" />
+             <p className="text-xs font-medium uppercase tracking-widest">No Recent Enquiries</p>
+          </div>
         </div>
 
         {/* CUSTOMER INSIGHTS */}
-        <div className="bg-white p-6 rounded-xl border shadow-sm">
-          <div className="flex justify-between mb-6">
-            <h3 className="font-semibold">Customer Insights</h3>
-            <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">
-              This Week
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-gray-700">Customer Insights</h3>
+            <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+              Overview
             </span>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <span>Total Customers</span>
-              <span className="font-semibold">
-                {customerInsights.totalCustomers}
-              </span>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center group">
+              <span className="text-sm font-medium text-gray-500">Total Registered Customers</span>
+              <span className="text-lg font-bold text-gray-800">{dashboardData.customerInsights?.totalCustomers || 0}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>New Customers</span>
-              <span className="font-semibold">
-                {customerInsights.newCustomers}
-              </span>
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-500">New Customers This Month</span>
+              <span className="text-lg font-bold text-green-600">+{dashboardData.customerInsights?.newCustomers || 0}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>This Week</span>
-              <span className="font-semibold">
-                {customerInsights.thisWeek}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3 pt-4 border-t">
-              <img
-                src={customerInsights.topCustomer.avatar}
-                alt="profile"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <p className="font-medium">
-                  {customerInsights.topCustomer.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {customerInsights.topCustomer.orders} orders •{" "}
-                  {customerInsights.topCustomer.spent}
-                </p>
-              </div>
+            <div className="pt-6 border-t border-gray-50">
+                <p className="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Top Performing Region</p>
+                <div className="bg-gray-50 p-4 rounded-xl flex justify-between items-center">
+                    <span className="text-sm font-bold text-gray-700">Tamil Nadu</span>
+                    <span className="text-xs font-medium text-gray-400">Main Focus</span>
+                </div>
             </div>
           </div>
         </div>
