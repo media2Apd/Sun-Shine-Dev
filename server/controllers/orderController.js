@@ -145,9 +145,31 @@ export const getOrders = async (req, res) => {
 };
 
 // ✅ GET ONE
+// export const getOrderById = async (req, res) => {
+//   const data = await service.getOrderById(req.params.id, req.user._id);
+//   res.json(data);
+// };
+
 export const getOrderById = async (req, res) => {
-  const data = await service.getOrderById(req.params.id);
-  res.json(data);
+
+  try {
+
+    const data = await service.getOrderById(
+      req.params.id,
+      req.user._id
+    );
+
+    res.json(data);
+
+  }
+  catch (error) {
+
+    res.status(400).json({
+      message: error.message
+    });
+
+  }
+
 };
 
 // ✅ CANCEL

@@ -1,58 +1,69 @@
 import Review from "../models/Review.js";
-
 import Order from "../models/Order.js";
+import { uploadToCloudinary } from "../utils/Cloudinary.js";
 
+export const createReview = async (req, res) => {
 
+  try {
 
-/*
-CREATE VERIFIED REVIEW
-*/
-export const createReview=async(req,res)=>{
+    const { productId, rating, comment } = req.body;
 
-try{
+    if (!productId)
+      throw new Error("Product ID required");
 
-const {productId,rating,comment}=req.body;
+    /*
+    CHECK ORDER HISTORY
+    */
+    const order = await Order.findOne({
+      customerId: req.user.id,
+      "items.productId": productId,
+    });
 
+    /*
+    HANDLE IMAGE UPLOAD
+    */
+    let images = [];
 
-/*
-CHECK ORDER HISTORY
-*/
-const order=await Order.findOne({
+    if (req.files && req.files.length > 0) {
 
-userId:req.user.id,
-"items.productId":productId
+      for (const file of req.files) {
 
-});
+        const uploaded = await uploadToCloudinary(
+          file.buffer,
+          "reviews"
+        );
 
+        images.push(uploaded);
 
-const review=await Review.create({
+      }
 
-productId,
-userId:req.user.id,
-rating,
-comment,
+    }
 
-isVerifiedPurchase:order?true:false
+    const review = await Review.create({
 
-});
+      productId,
+      userId: req.user.id,
+      rating,
+      comment,
 
+      images,
 
-res.status(201).json(review);
+      isVerifiedPurchase: order ? true : false,
 
-}
-catch(error){
+    });
 
-res.status(500).json({
+    res.status(201).json(review);
 
-message:error.message
+  }
+  catch (error) {
 
-});
+    res.status(500).json({
+      message: error.message
+    });
 
-}
+  }
 
 };
-
-
 
 /*
 GET PRODUCT REVIEWS
