@@ -103,6 +103,7 @@ import Order from "../models/Order.js";
 import { razorpay } from "../config/razorpay.js";
 import Cart from "../models/Cart.js";
 import * as crypto from "crypto";
+import Review from "../models/Review.js";
 
 // ✅ CREATE ORDER
 export const createOrder = async (body, userId) => {
@@ -180,7 +181,37 @@ export const cancelOrder = async (orderId) => {
 // ✅ GET ORDERS (USER BASED)
 export const getOrders = (userId) => repo.getOrders(userId);
 
-export const getOrderById = (id) => repo.getOrderById(id);
+// export const getOrderById = (id) => repo.getOrderById(id);
+
+export const getOrderById = async (orderId, userId) => {
+
+  const order = await repo.getOrderById(orderId);
+
+  if (!order)
+    throw new Error("Order not found");
+
+  // attach review inside each item
+  order.items = await Promise.all(
+
+    order.items.map(async (item) => {
+
+      const review = await Review.findOne({
+        productId: item.productId._id,
+        userId: userId
+      }).select("rating comment images");
+
+      return {
+        ...item.toObject(),
+        review: review || null
+      };
+
+    })
+
+  );
+
+  return order;
+
+};
 
 export const updateOrderStatus = (id, data) =>
   repo.updateOrder(id, data);
