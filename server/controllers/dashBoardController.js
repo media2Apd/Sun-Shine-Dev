@@ -162,7 +162,7 @@ export const getDashboardOverview = async (req, res) => {
 
     const activeCustomers =
       await User.countDocuments({
-        role: "Customer"
+        role: "user"
       });
 
     const productsAvailable =
