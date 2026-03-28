@@ -28,7 +28,7 @@ import OrderDetails from "../pages/OrderdetailsPage";
 import EnquiryList from "../PanelPages/EnquiryList";
 import EnquiryOverview from "../PanelPages/EnquiryOverview";
 import OrderlistPage from "../PanelPages/OrderlistPage";
-import AdminorderOverview from "../PanelPages/AdminorderOverview";
+import AdminOrderOverview from "../PanelPages/AdminOrderOverview";
 import CustomerList from "../PanelPages/CustomerList";
 import CustomerDetail from "../PanelPages/CustomerDetail";
 import AdminDashboard from "../PanelPages/AdminDashboard";
@@ -214,8 +214,8 @@ const router = createBrowserRouter([
             element: <OrderlistPage />
           },
           {
-            path: "order-list/order-overview",
-            element: <AdminorderOverview />
+            path: "order-list/order-overview/:id",
+            element: <AdminOrderOverview />
           },
           {
             path: "customer-list",

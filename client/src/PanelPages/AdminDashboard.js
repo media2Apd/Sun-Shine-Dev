@@ -578,7 +578,7 @@
 //   );
 // }
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ShoppingCart,
   Package,
@@ -591,6 +591,9 @@ import { useOrder } from "../Context/OrderContext";
 import { ProductContext } from "../Context/ProductContext";
 import { useEnquiry } from "../Context/EnquiryContext";
 import { useNavigate } from "react-router-dom";
+import SummaryApi from "../common/SummaryApi";
+import api from "../common/apiClient";
+import toast from "react-hot-toast";
 
 
 export default function AdminDashboard() {
@@ -599,6 +602,9 @@ export default function AdminDashboard() {
   const { enquiries } = useEnquiry();
 
   const orders = orderData || [];
+  const [dashboardData, setDashboardData] = useState({});
+  const [loading, setLoading] = useState(false);
+  
   
 const navigate = useNavigate();
 
@@ -610,6 +616,27 @@ const getProductStockCount = (product) => {
     0
   );
 };
+
+const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const response = await api({
+        url: SummaryApi.getAllProducts.url,
+        method: SummaryApi.getAllProducts.method,
+      });
+
+      setDashboardData(response.data.data);
+
+    } catch (error) {
+      toast.error("Failed to fetch products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
   /* ===== TOP STATS ===== */
 
   const totalOrders = orders.length;
@@ -906,6 +933,7 @@ const getProductStockCount = (product) => {
             <div className="flex items-center gap-3 pt-4 border-t">
               <img
                 src={customerInsights.topCustomer.avatar}
+                alt="profile"
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div>

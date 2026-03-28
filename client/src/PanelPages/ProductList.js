@@ -99,23 +99,6 @@ const ProductList = () => {
     }
   };
 
-  // Delete Product Handler
-  // const handleDeleteProduct = async (id) => {
-  //   if (window.confirm("Are you sure you want to delete this product?")) {
-  //     try {
-  //       // Replace with your actual delete API endpoint if available in SummaryApi
-  //       toast.loading("Deleting product...");
-  //       // const response = await api({ ... }) 
-  //       // if(response.data.success) { fetchProducts(); toast.success("Deleted"); }
-  //       setOpenMenuId(null);
-  //       toast.dismiss();
-  //       toast.success("Delete functionality triggered for ID: " + id);
-  //     } catch (error) {
-  //       toast.error("Failed to delete product");
-  //     }
-  //   }
-  // };
-
   // Filter Logic
   const filteredProducts = products.filter((item) => {
     const nameMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -183,13 +166,13 @@ const ProductList = () => {
       <div className="bg-white rounded-xl overflow-x-auto min-h-[400px]">
         <table className="min-w-full border-separate border-spacing-y-3 px-2">
           <thead className="text-sm">
-            <tr className="text-center bg-gray-100">
+            <tr className="text-left bg-gray-100">
               <th className="py-4 px-4 rounded-l-lg font-semibold">Product</th>
               <th className="py-4 px-4 font-semibold">Category</th>
-              <th className="py-4 px-4 font-semibold">Stock</th>
+              <th className="py-4 px-4 font-semibold text-center">Stock</th>
               <th className="py-4 px-4 font-semibold">Created</th>
               <th className="py-4 px-4 font-semibold">Status</th>
-              <th className="py-4 px-4 rounded-r-lg font-semibold">Action</th>
+              <th className="py-4 px-4 text-center rounded-r-lg font-semibold">Action</th>
             </tr>
           </thead>
           
@@ -223,7 +206,7 @@ const ProductList = () => {
             ) : (
               /* DATA RENDERING */
               filteredProducts.map((item) => (
-                <tr key={item._id} className="text-sm text-center group">
+                <tr key={item._id} className="text-sm text-left group">
                   {/* Name */}
                   <td className="py-4 px-4 bg-white border-y border-l border-gray-100 rounded-l-xl font-medium text-gray-700">
                     {item.name}
@@ -235,7 +218,7 @@ const ProductList = () => {
                   </td>
 
                   {/* Stock Calculation */}
-                  <td className="py-4 px-4 bg-white border-y border-gray-100 text-gray-600">
+                  <td className="py-4 px-4 text-center bg-white border-y border-gray-100 text-gray-600">
                     {item.variants?.reduce((t, v) => t + Number(v.stock || 0), 0) || 0}
                   </td>
 
@@ -254,7 +237,7 @@ const ProductList = () => {
                   </td>
 
                   {/* Action Menu */}
-                  <td className="py-4 px-4 bg-white border-y border-r border-gray-100 rounded-r-xl relative">
+                  <td className="py-4 px-4 text-center bg-white border-y border-r border-gray-100 rounded-r-xl relative">
                     <button
                       ref={(el) => (btnRefs.current[item._id] = el)}
                       onClick={() => handleToggle(item._id)}
