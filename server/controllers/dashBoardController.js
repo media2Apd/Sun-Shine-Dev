@@ -48,9 +48,9 @@ export const getDashboardOverview = async (req, res) => {
       status: "Placed",
     });
 
-    const processingOrders =
+    const PackagedOrders =
       await Order.countDocuments({
-        status: "Processing",
+        status: "Packaged",
       });
 
     const dispatchedOrders =
@@ -104,7 +104,7 @@ export const getDashboardOverview = async (req, res) => {
 
         lifecycle: {
           newOrders,
-          processingOrders,
+          PackagedOrders,
           dispatchedOrders,
           deliveredOrders,
         },

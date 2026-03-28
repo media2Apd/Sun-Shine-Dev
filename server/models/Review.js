@@ -20,6 +20,12 @@ required:true
 
 comment:String,
 
+images:[
+{
+url:String,
+publicId:String
+}
+],
 
 isVerifiedPurchase:{
 type:Boolean,
