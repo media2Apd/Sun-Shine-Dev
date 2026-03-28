@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpg";
  
 
 const Header = () => {
@@ -12,7 +12,7 @@ const Header = () => {
         src={logo} 
         onClick={()=>navigate('/')}
         alt="Logo" 
-        className="h-10 w-auto"
+        className="h-10 w-auto cursor-pointer"
       />
 
     </div>

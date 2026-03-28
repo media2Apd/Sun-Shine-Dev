@@ -217,10 +217,18 @@ const SummaryApi = {
         url: (orderId) => `${backendDomain}/api/orders/cancel/${orderId}`,
         method: "patch"
     },
+
+    // ===================== REVIEWS ROUTES =====================
     addReview: {
-        url: `${backendDomain}/api/reviews/add`,
+        url: `${backendDomain}/api/reviews/create`,
         method: "post"
-    }
+    },
+    viewOnePrdouctReviews: {
+        url: (productId) => `${backendDomain}/api/reviews/view-all/${productId}`,
+        method: "get"
+    },
+
+
 
 };
 

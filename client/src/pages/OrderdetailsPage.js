@@ -4,18 +4,22 @@ import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { formatDateTime } from "../helpers/formatDateTime";
 import ConfirmModal from "../panelComponents/ConfirmModal";
-
+import { GoStarFill } from "react-icons/go";
+import { X } from "lucide-react";
+import { IoCameraOutline } from "react-icons/io5";
 export default function OrderDetails() {
   const location = useLocation();
   const id = location.state?.orderId;
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reviewLoading, setReviewLoading] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [images, setImages] = useState([]);
   const fetchOrder = useCallback(async () => {
     try {
       const res = await api({
@@ -36,38 +40,130 @@ export default function OrderDetails() {
   }, [fetchOrder, id]);
 
   const handleAddReview = (item) => {
+    resetReviewForm(); // 🔥 important
     setSelectedItem(item);
-    setRating(0);
-    setComment("");
     setShowReviewModal(true);
   };
 
   const handleEditReview = (item) => {
+    resetReviewForm(); // 🔥 add this
+
     setSelectedItem(item);
     setRating(item.rating || 0);
     setComment(item.comment || "");
+
+    const existingImages = (item.images || []).map((img) => ({
+      url: img,
+      isOld: true,
+    }));
+
+    setImages(existingImages);
     setShowReviewModal(true);
   };
 
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+
+    if (images.length + files.length > 2) {
+      alert("Only 2 images allowed");
+      return;
+    }
+
+    const preview = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+      isOld: false,
+    }));
+
+    setImages((prev) => [...prev, ...preview]);
+  };
+
+  const resetReviewForm = () => {
+    setSelectedItem(null);
+    setRating(0);
+    setComment("");
+    setImages([]);
+  };
+
+  const removeImage = (index) => {
+    const img = images[index];
+
+    if (!img.isOld) {
+      URL.revokeObjectURL(img.url);
+    }
+
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  useEffect(() => {
+    if (showReviewModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showReviewModal]);
   const handleSubmitReview = async () => {
+    if (!rating) {
+      alert("Please select rating");
+      return;
+    }
+
     try {
+      setReviewLoading(true);
+
+      const formData = new FormData();
+      formData.append("productId", selectedItem.productId._id);
+      formData.append("orderId", order._id);
+      formData.append("rating", rating);
+      formData.append("comment", comment);
+
+      // 🖼️ separate old & new images
+      const oldImages = images
+        .filter((img) => img.isOld)
+        .map((img) => img.url);
+
+      const newImages = images.filter((img) => !img.isOld);
+
+      formData.append("oldImages", JSON.stringify(oldImages));
+
+      newImages.forEach((img) => {
+        formData.append("images", img.file);
+      });
+
       const res = await api({
         url: SummaryApi.addReview.url,
         method: SummaryApi.addReview.method,
-        data: {
-          productId: selectedItem.productId._id,
-          orderId: order._id,
-          rating,
-          comment,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (res.data.success) {
         setShowReviewModal(false);
-        await fetchOrder(); // 🔥 refresh
+
+        setOrder((prev) => ({
+          ...prev,
+          items: prev.items.map((item) =>
+            item.productId._id === selectedItem.productId._id
+              ? {
+                  ...item,
+                  reviewed: true,
+                  rating,
+                  comment,
+                  images: res.data.data.images, // ✅ fix
+                }
+              : item
+          ),
+        }));
+
+        resetReviewForm(); // ✅ already good
       }
+
     } catch (err) {
       console.log(err);
+    } finally {
+      setReviewLoading(false);
     }
   };
 
@@ -428,23 +524,23 @@ export default function OrderDetails() {
 
                   {/* 🔥 ADD THIS HERE */}
                   <td className="px-4 text-center">
-                    {order.status === "Delivered" && (
-                      item.reviewed ? (
-                        <button
-                          onClick={() => handleEditReview(item)}
-                          className="text-blue-600 text-xs"
-                        >
-                          Edit Review
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleAddReview(item)}
-                          className="text-green-600 text-xs"
-                        >
-                          Add Review
-                        </button>
-                      )
-                    )}
+                      {order.status === "Delivered" && (
+                        item.reviewed ? (
+                          <button
+                            onClick={() => handleEditReview(item)}
+                            className="text-blue-600 text-xs"
+                          >
+                            Edit Review
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleAddReview(item)}
+                            className="text-green-600 text-xs"
+                          >
+                            Add Review
+                          </button>
+                        )
+                      )}
                   </td>
 
                 </tr>
@@ -456,53 +552,143 @@ export default function OrderDetails() {
       </div>
       </div>
       {showReviewModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-[90%] max-w-md">
+        <div className="fixed inset-0 bg-black/40 z-50 overflow-y-auto">
 
-            <h2 className="text-lg font-semibold mb-4 text-center">
-              {selectedItem?.reviewed ? "Edit Review" : "Add Review"}
-            </h2>
+          <div className="min-h-screen flex items-center justify-center px-3 py-6">
 
-            {/* ⭐ STAR RATING */}
-            <div className="flex justify-center gap-2 mb-4">
-              {[1,2,3,4,5].map((star) => (
-                <span
-                  key={star}
-                  onClick={() => setRating(star)}
-                  className={`cursor-pointer text-2xl ${
-                    star <= rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
-                >
-                  ★
-                </span>
-              ))}
+            <div className="bg-white w-full max-w-xl rounded-2xl shadow-xl p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
+
+            {/* HEADER */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-lg sm:text-xl font-semibold text-green-600">
+                  Write a Review
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Share your experience with the AgriGrowth community.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowReviewModal(false);
+                  resetReviewForm();
+                }}
+                className="text-gray-400 hover:text-black text-lg"
+              >
+                <X/>
+              </button>
             </div>
 
-            {/* COMMENT */}
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Write your review..."
-              className="w-full border rounded-md p-2 text-sm"
-            />
+            {/* ⭐ RATING */}
+            <div className="mt-5">
+              <p className="text-sm font-medium mb-2">Overall Rating</p>
+              <div className="flex gap-2">
+                {[1,2,3,4,5].map((star) => (
+                  <span
+                    key={star}
+                    onClick={() => setRating(star)}
+                    className={`cursor-pointer text-3xl ${
+                      star <= rating ? "text-yellow-400" : "text-gray-300"
+                    }`}
+                  >
+                    <GoStarFill/>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* DESCRIPTION */}
+            <div className="mt-4">
+              <p className="text-sm font-medium mb-2">Review Description</p>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="What did you like or dislike about the product/service?"
+                className="w-full border rounded-md px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-1 focus:ring-green-500"
+              />
+            </div>
+
+            {/* IMAGE UPLOAD */}
+            <div className="mt-5">
+              <p className="text-sm font-medium mb-2">Add Photos</p>
+
+              <div className="border-2 border-dashed rounded-xl p-6 text-center hover:bg-gray-50 transition">
+
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="upload"
+                />
+
+                <label htmlFor="upload" className="cursor-pointer">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-gray-400 text-2xl"><IoCameraOutline/></div>
+                    <p className="text-sm">
+                      <span className="text-green-600 font-medium">
+                        Click to upload
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      PNG, JPG or WEBP (MAX. 1MB)
+                    </p>
+                  </div>
+                </label>
+
+              </div>
+
+              {/* PREVIEW */}
+              <div className="flex gap-3 mt-4 flex-wrap">
+                {images.map((img, i) => (
+                  <div key={i} className="relative">
+                    <img
+                      src={img.url}
+                      alt="img"
+                      className="w-16 h-16 rounded-md object-cover border"
+                    />
+                    <button
+                      onClick={() => removeImage(i)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full"
+                    >
+                     <X size/>
+                    </button>
+                  </div>
+                ))}
+
+                {/* Empty slot (like UI) */}
+                {images.length < 2 && (
+                  <div className="w-16 h-16 rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
+                   
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* BUTTONS */}
-            <div className="flex gap-3 mt-4">
+            <div className="flex justify-end items-center gap-5 mt-6">
               <button
-                onClick={() => setShowReviewModal(false)}
-                className="w-full border py-2 rounded-md"
+                onClick={() => {
+                  setShowReviewModal(false);
+                  resetReviewForm();
+                }}
+                className="text-base text-[#00B207] font-semibold"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleSubmitReview}
-                className="w-full bg-green-600 text-white py-2 rounded-md"
+                disabled={reviewLoading || rating === 0}
+                className="bg-[#00B207] hover:bg-green-700 text-white text-sm px-6 py-2 rounded-full disabled:opacity-50"
               >
-                Submit
+                {reviewLoading ? "Submitting..." : "Submit Review"}
               </button>
             </div>
 
+          </div>
           </div>
         </div>
       )}

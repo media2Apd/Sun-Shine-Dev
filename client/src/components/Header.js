@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, } from "react";
 
 import {
-  FiSearch,
+  // FiSearch,
   FiUser,
   FiHeart,
   FiShoppingCart,
@@ -9,7 +9,7 @@ import {
   FiLogOut,
   FiUserCheck,
 } from "react-icons/fi";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useCart } from "../Context/CartContext";
@@ -66,7 +66,7 @@ export default function Header() {
 
         {/* Icons */}
         <div className="flex items-center space-x-6 text-gray-700 relative">
-          <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" />
+          {/* <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> */}
 
           {/* User Icon with Dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -78,9 +78,9 @@ export default function Header() {
             className={`text-xl cursor-pointer hover:text-orange-500 transition`}
           >
             {user ? (
-              <FiUserCheck className="text-xl" />
+              <FiUserCheck strokeWidth={1.5} className="text-xl" />
             ) : (
-              <FiUser className="text-xl" />
+              <FiUser strokeWidth={1.5} className="text-xl" />
             )}
           </div>
 
@@ -137,6 +137,7 @@ export default function Header() {
 
           <div className="relative">
             <FiHeart
+              strokeWidth={1.5}
               onClick={() => navigate("/wishlist-page")}
               className="text-xl cursor-pointer hover:text-orange-500 transition"
             />
@@ -150,6 +151,7 @@ export default function Header() {
 
           <div className="relative">
             <FiShoppingCart
+              strokeWidth={1.5}
               onClick={() => navigate("/cart-page")}
               className="text-xl cursor-pointer hover:text-orange-500 transition"
             />

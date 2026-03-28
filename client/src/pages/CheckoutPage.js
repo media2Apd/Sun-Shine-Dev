@@ -8,7 +8,8 @@ import { useCart } from "../Context/CartContext";
 import { useSelector } from "react-redux";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpg";
+import toast from "react-hot-toast";
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -136,138 +137,141 @@ useEffect(() => {
   // };
 
   const handlePlaceOrder = async () => {
-  try {
-    setLoading(true);
-
-    const finalOrder = {
-      items: orderSummary.items.map((item) => ({
-        productId: item.productId,
-        variantId: item.variantId,
-        quantity: item.qty,
-        price: item.price,
-      })),
-      total: orderSummary.total,
-      shippingAddress: formData,
-      billingAddress: useDifferentBilling ? billingData : formData,
-      paymentMethod: paymentMethod, // ✅ dynamic
-      customerId: user?._id,
-    };
-
-    let response;
-
-    // ✅ CONDITION BASED API CALL
-    if (paymentMethod === "COD") {
-      response = await api({
-        url: SummaryApi.createOrder.url,
-        method: SummaryApi.createOrder.method,
-        data: finalOrder,
-      });
-    }else {
-  const res = await api({
-    url: SummaryApi.createOnlineOrder.url,
-    method: SummaryApi.createOnlineOrder.method,
-    data: finalOrder,
-  });
-
-  if (!res.data.success) {
-    alert("Failed to create Razorpay order");
-    setLoading(false);
-    return;
-  }
-
-  const razorpayData = res.data.data.razorpayOrder;
-
-  const options = {
-    key: "rzp_test_RyBnpI4IJfC1QM",
-    amount: razorpayData.amount,
-    currency: razorpayData.currency,
-    name: "Sunshine International Agritech",
-    description: "Secure Payment for Your Order",
-    image: logo, // 🔥 change this
-    order_id: razorpayData.id,
-
-    handler: async function (response) {
+    if (loading) return;
+    try {
       setLoading(true);
 
-      const verifyRes = await api({
-        url: SummaryApi.verifyOrder.url,
-        method: SummaryApi.verifyOrder.method,
-        data: {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        },
+      const finalOrder = {
+        items: orderSummary.items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.qty,
+          price: item.price,
+        })),
+        total: orderSummary.total,
+        shippingAddress: formData,
+        billingAddress: useDifferentBilling ? billingData : formData,
+        paymentMethod: paymentMethod, // ✅ dynamic
+        customerId: user?._id,
+      };
+
+      let response;
+
+      // ✅ CONDITION BASED API CALL
+      if (paymentMethod === "COD") {
+        response = await api({
+          url: SummaryApi.createOrder.url,
+          method: SummaryApi.createOrder.method,
+          data: finalOrder,
+        });
+      }else {
+        const res = await api({
+          url: SummaryApi.createOnlineOrder.url,
+          method: SummaryApi.createOnlineOrder.method,
+          data: finalOrder,
+        });
+
+        if (!res.data.success) {
+          toast.error("Failed to create Razorpay order");
+          setLoading(false);
+          return;
+        }
+
+        const razorpayData = res.data.data.razorpayOrder;
+
+        const options = {
+          key: "rzp_test_RyBnpI4IJfC1QM",
+          amount: razorpayData.amount,
+          currency: razorpayData.currency,
+          name: "Sunshine International Agritech",
+          description: "Secure Payment for Your Order",
+          image: logo, // 🔥 change this
+          order_id: razorpayData.id,
+
+          handler: async function (response) {
+            setLoading(true);
+
+            const verifyRes = await api({
+              url: SummaryApi.verifyOrder.url,
+              method: SummaryApi.verifyOrder.method,
+              data: {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+            });
+
+            if (verifyRes.data.success) {
+              const order = verifyRes.data.data;
+
+              setOrderData(order);
+              await refreshCart();
+
+              navigate(`/order-page`, {
+                state: { orderId: order._id },
+              });
+            } else {
+              toast.error("Payment verification failed");
+            }
+          },
+
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+            },
+          },
+
+          prefill: {
+            name: formData.firstName + " " + formData.lastName,
+            email: formData.email,
+            contact: formData.phone,
+          },
+
+          notes: {
+            customerId: user?._id,
+            company: "Sunshine International Agritech",
+          },
+
+          theme: {
+            color: "#16a34a",
+          },
+        };
+
+        if (!window.Razorpay) {
+          console.error("Razorpay not loaded");
+          toast.error("Payment system not loaded. Please refresh ❌");
+          setLoading(false);
+          return;
+        }
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+
+        rzp.on("payment.failed", function (response) {
+          console.log(response.error);
+          toast.error("Payment Failed ❌");
+          setLoading(false); // 🔥 IMPORTANT
+        });
+
+        return;
+      }
+
+      const order = response.data.data;
+
+      setOrderData(order);
+      await refreshCart();
+
+      navigate(`/order-page`, {
+        state: { orderId: order._id },
       });
 
-      if (verifyRes.data.success) {
-        const order = verifyRes.data.data;
-
-        setOrderData(order);
-        await refreshCart();
-
-        navigate(`/order-page`, {
-          state: { orderId: order._id },
-        });
-      } else {
-        alert("Payment verification failed");
-      }
-    },
-
-    modal: {
-      ondismiss: function () {
+    } catch (err) {
+      console.log(err);
+    } finally {
+      if (paymentMethod === "COD") {
         setLoading(false);
-      },
-    },
-
-    prefill: {
-      name: formData.firstName + " " + formData.lastName,
-      email: formData.email,
-      contact: formData.phone,
-    },
-
-    notes: {
-      customerId: user?._id,
-      company: "Sunshine International Agritech",
-    },
-
-    theme: {
-      color: "#16a34a",
-    },
+      }
+    }
   };
-
-  if (!window.Razorpay) {
-    console.error("Razorpay not loaded");
-    alert("Payment system not loaded. Please refresh ❌");
-    setLoading(false);
-    return;
-  }
-  const rzp = new window.Razorpay(options);
-  rzp.open();
-
-  rzp.on("payment.failed", function (response) {
-    console.log(response.error);
-    alert("Payment Failed ❌");
-  });
-
-  setLoading(false);
-  return;
-}
-
-    const order = response.data.data;
-
-    setOrderData(order);
-    await refreshCart();
-
-    navigate(`/order-page`, {
-      state: { orderId: order._id },
-    });
-
-  } catch (err) {
-    console.log(err);
-  } finally {
-    setLoading(false);
-  }
-};
 
   if (!orderSummary) {
     return <div className="p-10 text-center">No order summary found!</div>;
