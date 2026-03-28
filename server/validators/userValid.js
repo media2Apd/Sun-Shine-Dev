@@ -17,8 +17,10 @@ export const resetPasswordSchema = Joi.object({
 });
 
 export const updateProfileValidator = Joi.object({
+  _id: Joi.string().optional(),
   firstName: Joi.string().allow(""),
   lastName: Joi.string().allow(""),
+  email: Joi.string().allow(""),
   gender: Joi.string().valid("male", "female", "other", "").allow(""),
   birthday: Joi.date().allow(null),
   phone: Joi.string().allow("").max(15)
