@@ -12,7 +12,6 @@ const exists = await repo.getBlogBySlug(body.slug);
 if (exists)
 throw new Error("Slug already exists");
 
-
 const data = { ...body };
 
 
@@ -32,7 +31,11 @@ data.featuredImage = uploaded;
 
 /* CONTENT IMAGE PROCESSING */
 
-let content = JSON.parse(body.content || "[]");
+let content = body.content || [];
+
+if (typeof content === "string") {
+content = JSON.parse(content);
+}
 
 let imageIndex = 0;
 
@@ -64,9 +67,7 @@ block.value = uploaded.url;
 
 }
 
-
 data.content = content;
-
 
 return repo.createBlog(data);
 
