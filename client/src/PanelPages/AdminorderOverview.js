@@ -265,7 +265,7 @@
 //       {/* Breadcrumb / Back */}
 //       <button 
 //         onClick={() => navigate(-1)} 
-//         className="mb-6 text-sm text-gray-500 hover:text-[#6DC40B] font-medium flex items-center gap-2"
+//         className="mb-6 text-sm text-gray-500 hover:text-green-600 font-medium flex items-center gap-2"
 //       >
 //         ← Back to Orders
 //       </button>
@@ -284,7 +284,7 @@
 //           <div className="relative w-full md:w-auto">
 //             <button 
 //               onClick={() => setOpenStatusDropdown(!openStatusDropdown)}
-//               className="w-full md:w-48 flex items-center justify-between bg-[#6DC40B] text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-green-100 transition-all active:scale-95"
+//               className="w-full md:w-48 flex items-center justify-between bg-green-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-green-100 transition-all active:scale-95"
 //             >
 //               <span>{order.status === 'Delivered' ? 'Completed' : order.status}</span>
 //               <FiChevronDown className={`transition-transform ${openStatusDropdown ? 'rotate-180' : ''}`} />
@@ -301,7 +301,7 @@
 //                     }}
 //                     disabled={step === order.status}
 //                     className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${
-//                       step === order.status ? 'bg-gray-50 text-gray-300' : 'hover:bg-green-50 text-gray-600 hover:text-[#6DC40B]'
+//                       step === order.status ? 'bg-gray-50 text-gray-300' : 'hover:bg-green-50 text-gray-600 hover:text-green-600'
 //                     }`}
 //                   >
 //                     {step === 'Delivered' ? 'Completed' : step}
@@ -327,7 +327,7 @@
 //               <SummaryRow label="Shipping" value="Free" />
 //               <div className="flex justify-between items-center pt-2">
 //                 <span className="text-sm font-bold text-gray-800">Total Amount</span>
-//                 <span className="text-lg font-bold text-[#6DC40B]">₹{order.total?.toLocaleString()}</span>
+//                 <span className="text-lg font-bold text-green-600">₹{order.total?.toLocaleString()}</span>
 //               </div>
 //             </div>
 //           </div>
@@ -340,7 +340,7 @@
 //             <div className="absolute top-5 left-20 right-20 h-0.5 bg-gray-100 -z-0"></div>
 //             {/* Progress Line */}
 //             <div 
-//               className="absolute top-5 left-20 h-0.5 bg-[#6DC40B] transition-all duration-500 -z-0"
+//               className="absolute top-5 left-20 h-0.5 bg-green-600 transition-all duration-500 -z-0"
 //               style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * (100 - (40 / statusSteps.length * 10))}%` }}
 //             ></div>
 
@@ -348,10 +348,10 @@
 //               const isActive = index <= currentStepIndex;
 //               return (
 //                 <div key={step} className="flex flex-col items-center relative z-10">
-//                   <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-all duration-300 ${isActive ? 'bg-[#6DC40B] text-white' : 'bg-gray-100 text-gray-400'}`}>
+//                   <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-all duration-300 ${isActive ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-400'}`}>
 //                     {isActive ? <FiCheckCircle size={20} /> : <FiClock size={20} />}
 //                   </div>
-//                   <p className={`text-xs font-bold mt-3 ${isActive ? 'text-[#6DC40B]' : 'text-gray-400'}`}>
+//                   <p className={`text-xs font-bold mt-3 ${isActive ? 'text-green-600' : 'text-gray-400'}`}>
 //                     {step === 'Delivered' ? 'Completed' : step}
 //                   </p>
 //                 </div>
@@ -407,7 +407,7 @@
 //               <h3 className="text-xl font-bold text-gray-800 mb-2">Update Order Status?</h3>
 //               <p className="text-gray-500 text-sm leading-relaxed px-2">
 //                 Are you sure you want to change this order to 
-//                 <span className="font-bold text-[#6DC40B]"> {confirmModal.nextStatus === 'Delivered' ? 'Completed' : confirmModal.nextStatus}</span>?
+//                 <span className="font-bold text-green-600"> {confirmModal.nextStatus === 'Delivered' ? 'Completed' : confirmModal.nextStatus}</span>?
 //               </p>
 //             </div>
 //             <div className="flex border-t border-gray-100">
@@ -419,7 +419,7 @@
 //               </button>
 //               <button 
 //                 onClick={handleStatusChange} 
-//                 className="flex-1 py-4 text-sm font-bold text-[#6DC40B] hover:bg-green-50 transition-colors"
+//                 className="flex-1 py-4 text-sm font-bold text-green-600 hover:bg-green-50 transition-colors"
 //               >
 //                 Apply Change
 //               </button>
@@ -457,7 +457,7 @@
 // const SummaryRow = ({ label, value, highlight }) => (
 //   <div className="flex justify-between items-center text-sm">
 //     <span className="text-gray-500 font-medium">{label}</span>
-//     <span className={`font-bold ${highlight ? 'text-[#6DC40B] bg-green-50 px-2 py-0.5 rounded' : 'text-gray-800'}`}>{value}</span>
+//     <span className={`font-bold ${highlight ? 'text-green-600 bg-green-50 px-2 py-0.5 rounded' : 'text-gray-800'}`}>{value}</span>
 //   </div>
 // );
 

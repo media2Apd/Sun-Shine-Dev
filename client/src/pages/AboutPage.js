@@ -6,7 +6,7 @@ import farm1 from "../assets/about1.png";
 import farm2 from "../assets/about2.png";
 import farm3 from "../assets/about3.png";
 import UserReviews from "../components/homeComponents/UserReviews";
-import Newsletter from "../components/homeComponents/NewsLetter";
+// import Newsletter from "../components/homeComponents/NewsLetter";
 import { useNavigate } from "react-router-dom";
 
 const AboutPage = () => {
@@ -165,7 +165,7 @@ const AboutPage = () => {
       {/* USER REVIEWS (FULL WIDTH) */}
       <div className="w-full py-10">
         <UserReviews />
-        <Newsletter/>
+        {/* <Newsletter/> */}
       </div>
 
     </>

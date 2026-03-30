@@ -954,21 +954,371 @@
 // }
 
 
+// import React, { useEffect, useState } from "react";
+// import {
+//   ShoppingCart,
+//   Package,
+//   Truck,
+//   CheckCircle,
+//   MessageCircle,
+//   Loader2,
+// } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
+// import SummaryApi from "../common/SummaryApi";
+// import api from "../common/apiClient";
+// import toast from "react-hot-toast";
+
+// export default function AdminDashboard() {
+//   const navigate = useNavigate();
+//   const [dashboardData, setDashboardData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   const fetchDashboardData = async () => {
+//     setLoading(true);
+//     try {
+//       const response = await api({
+//         url: SummaryApi.getDashboardData.url,
+//         method: SummaryApi.getDashboardData.method,
+//       });
+//       if (response.data.success) {
+//         setDashboardData(response.data.data);
+//       }
+//     } catch (error) {
+//       toast.error("Failed to fetch dashboard data");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchDashboardData();
+//   }, []);
+
+//   if (loading || !dashboardData) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-gray-50">
+//         <div className="flex flex-col items-center gap-2">
+//           <Loader2 className="animate-spin text-green-600" size={40} />
+//           <p className="text-gray-500 font-medium">Loading Dashboard...</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   /* ===== DATA MAPPING ===== */
+
+//   const stats = [
+//     { title: "Total Orders", value: dashboardData.totalOrders || 0 },
+//     { title: "Total Revenue", value: `₹${(dashboardData.totalRevenue || 0).toLocaleString()}` },
+//     { title: "Active Customers", value: dashboardData.activeCustomers || 0 },
+//     { title: "Products Available", value: dashboardData.productsAvailable || 0 },
+//   ];
+
+//   const lifecycleData = [
+//     {
+//       label: "New Orders",
+//       value: dashboardData.lifecycle?.newOrders || 0,
+//       icon: ShoppingCart,
+//       color: "text-blue-500",
+//       bgColor: "bg-blue-500",
+//     },
+//     {
+//       label: "Packaged",
+//       value: dashboardData.lifecycle?.packagedOrders || 0,
+//       icon: Package,
+//       color: "text-orange-500",
+//       bgColor: "bg-orange-500",
+//     },
+//     {
+//       label: "Dispatched",
+//       value: dashboardData.lifecycle?.dispatchedOrders || 0,
+//       icon: Truck,
+//       color: "text-purple-500",
+//       bgColor: "bg-purple-500",
+//     },
+//     {
+//       label: "Delivered",
+//       value: dashboardData.lifecycle?.deliveredOrders || 0,
+//       icon: CheckCircle,
+//       color: "text-green-500",
+//       bgColor: "bg-green-500",
+//     },
+//   ];
+
+//   const totalLifecycleCount = lifecycleData.reduce((sum, item) => sum + item.value, 0) || 1;
+
+//   const inventory = dashboardData.inventory?.map((p) => {
+//     const stockCount = p.variants?.reduce((total, v) => total + Number(v.stock || 0), 0) || 0;
+//     return {
+//       name: p.name,
+//       available: stockCount,
+//       status: stockCount === 0 ? "Out of Stock" : stockCount < 10 ? "Low Stock" : "In Stock",
+//     };
+//   });
+
+//   const recentOrders = dashboardData.recentOrders?.map((o) => ({
+//     id: o.orderId,
+//     customer: o.billingAddress?.firstName ? `${o.billingAddress.firstName} ${o.billingAddress.lastName}` : "Guest Customer",
+//     amount: o.total,
+//     status: o.status,
+//   }));
+
+//   return (
+//     <div className="min-h-screen">
+//       {/* TOP STATS */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+//         {stats.map((item, i) => (
+//           <div key={i} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+//             <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">{item.title}</p>
+//             <h2 className="text-2xl font-bold mt-2 text-gray-800">{item.value}</h2>
+//             <div className="flex items-center gap-1 mt-2">
+//                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+//                 <p className="text-green-600 text-[10px] font-bold">LIVE DATA</p>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* ORDER LIFECYCLE */}
+//       <div className="bg-white mt-6 p-6 rounded-xl border border-gray-100 shadow-sm">
+//         <h3 className="font-bold text-gray-700 mb-6 flex items-center gap-2">
+//             <span className="w-1 h-4 bg-green-500 rounded-full"></span> Orders Lifecycle
+//         </h3>
+
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+//           {lifecycleData.map((item, i) => {
+//             const Icon = item.icon;
+//             const progress = (item.value / totalLifecycleCount) * 100;
+
+//             return (
+//               <div key={i} className="space-y-3">
+//                 <div className="flex items-center gap-4">
+//                   <div className="p-3 bg-gray-50 rounded-xl">
+//                     <Icon size={20} className={item.color} />
+//                   </div>
+//                   <div>
+//                     <h2 className="text-xl font-bold text-gray-800">{item.value}</h2>
+//                     <p className="text-xs font-medium text-gray-400 uppercase tracking-tight">{item.label}</p>
+//                   </div>
+//                 </div>
+//                 <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+//                   <div
+//                     className={`h-full transition-all duration-500 ${item.bgColor}`}
+//                     style={{ width: `${progress}%` }}
+//                   />
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* TABLES */}
+//       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+//         {/* INVENTORY */}
+//         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+//           <div className="flex justify-between items-center mb-6">
+//             <h3 className="font-bold text-gray-700">Stock Inventory</h3>
+//             <button 
+//                 onClick={() => navigate("/admin-panel/product-list")}
+//                 className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
+//             >
+//               VIEW ALL →
+//             </button>
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <table className="w-full text-sm">
+//                 <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
+//                 <tr>
+//                     <th className="text-left pb-3">Product Name</th>
+//                     <th className="text-center pb-3">Stock</th>
+//                     <th className="text-right pb-3">Status</th>
+//                 </tr>
+//                 </thead>
+//                 <tbody className="divide-y divide-gray-50">
+//                 {inventory?.map((item, i) => (
+//                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+//                     <td className="py-4 font-medium text-gray-700">{item.name}</td>
+//                     <td className="text-center font-bold text-gray-600">{item.available}</td>
+//                     <td className="text-right">
+//                         <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+//                             item.status === "Low Stock" ? "bg-orange-50 text-orange-500" : 
+//                             item.status === "Out of Stock" ? "bg-red-50 text-red-500" : 
+//                             "bg-green-50 text-green-600"
+//                         }`}>
+//                         ● {item.status}
+//                         </span>
+//                     </td>
+//                     </tr>
+//                 ))}
+//                 </tbody>
+//             </table>
+//           </div>
+//         </div>
+
+//         {/* RECENT ORDERS */}
+//         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+//           <div className="flex justify-between items-center mb-6">
+//             <h3 className="font-bold text-gray-700">Recent Sales</h3>
+//             <button 
+//                 onClick={() => navigate("/admin-panel/order-list")}
+//                 className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
+//             >
+//               VIEW ALL →
+//             </button>
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <table className="w-full text-sm">
+//                 <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
+//                 <tr>
+//                     <th className="text-left pb-3">Order ID</th>
+//                     <th className="text-left pb-3">Customer</th>
+//                     <th className="text-center pb-3">Amount</th>
+//                     <th className="text-right pb-3">Status</th>
+//                 </tr>
+//                 </thead>
+//                 <tbody className="divide-y divide-gray-50">
+//                 {recentOrders?.map((item, i) => (
+//                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+//                     <td className="py-4 font-bold text-gray-500 text-[12px]">#{item.id?.slice(-8)}</td>
+//                     <td className="font-medium text-gray-700 truncate max-w-[120px]">{item.customer}</td>
+//                     <td className="text-center font-bold text-gray-900">₹{item.amount}</td>
+//                     <td className="text-right">
+//                         <span className={`text-[10px] font-bold ${
+//                             item.status === "Delivered" ? "text-green-600" : "text-orange-500"
+//                         }`}>
+//                         {item.status}
+//                         </span>
+//                     </td>
+//                     </tr>
+//                 ))}
+//                 </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* BOTTOM SECTION */}
+//       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+//         {/* ENQUIRIES PLACEHOLDER (Update API to include this if needed) */}
+//         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+//           <h3 className="font-bold text-gray-700 mb-6">Recent Enquiries</h3>
+//           <div className="flex flex-col items-center justify-center py-10 text-gray-300">
+//              <MessageCircle size={40} className="mb-2 opacity-20" />
+//              <p className="text-xs font-medium uppercase tracking-widest">No Recent Enquiries</p>
+//           </div>
+//         </div>
+
+//         {/* CUSTOMER INSIGHTS */}
+//         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+//           <div className="flex justify-between items-center mb-6">
+//             <h3 className="font-bold text-gray-700">Customer Insights</h3>
+//             <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+//               Overview
+//             </span>
+//           </div>
+
+//           <div className="space-y-6">
+//             <div className="flex justify-between items-center group">
+//               <span className="text-sm font-medium text-gray-500">Total Registered Customers</span>
+//               <span className="text-lg font-bold text-gray-800">{dashboardData.customerInsights?.totalCustomers || 0}</span>
+//             </div>
+
+//             <div className="flex justify-between items-center">
+//               <span className="text-sm font-medium text-gray-500">New Customers This Month</span>
+//               <span className="text-lg font-bold text-green-600">+{dashboardData.customerInsights?.newCustomers || 0}</span>
+//             </div>
+
+//             <div className="pt-6 border-t border-gray-50">
+//                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Top Performing Region</p>
+//                 <div className="bg-gray-50 p-4 rounded-xl flex justify-between items-center">
+//                     <span className="text-sm font-bold text-gray-700">Tamil Nadu</span>
+//                     <span className="text-xs font-medium text-gray-400">Main Focus</span>
+//                 </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
 import React, { useEffect, useState } from "react";
 import {
   ShoppingCart,
   Package,
   Truck,
   CheckCircle,
-  MessageCircle,
-  Loader2,
+  Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SummaryApi from "../common/SummaryApi";
 import api from "../common/apiClient";
 import toast from "react-hot-toast";
 
-export default function AdminDashboard() {
+
+// --- SKELETON COMPONENT ---
+const DashboardSkeleton = () => {
+  return (
+    <div className="animate-pulse">
+      {/* TOP STATS SKELETON */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+            <div className="h-3 w-24 bg-gray-200 rounded mb-4"></div>
+            <div className="h-8 w-32 bg-gray-200 rounded mb-3"></div>
+            <div className="h-3 w-20 bg-gray-100 rounded"></div>
+          </div>
+        ))}
+      </div>
+
+      {/* ORDER LIFECYCLE SKELETON */}
+      <div className="bg-white mt-6 p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="h-5 w-40 bg-gray-200 rounded mb-8"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-100 rounded-xl"></div>
+                <div className="space-y-2">
+                  <div className="h-6 w-12 bg-gray-200 rounded"></div>
+                  <div className="h-3 w-20 bg-gray-100 rounded"></div>
+                </div>
+              </div>
+              <div className="h-1.5 w-full bg-gray-100 rounded-full"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* TABLES SKELETON */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+        {[1, 2].map((i) => (
+          <div key={i} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <div className="flex justify-between mb-6">
+              <div className="h-5 w-32 bg-gray-200 rounded"></div>
+              <div className="h-4 w-16 bg-gray-100 rounded"></div>
+            </div>
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((row) => (
+                <div key={row} className="flex justify-between items-center py-2 border-b border-gray-50">
+                  <div className="h-4 w-1/3 bg-gray-100 rounded"></div>
+                  <div className="h-4 w-12 bg-gray-100 rounded"></div>
+                  <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AdminDashboard = () => {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -995,14 +1345,7 @@ export default function AdminDashboard() {
   }, []);
 
   if (loading || !dashboardData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-2">
-          <Loader2 className="animate-spin text-green-600" size={40} />
-          <p className="text-gray-500 font-medium">Loading Dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   /* ===== DATA MAPPING ===== */
@@ -1010,7 +1353,7 @@ export default function AdminDashboard() {
   const stats = [
     { title: "Total Orders", value: dashboardData.totalOrders || 0 },
     { title: "Total Revenue", value: `₹${(dashboardData.totalRevenue || 0).toLocaleString()}` },
-    { title: "Active Customers", value: dashboardData.activeCustomers || 0 },
+    { title: "Registered Customers", value: dashboardData.customerInsights?.totalCustomers || 0 },
     { title: "Products Available", value: dashboardData.productsAvailable || 0 },
   ];
 
@@ -1024,7 +1367,7 @@ export default function AdminDashboard() {
     },
     {
       label: "Packaged",
-      value: dashboardData.lifecycle?.packagedOrders || 0,
+      value: dashboardData.lifecycle?.PackagedOrders || 0, // Matched JSON key 'PackagedOrders'
       icon: Package,
       color: "text-orange-500",
       bgColor: "bg-orange-500",
@@ -1063,6 +1406,13 @@ export default function AdminDashboard() {
     status: o.status,
   }));
 
+  const recentEnquiries = dashboardData.recentEnquiries?.map((e) => ({
+    name: `${e.firstName} ${e.lastName}`,
+    type: e.enquiryType,
+    status: e.currentStatus,
+    date: new Date(e.createdAt).toLocaleDateString('en-GB')
+  }));
+
   return (
     <div className="min-h-screen">
       {/* TOP STATS */}
@@ -1073,7 +1423,7 @@ export default function AdminDashboard() {
             <h2 className="text-2xl font-bold mt-2 text-gray-800">{item.value}</h2>
             <div className="flex items-center gap-1 mt-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                <p className="text-green-600 text-[10px] font-bold">LIVE DATA</p>
+                <p className="text-green-600 text-[10px] font-bold">LIVE UPDATES</p>
             </div>
           </div>
         ))}
@@ -1113,43 +1463,27 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* TABLES */}
+      {/* MID SECTION: INVENTORY & RECENT ORDERS */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         {/* INVENTORY */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-bold text-gray-700">Stock Inventory</h3>
-            <button 
-                onClick={() => navigate("/admin-panel/product-list")}
-                className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
-            >
-              VIEW ALL →
-            </button>
+            <button onClick={() => navigate("/admin-panel/product-list")} className="text-green-600 text-xs font-bold hover:underline">VIEW ALL →</button>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
                 <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
-                <tr>
-                    <th className="text-left pb-3">Product Name</th>
-                    <th className="text-center pb-3">Stock</th>
-                    <th className="text-right pb-3">Status</th>
-                </tr>
+                    <tr><th className="text-left pb-3">Product Name</th><th className="text-center pb-3">Stock</th><th className="text-right pb-3">Status</th></tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                 {inventory?.map((item, i) => (
                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-4 font-medium text-gray-700">{item.name}</td>
-                    <td className="text-center font-bold text-gray-600">{item.available}</td>
-                    <td className="text-right">
-                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
-                            item.status === "Low Stock" ? "bg-orange-50 text-orange-500" : 
-                            item.status === "Out of Stock" ? "bg-red-50 text-red-500" : 
-                            "bg-green-50 text-green-600"
-                        }`}>
-                        ● {item.status}
-                        </span>
-                    </td>
+                        <td className="py-4 font-medium text-gray-700">{item.name}</td>
+                        <td className="text-center font-bold text-gray-600">{item.available}</td>
+                        <td className="text-right">
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${item.status === "Low Stock" ? "bg-orange-50 text-orange-500" : item.status === "Out of Stock" ? "bg-red-50 text-red-500" : "bg-green-50 text-green-600"}`}>● {item.status}</span>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
@@ -1158,40 +1492,25 @@ export default function AdminDashboard() {
         </div>
 
         {/* RECENT ORDERS */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-bold text-gray-700">Recent Sales</h3>
-            <button 
-                onClick={() => navigate("/admin-panel/order-list")}
-                className="text-green-600 text-xs font-bold hover:underline underline-offset-4"
-            >
-              VIEW ALL →
-            </button>
+            <button onClick={() => navigate("/admin-panel/order-list")} className="text-green-600 text-xs font-bold hover:underline">VIEW ALL →</button>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
                 <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
-                <tr>
-                    <th className="text-left pb-3">Order ID</th>
-                    <th className="text-left pb-3">Customer</th>
-                    <th className="text-center pb-3">Amount</th>
-                    <th className="text-right pb-3">Status</th>
-                </tr>
+                    <tr><th className="text-left pb-3">Order ID</th><th className="text-left pb-3">Customer</th><th className="text-center pb-3">Amount</th><th className="text-right pb-3">Status</th></tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                 {recentOrders?.map((item, i) => (
                     <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-4 font-bold text-gray-500 text-[12px]">#{item.id?.slice(-8)}</td>
-                    <td className="font-medium text-gray-700 truncate max-w-[120px]">{item.customer}</td>
-                    <td className="text-center font-bold text-gray-900">₹{item.amount}</td>
-                    <td className="text-right">
-                        <span className={`text-[10px] font-bold ${
-                            item.status === "Delivered" ? "text-green-600" : "text-orange-500"
-                        }`}>
-                        {item.status}
-                        </span>
-                    </td>
+                        <td className="py-4 font-bold text-gray-400 text-[12px]">#{item.id?.slice(-8)}</td>
+                        <td className="font-medium text-gray-700 truncate max-w-[120px]">{item.customer}</td>
+                        <td className="text-center font-bold text-gray-900">₹{item.amount}</td>
+                        <td className="text-right">
+                            <span className={`text-[10px] font-bold ${item.status === "Delivered" ? "text-green-600" : "text-orange-500"}`}>{item.status}</span>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
@@ -1200,47 +1519,77 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* BOTTOM SECTION */}
+      {/* BOTTOM SECTION: ENQUIRIES & INSIGHTS */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        {/* ENQUIRIES PLACEHOLDER (Update API to include this if needed) */}
+        {/* RECENT ENQUIRIES */}
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-6">Recent Enquiries</h3>
-          <div className="flex flex-col items-center justify-center py-10 text-gray-300">
-             <MessageCircle size={40} className="mb-2 opacity-20" />
-             <p className="text-xs font-medium uppercase tracking-widest">No Recent Enquiries</p>
-          </div>
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-gray-700">Recent Enquiries</h3>
+                <button onClick={() => navigate("/admin-panel/enquiry-list")} className="text-green-600 text-xs font-bold hover:underline">VIEW ALL →</button>
+            </div>
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                    <thead className="text-[11px] uppercase font-bold text-gray-400 border-b border-gray-50">
+                        <tr><th className="text-left pb-3">Customer</th><th className="text-left pb-3">Type</th><th className="text-right pb-3">Status</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                        {recentEnquiries?.map((enq, i) => (
+                            <tr key={i} className="hover:bg-gray-50/50">
+                                <td className="py-4">
+                                    <p className="font-bold text-gray-700">{enq.name}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium">{enq.date}</p>
+                                </td>
+                                <td className="font-medium text-gray-500">{enq.type}</td>
+                                <td className="text-right">
+                                    <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${
+                                        enq.status === 'Closed' ? 'bg-green-50 text-green-600' : 
+                                        enq.status === 'Contacted' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'
+                                    }`}>{enq.status}</span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {/* CUSTOMER INSIGHTS */}
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-gray-700">Customer Insights</h3>
-            <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-              Overview
-            </span>
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="font-bold text-gray-700 flex items-center gap-2"><Users size={18} className="text-[#4AB300]" /> Customer Insights</h3>
+            <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Overall</span>
           </div>
 
           <div className="space-y-6">
-            <div className="flex justify-between items-center group">
-              <span className="text-sm font-medium text-gray-500">Total Registered Customers</span>
-              <span className="text-lg font-bold text-gray-800">{dashboardData.customerInsights?.totalCustomers || 0}</span>
+            <div className="flex justify-between items-center group bg-gray-50 p-4 rounded-2xl">
+              <span className="text-sm font-bold text-gray-500">Total Registered</span>
+              <span className="text-xl font-black text-gray-800">{dashboardData.customerInsights?.totalCustomers || 0}</span>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center border-b border-gray-50 pb-4 px-2">
               <span className="text-sm font-medium text-gray-500">New Customers This Month</span>
               <span className="text-lg font-bold text-green-600">+{dashboardData.customerInsights?.newCustomers || 0}</span>
             </div>
 
+            <div className="flex justify-between items-center px-2">
+              <span className="text-sm font-medium text-gray-500">Acquisition Rate</span>
+              <span className="text-lg font-bold text-gray-700">Stable</span>
+            </div>
+
+            {/* Top Performing Region - Commented out as requested
             <div className="pt-6 border-t border-gray-50">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Top Performing Region</p>
                 <div className="bg-gray-50 p-4 rounded-xl flex justify-between items-center">
                     <span className="text-sm font-bold text-gray-700">Tamil Nadu</span>
                     <span className="text-xs font-medium text-gray-400">Main Focus</span>
                 </div>
-            </div>
+            </div> 
+            */}
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default AdminDashboard;

@@ -135,10 +135,9 @@ export default function Header() {
           )}
           </div>
 
-          <div className="relative">
+          <Link to="/wishlist-page" className="relative">
             <FiHeart
               strokeWidth={1.5}
-              onClick={() => navigate("/wishlist-page")}
               className="text-xl cursor-pointer hover:text-orange-500 transition"
             />
 
@@ -147,12 +146,11 @@ export default function Header() {
                 {wishlistCount}
               </span>
             )}
-          </div>
+          </Link>
 
-          <div className="relative">
+          <Link to="/cart-page" className="relative">
             <FiShoppingCart
               strokeWidth={1.5}
-              onClick={() => navigate("/cart-page")}
               className="text-xl cursor-pointer hover:text-orange-500 transition"
             />
 
@@ -161,7 +159,7 @@ export default function Header() {
                 {cartCount}
               </span>
             )}
-          </div>
+          </Link>
         </div>
       </div>
     </header>

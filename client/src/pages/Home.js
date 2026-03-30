@@ -12,7 +12,7 @@ import UserReviews from "../components/homeComponents/UserReviews";
 import BlogsSection from "../components/homeComponents/BlogSection";
 import { SimplifiedBuyingProcess } from "../components/homeComponents/SimplifiedBuying";
 import { OurCertificates } from "../components/homeComponents/OurCertificates";
-import Newsletter from "../components/homeComponents/NewsLetter";
+// import Newsletter from "../components/homeComponents/NewsLetter";
 
 function Home() {
   return (
@@ -30,7 +30,7 @@ function Home() {
       <BlogsSection />
       <SimplifiedBuyingProcess />
       <OurCertificates />
-      <Newsletter />
+      {/* <Newsletter /> */}
     </div>
   );
 }

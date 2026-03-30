@@ -1,4 +1,5 @@
 import React from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 export default function BlogPreview({ blog, onBack }) {
   if (!blog) {
@@ -6,9 +7,9 @@ export default function BlogPreview({ blog, onBack }) {
       <div className="p-6">
         <button
           onClick={onBack}
-          className="mb-4 border px-4 py-2 rounded hover:bg-gray-100"
+          className="mb-6 border px-4 py-2 rounded hover:bg-gray-100 flex items-center gap-1 text-gray-600"
         >
-          ← Back to Editor
+          <FaArrowLeftLong/> Back to Editor
         </button>
 
         <p>No preview data available.</p>
@@ -17,13 +18,13 @@ export default function BlogPreview({ blog, onBack }) {
   }
 
   return (
-    <div className=" bg-white min-h-screen mx-auto">
+    <div className="p-4 rounded-lg bg-white min-h-screen mx-auto">
       {/* BACK BUTTON */}
       <button
         onClick={onBack}
-        className="mb-6 border px-4 py-2 rounded hover:bg-gray-100"
+        className="mb-6 border px-4 py-2 rounded hover:bg-gray-100 flex items-center gap-1 text-gray-600"
       >
-        ← Back to Editor
+        <FaArrowLeftLong/> Back to Editor
       </button>
 
       {/* TITLE */}
