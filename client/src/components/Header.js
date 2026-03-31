@@ -9,7 +9,7 @@ import {
   FiLogOut,
   FiUserCheck,
 } from "react-icons/fi";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useCart } from "../Context/CartContext";
@@ -42,7 +42,7 @@ export default function Header() {
     window.dispatchEvent(new Event("wishlistUpdated"));
     window.dispatchEvent(new Event("cartUpdated"));
 
-    navigate("/login-page");
+    navigate("/login");
   };
 
   // Close dropdown when clicking outside
@@ -72,7 +72,7 @@ export default function Header() {
           <div className="relative" ref={dropdownRef}>
           <div
             onClick={() => {
-              if (!user) navigate("/login-page");
+              if (!user) navigate("/login");
               else setOpen(!open);
             }}
             className={`text-xl cursor-pointer hover:text-orange-500 transition`}
@@ -92,7 +92,7 @@ export default function Header() {
                   : "opacity-0 -translate-y-5 pointer-events-none transition-none"
               }`}
             >
-              <Link to="/settings-page" onClick={() => setOpen(false)}>
+              <Link to="/settings" onClick={() => setOpen(false)}>
                 <DropdownItem delay="0ms" open={open} icon={<FiUser />} text="My Profile" />
               </Link>
 
@@ -100,7 +100,7 @@ export default function Header() {
                 <DropdownItem delay="50ms" open={open} icon={<FiRefreshCw />} text="Order History" />
               </Link>
 
-              <Link to="/wishlist-page" onClick={() => setOpen(false)}>
+              <Link to="/wishlist" onClick={() => setOpen(false)}>
                 <div className="relative">
                   <DropdownItem delay="100ms" open={open} icon={<FiHeart />} text="WishList" />
                   {wishlistCount > 0 && (
@@ -111,7 +111,7 @@ export default function Header() {
                 </div>
               </Link>
 
-              <Link to="/cart-page" onClick={() => setOpen(false)}>
+              <Link to="/cart" onClick={() => setOpen(false)}>
                 <div className="relative">
                   <DropdownItem delay="150ms" open={open} icon={<FiShoppingCart />} text="Shopping Cart" />
                   {cartCount > 0 && (
@@ -135,7 +135,7 @@ export default function Header() {
           )}
           </div>
 
-          <Link to="/wishlist-page" className="relative">
+          <Link to="/wishlist" className="relative">
             <FiHeart
               strokeWidth={1.5}
               className="text-xl cursor-pointer hover:text-orange-500 transition"
@@ -148,7 +148,7 @@ export default function Header() {
             )}
           </Link>
 
-          <Link to="/cart-page" className="relative">
+          <Link to="/cart" className="relative">
             <FiShoppingCart
               strokeWidth={1.5}
               className="text-xl cursor-pointer hover:text-orange-500 transition"

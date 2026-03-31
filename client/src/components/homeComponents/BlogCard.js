@@ -106,7 +106,7 @@ function BlogCard({ blog }) {
   if (!blog) return null;
 
   const handleClick = () => {
-    navigate(`/blog-overview/${blog.slug}`); // ✅ slug based navigation
+    navigate(`/blogs/${blog.slug}`); // ✅ slug based navigation
   };
 
   return (

@@ -113,7 +113,7 @@
 //           Already have an account?{" "}
 //           <span
 //             className="text-blue-600 cursor-pointer hover:underline"
-//             onClick={() => navigate("/login-page")}
+//             onClick={() => navigate("/login")}
 //           >
 //             Login
 //           </span>
@@ -312,7 +312,7 @@ const SignupPage = () => {
       const resData = await response.json();
       if (resData.success) {
         toast.success("Account created successfully!");
-        navigate("/login-page");
+        navigate("/login");
       } else {
         toast.error(resData.message);
       }
@@ -398,7 +398,7 @@ const SignupPage = () => {
 
         <p className="text-center mt-8 text-gray-600 text-sm">
           Already have account?{" "}
-          <span className="font-bold text-gray-800 cursor-pointer hover:underline" onClick={() => navigate("/login-page")}>
+          <span className="font-bold text-gray-800 cursor-pointer hover:underline" onClick={() => navigate("/login")}>
             Login
           </span>
         </p>

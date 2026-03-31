@@ -309,7 +309,6 @@ const OrderlistPage = () => {
                       className={`w-full px-3 py-1.5 rounded-lg border text-[11px] font-bold outline-none cursor-pointer appearance-none ${getStatusStyle(order.status)}`}
                     >
                       <option value="Placed">Placed</option>
-                      <option value="Processing">Processing</option>
                       <option value="Packaged">Packaged</option>
                       <option value="Shipped">Shipped</option>
                       <option value="Delivered">Delivered</option>

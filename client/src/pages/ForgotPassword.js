@@ -107,7 +107,7 @@ const ForgotPassword = () => {
           </button>
         </form>
         <p className="text-center mt-6 text-sm">
-          <span className="text-gray-500 cursor-pointer hover:underline" onClick={() => navigate("/login-page")}>Back to Login</span>
+          <span className="text-gray-500 cursor-pointer hover:underline" onClick={() => navigate("/login")}>Back to Login</span>
         </p>
       </div>
     </div>

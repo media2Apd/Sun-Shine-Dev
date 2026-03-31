@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Star, Heart, ShoppingCart } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
 import { toast } from "react-hot-toast";
@@ -16,6 +16,7 @@ export default function ProductOverview() {
 
   const location = useLocation();
   const id = location.state?.id;
+  const { slug } = useParams();
 
   const { refreshCart } = useCart();
   const { wishlist, refreshWishlist } = useWishlist();
@@ -44,12 +45,12 @@ export default function ProductOverview() {
   }, [product, wishlist]);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !slug) return;
 
     const fetchProduct = async () => {
       try {
         const res = await api({
-          url: SummaryApi.getOneProduct.url(id),
+          url: SummaryApi.getOneProduct.url(id || slug),
           method: SummaryApi.getOneProduct.method,
         });
 
@@ -68,7 +69,7 @@ export default function ProductOverview() {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, slug]);
 
   useEffect(() => {
     if (!product?._id) return;
