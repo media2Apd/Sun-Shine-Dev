@@ -32,15 +32,6 @@ const SummaryApi = {
         url: `${backendDomain}/api/user/reset-password`,
         method: "post"
     },
-    googleLogin: {
-        url: `${backendDomain}/api/auth/google-login`,
-        method: "post",
-    },
-    facebookLogin: {
-        url: `${backendDomain}/api/auth/facebook-login`,
-        method: "post",
-    },
-
 
     // ===================== USERS / CUSTOMERS ROUTES =====================
     getProfile: {

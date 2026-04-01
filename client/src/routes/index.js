@@ -38,6 +38,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import NotFound from "../pages/NotFound";
 import FAQPage from "../pages/FAQPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
