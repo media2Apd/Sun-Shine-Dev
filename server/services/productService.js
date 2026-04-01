@@ -239,3 +239,14 @@ repo.getAllProducts();
 
 export const getProductById = (id) =>
 repo.getProductById(id);
+
+export const getProductBySlugOrIdService = async (slugOrId) => {
+
+  const product = await repo.getProductBySlugOrIdRepo(slugOrId);
+
+  if (!product)
+    throw new Error("Product not found");
+
+  return product;
+
+};
