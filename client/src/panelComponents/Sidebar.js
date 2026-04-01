@@ -1,6 +1,6 @@
 // import React, { useState } from "react";
 // import { NavLink, useLocation } from "react-router-dom";
-// import logo from '../assets/logo.jpg';
+// import logo from '../assets/logo.svg';
 
 // import {
 //   FiGrid,
@@ -179,7 +179,7 @@
 
 // import React, { useState } from "react";
 // import { NavLink, useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
-// import logo from '../assets/logo.jpg';
+// import logo from '../assets/logo.svg';
 
 // import {
 //   FiGrid,
@@ -353,7 +353,7 @@
 
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.svg';
 
 import {
   FiGrid,

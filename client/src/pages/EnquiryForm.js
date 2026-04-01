@@ -226,7 +226,7 @@ const EnquiryForm = () => {
                 category
                   .filter((cat) => cat.showOnWebsite) // optional but correct
                   .map((cat) => (
-                    <option key={cat.id} value={cat.name}>
+                    <option key={cat._id} value={cat.name}>
                       {cat.name}
                     </option>
                   ))

@@ -2831,7 +2831,544 @@
 //   );
 // }
 
+// // export default BlogForm;
+// import React, { useState, useRef, useEffect } from "react";
+// import BlogPreview from "./BlogPreview";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import SummaryApi from "../common/SummaryApi";
+// import { 
+//   FiMove, FiTrash2, FiRefreshCw, FiImage, 
+//   FiType, FiList, FiMessageSquare, FiHelpCircle, FiStar 
+// } from "react-icons/fi";
+
+// // --- DND KIT IMPORTS ---
+// import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+// import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
+// import { v4 as uuidv4 } from "uuid";
+// import toast from "react-hot-toast";
+
+// // ----------------------------------------------------------------------
+// // SORTABLE WRAPPER COMPONENT
+// // ----------------------------------------------------------------------
+// const SortableBlockWrapper = ({ id, children }) => {
+//   const {
+//     attributes,
+//     listeners,
+//     setNodeRef,
+//     transform,
+//     transition,
+//     isDragging
+//   } = useSortable({ id });
+
+//   const style = {
+//     transform: CSS.Transform.toString(transform),
+//     transition,
+//     zIndex: isDragging ? 50 : "auto",
+//     opacity: isDragging ? 0.6 : 1,
+//   };
+
+//   return (
+//     <div ref={setNodeRef} style={style} {...attributes}>
+//       {children({ listeners })}
+//     </div>
+//   );
+// };
+
+// const BlogForm = () => {
+//   const editorRefs = useRef({}); 
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   const editBlog = location.state?.blog || null;
+
+//   const [previewMode, setPreviewMode] = useState(false);
+//   const [focusedBlockId, setFocusedBlockId] = useState(null); 
+//   const [activeFormat, setActiveFormat] = useState({
+//     bold: false,
+//     italic: false,
+//     underline: false,
+//   });
+
+//   const [blog, setBlog] = useState({
+//     title: "",
+//     slug: "",
+//     category: "",
+//     author: "",
+//     date: "",
+//     metaTitle: "",
+//     metaDescription: "",
+//     featuredImage: "",
+//     featuredImageFile: null, // 🔥 Added to fix the property error
+//     status: "Draft",
+//     content: [], 
+//   });
+
+//   const sensors = useSensors(
+//     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+//     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+//   );
+
+//   // ---------------------- FETCH DATA ----------------------
+//   useEffect(() => {
+//     const fetchBlog = async () => {
+//       if (!editBlog?.slug) return;
+//       try {
+//         const res = await fetch(SummaryApi.getOneBlog.url(editBlog.slug), {
+//           method: SummaryApi.getOneBlog.method,
+//         });
+//         const data = await res.json();
+//         if (data) {
+//           const contentWithIds = (data.content || []).map(block => ({
+//             ...block,
+//             id: block.id || uuidv4()
+//           }));
+
+//           setBlog({
+//             ...data,
+//             featuredImage: data.featuredImage?.url || "", // Map from object to string for preview
+//             featuredImageFile: null,
+//             content: contentWithIds,
+//             date: data.publishDate ? new Date(data.publishDate).toISOString().split("T")[0] : "",
+//           });
+//         }
+//       } catch (err) {
+//         console.error("Fetch Error:", err);
+//       }
+//     };
+//     fetchBlog();
+//   }, [editBlog?.slug]);
+
+//   // ---------------------- PERSISTENCE FIX ----------------------
+//   useEffect(() => {
+//     if (!previewMode) {
+//       const timer = setTimeout(() => {
+//         blog.content.forEach((block) => {
+//           const el = editorRefs.current[block.id];
+//           if (el && block.type !== 'image' && el.innerHTML !== block.value) {
+//             el.innerHTML = block.value || "";
+//           }
+//         });
+//       }, 50);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [previewMode, blog.content]);
+
+//   // ---------------------- HELPERS ----------------------
+//   const updateField = (key, value) => setBlog({ ...blog, [key]: value });
+
+//   const getBlockIcon = (type) => {
+//     switch (type) {
+//       case "heading": return <FiType />;
+//       case "paragraph": return <FiType />;
+//       case "list": return <FiList />;
+//       case "image": return <FiImage />;
+//       case "quote": return <FiMessageSquare />;
+//       case "faq": return <FiHelpCircle />;
+//       case "tip": return <FiStar />;
+//       default: return <FiType />;
+//     }
+//   };
+
+//   const addBlock = (type) => {
+//     const newId = uuidv4();
+//     setBlog(prev => ({
+//       ...prev,
+//       content: [...prev.content, { id: newId, type, value: "", file: null }],
+//     }));
+//   };
+
+//   const updateBlockValue = (id, htmlValue) => {
+//     setBlog(prev => ({
+//       ...prev,
+//       content: prev.content.map(b => b.id === id ? { ...b, value: htmlValue } : b)
+//     }));
+//   };
+
+//   const clearBlock = (id) => {
+//     if (editorRefs.current[id]) editorRefs.current[id].innerHTML = "";
+//     updateBlockValue(id, "");
+//   };
+
+//   const removeBlock = (id) => {
+//     setBlog(prev => ({
+//       ...prev,
+//       content: prev.content.filter(b => b.id !== id)
+//     }));
+//     delete editorRefs.current[id];
+//   };
+
+//   const handleDragEnd = (event) => {
+//     const { active, over } = event;
+//     if (!over || active.id === over.id) return;
+
+//     setBlog((prev) => {
+//       const oldIndex = prev.content.findIndex((b) => b.id === active.id);
+//       const newIndex = prev.content.findIndex((b) => b.id === over.id);
+//       return {
+//         ...prev,
+//         content: arrayMove(prev.content, oldIndex, newIndex),
+//       };
+//     });
+//   };
+
+//   const format = (command, id) => {
+//     if (focusedBlockId !== id) return;
+//     document.execCommand(command, false, null);
+//     checkFormat(id);
+//   };
+
+//   const checkFormat = (id) => {
+//     setFocusedBlockId(id);
+//     setActiveFormat({
+//       bold: document.queryCommandState("bold"),
+//       italic: document.queryCommandState("italic"),
+//       underline: document.queryCommandState("underline"),
+//     });
+//   };
+
+//   // ---------------------- UPLOADS ----------------------
+//   const handleImageUpload = (e, id) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+    
+//     // We store the binary file for uploading and a preview URL for the UI
+//     const previewUrl = URL.createObjectURL(file);
+    
+//     setBlog(prev => ({
+//       ...prev,
+//       content: prev.content.map(b => 
+//         b.id === id ? { ...b, value: previewUrl, file: file, isNewFile: true } : b
+//       )
+//     }));
+//   };
+
+//   const handleFeatured = (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     const previewUrl = URL.createObjectURL(file);
+//     setBlog((prev) => ({
+//       ...prev,
+//       featuredImage: previewUrl,
+//       featuredImageFile: file,
+//     }));
+//   };
+
+//   // ---------------------- SAVE LOGIC ----------------------
+//   const saveBlog = async () => {
+//     const toastId = toast.loading("Saving article...");
+//     try {
+//       const formData = new FormData();
+//       formData.append("title", blog.title);
+//       formData.append("slug", blog.slug);
+//       formData.append("category", blog.category);
+//       formData.append("author", blog.author);
+//       formData.append("publishDate", blog.date);
+//       formData.append("metaTitle", blog.metaTitle);
+//       formData.append("metaDescription", blog.metaDescription);
+//       formData.append("status", blog.status);
+
+//       // We need to handle the content blocks carefully.
+//       // If it's an image block and has a new 'file', we append it to FormData.
+//       // We'll replace the 'value' with a placeholder so the backend knows which file belongs where.
+//       const processedContent = blog.content.map((block) => {
+//         let finalValue = block.type === 'image' ? block.value : (editorRefs.current[block.id]?.innerHTML || block.value);
+        
+//         if (block.type === 'image' && block.file && block.isNewFile) {
+//           formData.append("contentImages", block.file);
+//           // Set value to a special marker so backend can replace it with the Cloudinary URL
+//           finalValue = "__NEW_IMAGE__"; 
+//         }
+
+//         return {
+//           type: block.type,
+//           value: finalValue
+//         };
+//       });
+
+//       formData.append("content", JSON.stringify(processedContent));
+
+//       if (blog.featuredImageFile) {
+//         formData.append("featuredImage", blog.featuredImageFile);
+//       }
+
+//       const url = editBlog ? SummaryApi.updateBlog.url(editBlog._id) : SummaryApi.createBlog.url;
+//       const method = editBlog ? SummaryApi.updateBlog.method : SummaryApi.createBlog.method;
+
+//       const res = await fetch(url, { 
+//         method, 
+//         body: formData 
+//         // Note: fetch automatically sets the correct Content-Type with boundary for FormData
+//       });
+      
+//       const data = await res.json();
+
+//       if (data.success || data._id) {
+//         toast.success(editBlog ? "Blog updated successfully!" : "Blog created successfully!", { id: toastId });
+//         navigate('/admin-panel/blog-list');
+//       } else {
+//         throw new Error(data.message || "Failed to save");
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       toast.error(err.message || "Error saving blog", { id: toastId });
+//     }
+//   };
+
+//   if (previewMode) {
+//     return <BlogPreview blog={blog} onBack={() => setPreviewMode(false)} />;
+//   }
+
+//   return (
+//     <div className="min-h-screen pb-20">
+//       {/* HEADER SECTION */}
+//       <div className="flex flex-col md:flex-row md:justify-between items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+//         <div>
+//           <h1 className="text-2xl font-bold text-gray-800">
+//             {editBlog ? "Edit Article" : "Create New Article"}
+//           </h1>
+//           <p className="text-sm text-gray-500">Draft your content and manage SEO settings</p>
+//         </div>
+//         <div className="flex gap-3">
+//           <button 
+//             onClick={() => setPreviewMode(true)} 
+//             className="px-6 py-2 rounded-lg border border-gray-300 font-semibold text-gray-600 hover:bg-gray-50 transition-all"
+//           >
+//             Preview
+//           </button>
+//           <button
+//             onClick={saveBlog}
+//             className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 shadow-lg shadow-green-100 transition-all"
+//           >
+//             {editBlog ? "Update Publication" : "Publish Blog"}
+//           </button>
+//         </div>
+//       </div>
+
+//       <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-8">
+        
+//         {/* LEFT SIDEBAR: METADATA */}
+//         <div className="space-y-6">
+//           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+//             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">Basic Information</h2>
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Title</label>
+//                 <input
+//                   className="w-full mt-1 p-2 border rounded-lg outline-none focus:border-blue-400 transition-all"
+//                   value={blog.title}
+//                   onChange={(e) => updateField("title", e.target.value)}
+//                   placeholder="Enter blog title"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Slug (URL)</label>
+//                 <input
+//                   className="w-full mt-1 p-2 border rounded-lg outline-none focus:border-blue-400 transition-all"
+//                   value={blog.slug}
+//                   onChange={(e) => updateField("slug", e.target.value)}
+//                   placeholder="e.g. how-to-start-coding"
+//                 />
+//               </div>
+//               <div className="grid grid-cols-2 gap-3">
+//                 <div>
+//                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Category</label>
+//                   <input
+//                     className="w-full mt-1 p-2 border rounded-lg outline-none focus:border-blue-400 transition-all"
+//                     value={blog.category}
+//                     onChange={(e) => updateField("category", e.target.value)}
+//                   />
+//                 </div>
+//                 <div>
+//                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Author</label>
+//                   <input
+//                     className="w-full mt-1 p-2 border rounded-lg outline-none focus:border-blue-400 transition-all"
+//                     value={blog.author}
+//                     onChange={(e) => updateField("author", e.target.value)}
+//                   />
+//                 </div>
+//               </div>
+//               <div>
+//                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Publish Date</label>
+//                 <input
+//                   type="date"
+//                   className="w-full mt-1 p-2 border rounded-lg outline-none focus:border-blue-400 transition-all text-gray-600"
+//                   value={blog.date}
+//                   onChange={(e) => updateField("date", e.target.value)}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+//             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">SEO Settings</h2>
+//             <div className="space-y-4">
+//               <input
+//                 placeholder="Meta Title"
+//                 className="w-full p-2 border rounded-lg outline-none focus:border-blue-400 transition-all"
+//                 value={blog.metaTitle}
+//                 onChange={(e) => updateField("metaTitle", e.target.value)}
+//               />
+//               <textarea
+//                 placeholder="Meta Description"
+//                 className="w-full p-2 border rounded-lg outline-none focus:border-blue-400 transition-all h-24 resize-none"
+//                 value={blog.metaDescription}
+//                 onChange={(e) => updateField("metaDescription", e.target.value)}
+//               />
+//             </div>
+//           </div>
+
+//           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+//             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">Media & Status</h2>
+//             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Featured Image</label>
+//             <div className="mt-2 border-2 border-dashed border-gray-100 rounded-xl p-4 text-center hover:border-blue-200 transition-all">
+//                 <input type="file" accept="image/*" onChange={handleFeatured} className="hidden" id="featured-upload" />
+//                 <label htmlFor="featured-upload" className="cursor-pointer text-blue-600 text-sm font-semibold hover:text-blue-700">
+//                     {blog.featuredImage ? "Change Image" : "Upload Featured Image"}
+//                 </label>
+//                 {blog.featuredImage && (
+//                     <img
+//                         src={blog.featuredImage}
+//                         alt="Featured"
+//                         className="rounded-lg mt-4 w-full object-cover max-h-40 shadow-sm"
+//                     />
+//                 )}
+//             </div>
+            
+//             <div className="mt-6">
+//                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Visibility</label>
+//                 <select
+//                     className="w-full mt-1 p-2 border rounded-lg outline-none font-medium text-gray-700"
+//                     value={blog.status}
+//                     onChange={(e) => updateField("status", e.target.value)}
+//                 >
+//                     <option>Draft</option>
+//                     <option>Published</option>
+//                 </select>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* RIGHT PANEL: CONTENT EDITOR */}
+//         <div className="space-y-6">
+//           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sticky top-0 z-[30]">
+//             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide p-1">
+//               <button onClick={() => addBlock("heading")} className="shrink-0 px-4 py-2 bg-gray-800 text-white rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-black transition-all"><FiType /> Heading</button>
+//               <button onClick={() => addBlock("paragraph")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiType /> Paragraph</button>
+//               <button onClick={() => addBlock("list")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiList /> List</button>
+//               <button onClick={() => addBlock("image")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiImage /> Image</button>
+//               <button onClick={() => addBlock("quote")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiMessageSquare /> Quote</button>
+//               <button onClick={() => addBlock("faq")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiHelpCircle /> FAQ</button>
+//               <button onClick={() => addBlock("tip")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiStar /> Pro Tip</button>
+//             </div>
+//           </div>
+
+//           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+//             <SortableContext items={blog.content.map(b => b.id)} strategy={verticalListSortingStrategy}>
+//               <div className="space-y-6">
+//                 {blog.content.length === 0 && (
+//                   <div className="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-gray-100 shadow-inner">
+//                     <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+//                         <FiType className="text-gray-300 text-2xl" />
+//                     </div>
+//                     <p className="text-gray-400 font-medium">Start your story. Select a block from the toolbar above.</p>
+//                   </div>
+//                 )}
+
+//                 {blog.content.map((block) => (
+//                   <SortableBlockWrapper key={block.id} id={block.id}>
+//                     {({ listeners }) => (
+//                       <div className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+//                         {/* BLOCK HEADER */}
+//                         <div className="flex items-center justify-between mb-4 border-b border-gray-50 pb-3">
+//                           <div className="flex items-center gap-2 text-gray-400 text-sm">
+//                             <span className="bg-blue-50 p-1.5 rounded-lg text-blue-600">{getBlockIcon(block.type)}</span>
+//                             {block.type}
+//                           </div>
+                          
+//                           <div className="flex items-center gap-3">
+//                             <div className="flex items-center bg-gray-50 rounded-xl p-1">
+//                                 <button 
+//                                     onMouseDown={(e) => { e.preventDefault(); format("bold", block.id); }} 
+//                                     className={`w-9 h-8 rounded-lg font-bold transition-all ${activeFormat.bold && focusedBlockId === block.id ? "bg-white text-blue-600 shadow-sm" : "text-gray-400 hover:text-gray-600"}`}
+//                                 >B</button>
+//                                 <button 
+//                                     onMouseDown={(e) => { e.preventDefault(); format("italic", block.id); }} 
+//                                     className={`w-9 h-8 rounded-lg italic transition-all ${activeFormat.italic && focusedBlockId === block.id ? "bg-white text-blue-600 shadow-sm" : "text-gray-400 hover:text-gray-600"}`}
+//                                 >I</button>
+//                                 <button 
+//                                     onMouseDown={(e) => { e.preventDefault(); format("underline", block.id); }} 
+//                                     className={`w-9 h-8 rounded-lg underline transition-all ${activeFormat.underline && focusedBlockId === block.id ? "bg-white text-blue-600 shadow-sm" : "text-gray-400 hover:text-gray-600"}`}
+//                                 >U</button>
+//                             </div>
+
+//                             <div className="flex items-center gap-1 border-l border-gray-100 pl-3">
+//                                 <button onClick={() => clearBlock(block.id)} title="Reset Block" className="p-2 text-orange-300 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all"><FiRefreshCw /></button>
+//                                 <button onClick={() => removeBlock(block.id)} title="Delete Block" className="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"><FiTrash2 /></button>
+//                                 <div {...listeners} className="p-2 cursor-grab text-gray-300 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"><FiMove /></div>
+//                             </div>
+//                           </div>
+//                         </div>
+
+//                         {/* EDITOR CONTENT */}
+//                         {block.type !== "image" ? (
+//                           <div
+//                             ref={(el) => (editorRefs.current[block.id] = el)}
+//                             contentEditable
+//                             suppressContentEditableWarning
+//                             onInput={(e) => updateBlockValue(block.id, e.currentTarget.innerHTML)}
+//                             onFocus={() => checkFormat(block.id)}
+//                             onKeyUp={() => checkFormat(block.id)}
+//                             onMouseUp={() => checkFormat(block.id)}
+//                             className={`editor outline-none text-gray-800 min-h-[60px] leading-relaxed 
+//                                 ${block.type === 'heading' ? 'text-2xl font-black text-gray-900' : 'text-lg'}
+//                                 ${block.type === 'quote' ? 'border-l-4 border-blue-500 pl-6 italic text-xl text-gray-500 py-2' : ''}
+//                                 ${block.type === 'tip' ? 'bg-green-50 p-5 rounded-2xl border-l-4 border-green-400 text-green-900' : ''}
+//                                 ${block.type === 'faq' ? 'font-bold text-gray-900 bg-gray-50 p-4 rounded-xl' : ''}
+//                             `}
+//                           />
+//                         ) : (
+//                           <div className="bg-gray-50/50 rounded-2xl p-8 border-2 border-dashed border-gray-100 flex flex-col items-center justify-center">
+//                             <input
+//                               type="file"
+//                               id={`file-${block.id}`}
+//                               accept="image/*"
+//                               className="hidden"
+//                               onChange={(e) => handleImageUpload(e, block.id)}
+//                             />
+//                             {!block.value ? (
+//                                 <label htmlFor={`file-${block.id}`} className="flex flex-col items-center cursor-pointer group/upload">
+//                                     <div className="bg-white p-4 rounded-2xl shadow-sm mb-3 group-hover/upload:scale-110 transition-transform">
+//                                         <FiImage size={32} className="text-blue-500" />
+//                                     </div>
+//                                     <span className="text-sm font-bold text-gray-500">Select an image for this block</span>
+//                                 </label>
+//                             ) : (
+//                               <div className="relative w-full">
+//                                 <img src={block.value} alt="Content" className="rounded-2xl w-full max-h-[500px] object-contain bg-white shadow-sm border border-gray-100" />
+//                                 <label htmlFor={`file-${block.id}`} className="absolute top-4 right-4 bg-white/90 backdrop-blur p-2 rounded-xl shadow-lg cursor-pointer hover:bg-white text-gray-600 transition-all">
+//                                     <FiRefreshCw />
+//                                 </label>
+//                               </div>
+//                             )}
+//                           </div>
+//                         )}
+//                       </div>
+//                     )}
+//                   </SortableBlockWrapper>
+//                 ))}
+//               </div>
+//             </SortableContext>
+//           </DndContext>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 // export default BlogForm;
+
+
 import React, { useState, useRef, useEffect } from "react";
 import BlogPreview from "./BlogPreview";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -2899,7 +3436,7 @@ const BlogForm = () => {
     metaTitle: "",
     metaDescription: "",
     featuredImage: "",
-    featuredImageFile: null, // 🔥 Added to fix the property error
+    featuredImageFile: null, // Fixed: Property now exists in initial state
     status: "Draft",
     content: [], 
   });
@@ -2919,14 +3456,17 @@ const BlogForm = () => {
         });
         const data = await res.json();
         if (data) {
+          // Add IDs for DND kit and handle content structure
           const contentWithIds = (data.content || []).map(block => ({
             ...block,
-            id: block.id || uuidv4()
+            id: block.id || uuidv4(),
+            file: null, // Reset file for existing images
+            isNewFile: false
           }));
 
           setBlog({
             ...data,
-            featuredImage: data.featuredImage?.url || "", // Map from object to string for preview
+            featuredImage: data.featuredImage?.url || "", 
             featuredImageFile: null,
             content: contentWithIds,
             date: data.publishDate ? new Date(data.publishDate).toISOString().split("T")[0] : "",
@@ -2939,12 +3479,13 @@ const BlogForm = () => {
     fetchBlog();
   }, [editBlog?.slug]);
 
-  // ---------------------- PERSISTENCE FIX ----------------------
+  // ---------------------- PERSISTENCE & HYDRATION ----------------------
   useEffect(() => {
     if (!previewMode) {
       const timer = setTimeout(() => {
         blog.content.forEach((block) => {
           const el = editorRefs.current[block.id];
+          // Only hydrate non-image blocks
           if (el && block.type !== 'image' && el.innerHTML !== block.value) {
             el.innerHTML = block.value || "";
           }
@@ -2974,7 +3515,7 @@ const BlogForm = () => {
     const newId = uuidv4();
     setBlog(prev => ({
       ...prev,
-      content: [...prev.content, { id: newId, type, value: "", file: null }],
+      content: [...prev.content, { id: newId, type, value: "", file: null, isNewFile: false }],
     }));
   };
 
@@ -3027,12 +3568,12 @@ const BlogForm = () => {
     });
   };
 
-  // ---------------------- UPLOADS ----------------------
+  // ---------------------- UPLOAD HANDLERS ----------------------
   const handleImageUpload = (e, id) => {
     const file = e.target.files[0];
     if (!file) return;
     
-    // We store the binary file for uploading and a preview URL for the UI
+    // Create local URL for preview only
     const previewUrl = URL.createObjectURL(file);
     
     setBlog(prev => ({
@@ -3054,9 +3595,9 @@ const BlogForm = () => {
     }));
   };
 
-  // ---------------------- SAVE LOGIC ----------------------
+  // ---------------------- SAVE LOGIC (BINARY FORM DATA) ----------------------
   const saveBlog = async () => {
-    const toastId = toast.loading("Saving article...");
+    const tid = toast.loading("Saving article...");
     try {
       const formData = new FormData();
       formData.append("title", blog.title);
@@ -3068,22 +3609,17 @@ const BlogForm = () => {
       formData.append("metaDescription", blog.metaDescription);
       formData.append("status", blog.status);
 
-      // We need to handle the content blocks carefully.
-      // If it's an image block and has a new 'file', we append it to FormData.
-      // We'll replace the 'value' with a placeholder so the backend knows which file belongs where.
+      // Process content: Collect binary files separately
       const processedContent = blog.content.map((block) => {
         let finalValue = block.type === 'image' ? block.value : (editorRefs.current[block.id]?.innerHTML || block.value);
         
+        // If it's a new binary image file
         if (block.type === 'image' && block.file && block.isNewFile) {
           formData.append("contentImages", block.file);
-          // Set value to a special marker so backend can replace it with the Cloudinary URL
-          finalValue = "__NEW_IMAGE__"; 
+          finalValue = "__NEW_IMAGE__"; // Placeholder for backend replacement
         }
 
-        return {
-          type: block.type,
-          value: finalValue
-        };
+        return { type: block.type, value: finalValue };
       });
 
       formData.append("content", JSON.stringify(processedContent));
@@ -3095,23 +3631,18 @@ const BlogForm = () => {
       const url = editBlog ? SummaryApi.updateBlog.url(editBlog._id) : SummaryApi.createBlog.url;
       const method = editBlog ? SummaryApi.updateBlog.method : SummaryApi.createBlog.method;
 
-      const res = await fetch(url, { 
-        method, 
-        body: formData 
-        // Note: fetch automatically sets the correct Content-Type with boundary for FormData
-      });
-      
+      const res = await fetch(url, { method, body: formData });
       const data = await res.json();
 
       if (data.success || data._id) {
-        toast.success(editBlog ? "Blog updated successfully!" : "Blog created successfully!", { id: toastId });
+        toast.success(editBlog ? "Blog updated!" : "Blog published!", { id: tid });
         navigate('/admin-panel/blog-list');
       } else {
-        throw new Error(data.message || "Failed to save");
+        toast.error(data.message || "Failed to save", { id: tid });
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Error saving blog", { id: toastId });
+      toast.error("Network error saving blog", { id: tid });
     }
   };
 
@@ -3120,10 +3651,12 @@ const BlogForm = () => {
   }
 
   return (
+    // Fixed: Added max-w and mx-auto to handle large screens properly
     <div className="min-h-screen pb-20">
+      
       {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row md:justify-between items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <div>
+        <div className="text-center md:text-left">
           <h1 className="text-2xl font-bold text-gray-800">
             {editBlog ? "Edit Article" : "Create New Article"}
           </h1>
@@ -3145,10 +3678,12 @@ const BlogForm = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-8">
+      {/* Main Grid: lg:grid-cols-[Sidebar_Content] */}
+      <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-4">
         
         {/* LEFT SIDEBAR: METADATA */}
         <div className="space-y-6">
+          {/* Basic Info */}
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">Basic Information</h2>
             <div className="space-y-4">
@@ -3200,6 +3735,7 @@ const BlogForm = () => {
             </div>
           </div>
 
+          {/* SEO Info */}
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">SEO Settings</h2>
             <div className="space-y-4">
@@ -3218,6 +3754,7 @@ const BlogForm = () => {
             </div>
           </div>
 
+          {/* Media Info */}
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="font-bold text-gray-700 mb-4 pb-2 border-b">Media & Status</h2>
             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Featured Image</label>
@@ -3250,8 +3787,9 @@ const BlogForm = () => {
         </div>
 
         {/* RIGHT PANEL: CONTENT EDITOR */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sticky top-0 z-[30]">
+        <div className="space-y-6 overflow-hidden"> 
+          {/* Sticky Toolbar: ensure it doesn't break out of container */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sticky top-4 z-[30] w-full">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide p-1">
               <button onClick={() => addBlock("heading")} className="shrink-0 px-4 py-2 bg-gray-800 text-white rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-black transition-all"><FiType /> Heading</button>
               <button onClick={() => addBlock("paragraph")} className="shrink-0 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-50 transition-all"><FiType /> Paragraph</button>
@@ -3278,12 +3816,12 @@ const BlogForm = () => {
                 {blog.content.map((block) => (
                   <SortableBlockWrapper key={block.id} id={block.id}>
                     {({ listeners }) => (
-                      <div className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                      <div className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all w-full overflow-hidden">
                         {/* BLOCK HEADER */}
-                        <div className="flex items-center justify-between mb-4 border-b border-gray-50 pb-3">
+                        <div className="flex flex-wrap items-center justify-between mb-4 border-b border-gray-50 pb-3 gap-3">
                           <div className="flex items-center gap-2 text-gray-400 text-sm">
                             <span className="bg-blue-50 p-1.5 rounded-lg text-blue-600">{getBlockIcon(block.type)}</span>
-                            {block.type}
+                            <span className="uppercase font-bold tracking-tight text-[10px]">{block.type}</span>
                           </div>
                           
                           <div className="flex items-center gap-3">
@@ -3320,15 +3858,15 @@ const BlogForm = () => {
                             onFocus={() => checkFormat(block.id)}
                             onKeyUp={() => checkFormat(block.id)}
                             onMouseUp={() => checkFormat(block.id)}
-                            className={`editor outline-none text-gray-800 min-h-[60px] leading-relaxed 
-                                ${block.type === 'heading' ? 'text-2xl font-black text-gray-900' : 'text-lg'}
+                            className={`editor outline-none text-gray-800 min-h-[60px] leading-relaxed break-words
+                                ${block.type === 'heading' ? 'text-2xl md:text-3xl font-black text-gray-900' : 'text-lg'}
                                 ${block.type === 'quote' ? 'border-l-4 border-blue-500 pl-6 italic text-xl text-gray-500 py-2' : ''}
                                 ${block.type === 'tip' ? 'bg-green-50 p-5 rounded-2xl border-l-4 border-green-400 text-green-900' : ''}
                                 ${block.type === 'faq' ? 'font-bold text-gray-900 bg-gray-50 p-4 rounded-xl' : ''}
                             `}
                           />
                         ) : (
-                          <div className="bg-gray-50/50 rounded-2xl p-8 border-2 border-dashed border-gray-100 flex flex-col items-center justify-center">
+                          <div className="bg-gray-50/50 rounded-2xl p-4 md:p-8 border-2 border-dashed border-gray-100 flex flex-col items-center justify-center">
                             <input
                               type="file"
                               id={`file-${block.id}`}
@@ -3341,11 +3879,15 @@ const BlogForm = () => {
                                     <div className="bg-white p-4 rounded-2xl shadow-sm mb-3 group-hover/upload:scale-110 transition-transform">
                                         <FiImage size={32} className="text-blue-500" />
                                     </div>
-                                    <span className="text-sm font-bold text-gray-500">Select an image for this block</span>
+                                    <span className="text-sm font-bold text-gray-500 text-center">Select an image for this block</span>
                                 </label>
                             ) : (
                               <div className="relative w-full">
-                                <img src={block.value} alt="Content" className="rounded-2xl w-full max-h-[500px] object-contain bg-white shadow-sm border border-gray-100" />
+                                <img 
+                                  src={block.value} 
+                                  alt="Content" 
+                                  className="rounded-2xl w-full max-h-[600px] object-contain bg-white shadow-sm border border-gray-100" 
+                                />
                                 <label htmlFor={`file-${block.id}`} className="absolute top-4 right-4 bg-white/90 backdrop-blur p-2 rounded-xl shadow-lg cursor-pointer hover:bg-white text-gray-600 transition-all">
                                     <FiRefreshCw />
                                 </label>

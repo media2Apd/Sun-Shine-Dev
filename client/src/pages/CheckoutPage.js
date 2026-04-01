@@ -8,7 +8,7 @@ import { useCart } from "../Context/CartContext";
 import { useSelector } from "react-redux";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.svg";
 import toast from "react-hot-toast";
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -50,8 +50,8 @@ const CheckoutPage = () => {
 
     useEffect(() => {
     if (!user) {
-      navigate("/login-page", {
-        state: { redirectTo: "/cart-page/checkout-page" },
+      navigate("/login", {
+        state: { redirectTo: "/cart/checkout" },
       });
     }
   }, [navigate, user]);
@@ -125,7 +125,7 @@ useEffect(() => {
   //     await refreshCart();
 
   //     // ✅ navigate using correct id
-  //     navigate(`/order-page`, {
+  //     navigate(`/order`, {
   //       state: { orderId: order._id },
   //     });
 
@@ -207,7 +207,7 @@ useEffect(() => {
               setOrderData(order);
               await refreshCart();
 
-              navigate(`/order-page`, {
+              navigate(`/order`, {
                 state: { orderId: order._id },
               });
             } else {
@@ -260,7 +260,7 @@ useEffect(() => {
       setOrderData(order);
       await refreshCart();
 
-      navigate(`/order-page`, {
+      navigate(`/order`, {
         state: { orderId: order._id },
       });
 

@@ -89,7 +89,7 @@
 //           Don't have an account?{" "}
 //           <span
 //             className="text-blue-600 cursor-pointer hover:underline"
-//             onClick={() => navigate("/signup-page")}
+//             onClick={() => navigate("/signup")}
 //           >
 //             Register
 //           </span>
@@ -340,7 +340,7 @@ const LoginPage = () => {
           Don't have account?{" "}
           <span 
             className="font-bold text-gray-800 cursor-pointer hover:underline"
-            onClick={() => navigate("/signup-page")}
+            onClick={() => navigate("/signup")}
           >
             Register
           </span>
