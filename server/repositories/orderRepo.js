@@ -26,7 +26,8 @@ export const getOrders = (userId) =>
     .populate("items.productId");
 
 export const getOrderById = (id) =>
-  Order.findById(id).populate("items.productId");
+  Order.findById(id)
+    .populate("items.productId")
 
 export const updateOrder = (id, data) =>
   Order.findByIdAndUpdate(id, data, { new: true });
