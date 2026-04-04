@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
+import toast from "react-hot-toast";
 
 const SettingsPage = () => {
 
@@ -28,7 +29,8 @@ const SettingsPage = () => {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [originalProfile, setOriginalProfile] = useState({});
   const [originalAddress, setOriginalAddress] = useState({});
-  
+  const [profileErrors, setProfileErrors] = useState({});
+  const [addressErrors, setAddressErrors] = useState({});
   // ✅ useCallback fix (no warning)
   const fetchProfile = useCallback(async () => {
     try {
@@ -46,37 +48,37 @@ const SettingsPage = () => {
     }
   }, []);
 
-const fetchAddress = useCallback(async () => {
-  try {
-    const res = await api({
-      url: SummaryApi.viewAddresses.url,
-      method: SummaryApi.viewAddresses.method,
-    });
+  const fetchAddress = useCallback(async () => {
+    try {
+      const res = await api({
+        url: SummaryApi.viewAddresses.url,
+        method: SummaryApi.viewAddresses.method,
+      });
 
-    const list = res.data; // 🔥 THIS IS YOUR FIX
+      const list = res.data; // 🔥 THIS IS YOUR FIX
 
-    if (Array.isArray(list) && list.length > 0) {
+      if (Array.isArray(list) && list.length > 0) {
 
-      const data =
-        list.find(a => a.isDefault) ||
-        list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+        const data =
+          list.find(a => a.isDefault) ||
+          list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
 
-      setAddress(prev => ({
-        ...prev,
-        ...data
-      }));
+        setAddress(prev => ({
+          ...prev,
+          ...data
+        }));
 
-      setOriginalAddress(prev => ({
-        ...prev,
-        ...data
-      }));
+        setOriginalAddress(prev => ({
+          ...prev,
+          ...data
+        }));
+      }
+
+    } catch (err) {
+      console.log(err);
     }
-
-  } catch (err) {
-    console.log(err);
-  }
-}, []);
+  }, []);
 
   useEffect(() => {
     fetchProfile();
@@ -85,7 +87,37 @@ const fetchAddress = useCallback(async () => {
 
   // ================= SAVE =================
 
+const validateProfile = () => {
+  let errors = {};
+
+  if (!profile.firstName?.trim()) {
+    errors.firstName = "First name is required";
+  }
+
+  if (!profile.lastName?.trim()) {
+    errors.lastName = "Last name is required";
+  }
+
+  if (!profile.email?.trim()) {
+    errors.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) {
+    errors.email = "Invalid email";
+  }
+
+  if (!profile.phone?.trim()) {
+    errors.phone = "Phone is required";
+  } else if (!/^[6-9]\d{9}$/.test(profile.phone)) {
+    errors.phone = "Invalid phone number";
+  }
+
+  setProfileErrors(errors);
+
+  return Object.keys(errors).length === 0;
+};
+
   const saveProfile = async () => {
+      // 🔥 VALIDATION CHECK
+    if (!validateProfile()) return;
     try {
       const formData = new FormData();
 
@@ -108,7 +140,7 @@ const fetchAddress = useCallback(async () => {
       });
 
       if (res.data.success) {
-        alert("Profile updated");
+        toast.success("Profile updated");
         setIsEditingProfile(false);
       }
     } catch (err) {
@@ -116,7 +148,53 @@ const fetchAddress = useCallback(async () => {
     }
   };
 
+const validateAddress = () => {
+  let errors = {};
+
+  if (!address.firstName?.trim()) {
+    errors.firstName = "First name is required";
+  }
+
+  if (!address.lastName?.trim()) {
+    errors.lastName = "Last name is required";
+  }
+
+  if (!address.street?.trim()) {
+    errors.street = "Street is required";
+  }
+
+  if (!address.country?.trim()) {
+    errors.country = "Country is required";
+  }
+
+  if (!address.state?.trim()) {
+    errors.state = "State is required";
+  }
+
+  if (!address.zip?.trim()) {
+    errors.zip = "Zip code is required";
+  } else if (!/^\d{6}$/.test(address.zip)) {
+    errors.zip = "Invalid zip code";
+  }
+
+  if (!address.email?.trim()) {
+    errors.email = "Email is required";
+  }
+
+  if (!address.phone?.trim()) {
+    errors.phone = "Phone is required";
+  } else if (!/^[6-9]\d{9}$/.test(address.phone)) {
+    errors.phone = "Invalid phone number";
+  }
+
+  setAddressErrors(errors);
+
+  return Object.keys(errors).length === 0;
+};
+
   const saveAddress = async () => {
+      // 🔥 VALIDATION
+    if (!validateAddress()) return;
     try {
 
       const isUpdate = address._id;
@@ -138,7 +216,7 @@ const fetchAddress = useCallback(async () => {
 
         setIsEditingAddress(false);
 
-        alert("Address saved");
+        toast.success("Address saved");
       }
 
           } catch (err) {
@@ -155,12 +233,20 @@ const fetchAddress = useCallback(async () => {
     }));
   };
 
-  const handleAddressChange = (e) => {
-    setAddress(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+const handleAddressChange = (e) => {
+  const { name, value } = e.target;
+
+  setAddress(prev => ({
+    ...prev,
+    [name]: value,
+  }));
+
+  // 🔥 remove error while typing
+  setAddressErrors(prev => ({
+    ...prev,
+    [name]: "",
+  }));
+};
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -193,18 +279,25 @@ const fetchAddress = useCallback(async () => {
           <div className="order-2 lg:order-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {/* FIRST NAME */}
-            <div>
-              <label className="text-sm text-gray-600">First name</label>
-              <input
-                name="firstName"
-                value={profile.firstName || ""}
-                onChange={handleProfileChange}
-                disabled={!isEditingProfile}
-                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                  !isEditingProfile ? "bg-gray-100" : ""
-                }`}
-              />
-            </div>
+          <div>
+            <label className="text-sm text-gray-600">First name</label>
+            <input
+              name="firstName"
+              value={profile.firstName || ""}
+              onChange={handleProfileChange}
+              disabled={!isEditingProfile}
+              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                profileErrors.firstName
+                  ? "border-red-500"
+                  : "border-gray-300"
+              } ${!isEditingProfile ? "bg-gray-100" : ""}`}
+            />
+            {profileErrors.firstName && (
+              <p className="text-red-500 text-xs mt-1">
+                {profileErrors.firstName}
+              </p>
+            )}
+          </div>
 
             {/* LAST NAME */}
             <div>
@@ -229,9 +322,14 @@ const fetchAddress = useCallback(async () => {
                 onChange={handleProfileChange}
                 disabled={!isEditingProfile}
                 className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                  !isEditingProfile ? "bg-gray-100" : ""
-                }`}
+                  profileErrors.email ? "border-red-500" : "border-gray-300"
+                } ${!isEditingProfile ? "bg-gray-100" : ""}`}
               />
+              {profileErrors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {profileErrors.email}
+                </p>
+              )}
             </div>
 
             {/* PHONE */}
@@ -243,9 +341,14 @@ const fetchAddress = useCallback(async () => {
                 onChange={handleProfileChange}
                 disabled={!isEditingProfile}
                 className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                  !isEditingProfile ? "bg-gray-100" : ""
-                }`}
+                  profileErrors.phone ? "border-red-500" : "border-gray-300"
+                } ${!isEditingProfile ? "bg-gray-100" : ""}`}
               />
+              {profileErrors.phone && (
+                <p className="text-red-500 text-xs mt-1">
+                  {profileErrors.phone}
+                </p>
+              )}
             </div>
 
             {/* BUTTON */}
@@ -325,28 +428,42 @@ const fetchAddress = useCallback(async () => {
 
           <div>
             <label className="text-sm text-gray-600">First name</label>
-            <input
-              name="firstName"
-              value={address.firstName || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="firstName"
+                value={address.firstName || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.firstName
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.firstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.firstName}
+                </p>
+              )}
           </div>
 
           <div>
             <label className="text-sm text-gray-600">Last name</label>
-            <input
-              name="lastName"
-              value={address.lastName || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="lastName"
+                value={address.lastName || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.lastName ? "border-red-500" : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.lastName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.lastName}
+                </p>
+              )}
           </div>
 
           <div>
@@ -366,15 +483,21 @@ const fetchAddress = useCallback(async () => {
 
           <div className="md:col-span-3">
             <label className="text-sm text-gray-600">Street Address</label>
-            <input
-              name="street"
-              value={address.street || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="street"
+                value={address.street || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.street ? "border-red-500" : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.street && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.street}
+                </p>
+              )}
           </div>
 
           <div>
@@ -405,41 +528,59 @@ const fetchAddress = useCallback(async () => {
 
           <div>
             <label className="text-sm text-gray-600">Zip Code</label>
-            <input
-              name="zip"
-              value={address.zip || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="zip"
+                value={address.zip || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.zip ? "border-red-500" : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.zip && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.zip}
+                </p>
+              )}
           </div>
 
           <div>
             <label className="text-sm text-gray-600">Email</label>
-            <input
-              name="email"
-              value={address.email || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="email"
+                value={address.email || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.email ? "border-red-500" : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.email}
+                </p>
+              )}
           </div>
 
           <div>
             <label className="text-sm text-gray-600">Phone</label>
-            <input
-              name="phone"
-              value={address.phone || ""}
-              onChange={handleAddressChange}
-              disabled={!isEditingAddress}
-              className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                !isEditingAddress && "bg-gray-100"
-              }`}
-            />
+              <input
+                name="phone"
+                value={address.phone || ""}
+                onChange={handleAddressChange}
+                disabled={!isEditingAddress}
+                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
+                  addressErrors.phone ? "border-red-500" : "border-gray-300"
+                } ${!isEditingAddress && "bg-gray-100"}`}
+              />
+
+              {addressErrors.phone && (
+                <p className="text-red-500 text-xs mt-1">
+                  {addressErrors.phone}
+                </p>
+              )}
           </div>
 
         </div>

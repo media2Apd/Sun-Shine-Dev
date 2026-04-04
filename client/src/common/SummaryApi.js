@@ -218,7 +218,7 @@ const SummaryApi = {
         url: `${backendDomain}/api/reviews/create`,
         method: "post"
     },
-    viewOnePrdouctReviews: {
+    getReviewsByProduct: {
         url: (productId) => `${backendDomain}/api/reviews/view-all/${productId}`,
         method: "get"
     },
