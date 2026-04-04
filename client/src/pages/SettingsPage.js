@@ -325,17 +325,9 @@ const handleAddressChange = (e) => {
               <input
                 name="email"
                 value={profile.email || ""}
-                onChange={handleProfileChange}
-                disabled={!isEditingProfile}
-                className={`w-full border rounded-lg px-4 py-2 mt-1 ${
-                  profileErrors.email ? "border-red-500" : "border-gray-300"
-                } ${!isEditingProfile ? "bg-gray-100" : ""}`}
+                disabled={true} // 🔥 ALWAYS DISABLED
+                className="w-full border rounded-lg px-4 py-2 mt-1 bg-gray-100 cursor-not-allowed"
               />
-              {profileErrors.email && (
-                <p className="text-red-500 text-xs mt-1">
-                  {profileErrors.email}
-                </p>
-              )}
             </div>
 
             {/* PHONE */}

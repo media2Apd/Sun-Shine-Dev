@@ -54,8 +54,11 @@ newLaunch: Boolean,
 
 featuredProduct: Boolean,
 
-variants: [variantSchema]
+variants: [variantSchema],
 
+averageRating: { type: Number, default: 0 },
+
+totalReviews: { type: Number, default: 0 },
 },
 { timestamps: true }
 );
