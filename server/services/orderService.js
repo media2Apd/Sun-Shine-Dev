@@ -239,7 +239,6 @@ export const getOrderById = async (orderId, userId) => {
         userId
       }).select("rating comment images");
 
-      console.log("CHECK REVIEW:", review);
 
       return {
         ...item.toObject(),
