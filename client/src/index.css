@@ -91,3 +91,44 @@ scrollbar-width: none;
 .input-field {
   @apply w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition-all;
 }
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+
+/* TRACK */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: transparent;
+}
+
+/* THUMB */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #22c55e;
+  cursor: pointer;
+  pointer-events: auto;
+
+  /* 🔥 PERFECT CENTER */
+  margin-top: -7px;
+}
+
+/* FIREFOX */
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: transparent;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #22c55e;
+  cursor: pointer;
+}
