@@ -97,3 +97,26 @@ return successResponse(res,200,"Product fetched",data);
 
 };
 
+export const getProductBySlugOrId = async (req, res) => {
+
+  try {
+
+    const data = await service.getProductBySlugOrIdService(
+      req.params.slugOrId
+    );
+
+    res.json({
+      success: true,
+      data
+    });
+
+  } catch (err) {
+
+    res.status(404).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+};

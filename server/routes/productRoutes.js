@@ -24,5 +24,7 @@ router.put("/update-one/:id",uploadProductMedia, validator.validate(validator.up
 
 router.delete("/delete-one/:id", validator.validate(validator.mongoIdSchema, "params"), controller.deleteProduct);
 
+router.get("/one-view/:slugOrId", controller.getProductBySlugOrId);
+
 
 export default router;
