@@ -32,21 +32,30 @@ const SettingsPage = () => {
   const [profileErrors, setProfileErrors] = useState({});
   const [addressErrors, setAddressErrors] = useState({});
   // ✅ useCallback fix (no warning)
-  const fetchProfile = useCallback(async () => {
-    try {
-      const res = await api({
-        url: SummaryApi.getProfile.url,
-        method: SummaryApi.getProfile.method,
+const fetchProfile = useCallback(async () => {
+  try {
+    const res = await api({
+      url: SummaryApi.getProfile.url,
+      method: SummaryApi.getProfile.method,
+    });
+
+    if (res.data.success) {
+      const data = res.data.data;
+
+      setProfile({
+        ...data,
+        image: data?.profilePicture?.url || "" // 🔥 FIX
       });
 
-      if (res.data.success) {
-        setProfile(res.data.data || {});
-        setOriginalProfile(res.data.data || {});
-      }
-    } catch (err) {
-      console.log(err);
+      setOriginalProfile({
+        ...data,
+        image: data?.profilePicture?.url || ""
+      });
     }
-  }, []);
+  } catch (err) {
+    console.log(err);
+  }
+}, []);
 
   const fetchAddress = useCallback(async () => {
     try {
@@ -127,16 +136,13 @@ const validateProfile = () => {
       formData.append("phone", profile.phone);
 
       if (profile.image instanceof File) {
-        formData.append("image", profile.image); // ✅ file
+        formData.append("profilePicture", profile.image); // ✅ file
       }
 
       const res = await api({
         url: SummaryApi.updateProfile.url,
         method: SummaryApi.updateProfile.method,
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        data: formData
       });
 
       if (res.data.success) {
