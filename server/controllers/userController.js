@@ -5,7 +5,7 @@ import sendEmail from "../utils/sendEmail.js"; // create your nodemailer util
 
 import * as userService from "../services/userService.js";
 
-import { updateProfileValidator, resetPasswordSchema } from "../validators/userValid.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../utils/Cloudinary.js";
 
 export const sendResetOtp = async (req, res) => {
   try {
@@ -85,27 +85,57 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { error } = updateProfileValidator.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details[0].message
-      });
+    const userId = req.user._id || req.user.id;
+
+    let updateData = { ...req.body };
+
+    // ✅ IMAGE UPLOAD
+    if (req.file) {
+      // 🔥 get old image
+      const existingUser = await User.findById(userId);
+
+      // 🔥 delete old image (optional but best practice)
+      if (existingUser?.profilePicture?.publicId) {
+        await deleteFromCloudinary(existingUser.profilePicture.publicId);
+      }
+
+      // 🔥 upload new image
+      const uploaded = await uploadToCloudinary(
+        req.file.buffer,
+        "users/profile"
+      );
+
+      updateData.profilePicture = {
+        url: uploaded.url,
+        publicId: uploaded.publicId
+      };
     }
 
-    const updatedUser = await userService.updateUserProfileService(
-      req.user.id,
-      req.body
-    );
+    // ✅ UPDATE USER
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
 
     res.json({
       success: true,
       message: "Profile updated successfully",
-      user: updatedUser
+      data: updatedUser
     });
 
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
