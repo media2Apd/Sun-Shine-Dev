@@ -1,6 +1,5 @@
 // import * as service from "../services/orderService.js";
 
-
 // export const createOrder=async(req,res)=>{
 
 // try{
@@ -28,7 +27,6 @@
 
 // };
 
-
 // export const cancelOrder=async(req,res)=>{
 
 // const data=await service.cancelOrder(req.params.id);
@@ -36,7 +34,6 @@
 // res.json(data);
 
 // };
-
 
 // export const getOrders=async(req,res)=>{
 
@@ -46,7 +43,6 @@
 
 // };
 
-
 // export const getOrderById=async(req,res)=>{
 
 // const data=await service.getOrderById(req.params.id);
@@ -54,7 +50,6 @@
 // res.json(data);
 
 // };
-
 
 // export const updateOrderStatus=async(req,res)=>{
 
@@ -68,7 +63,6 @@
 // res.json(data);
 
 // };
-
 
 // export const deleteOrder=async(req,res)=>{
 
@@ -120,13 +114,12 @@
 
 import * as service from "../services/orderService.js";
 
-
 // ✅ CREATE
 export const createOrder = async (req, res) => {
   try {
     const data = await service.createOrder(
       req.body,
-      req.user._id // 🔥 from auth middleware
+      req.user._id, // 🔥 from auth middleware
     );
 
     res.json({ success: true, data });
@@ -151,25 +144,15 @@ export const getOrders = async (req, res) => {
 // };
 
 export const getOrderById = async (req, res) => {
-
   try {
-
-    const data = await service.getOrderById(
-      req.params.id,
-      req.user._id
-    );
+    const data = await service.getOrderById(req.params.id, req.user._id);
 
     res.json(data);
-
-  }
-  catch (error) {
-
+  } catch (error) {
     res.status(400).json({
-      message: error.message
+      message: error.message,
     });
-
   }
-
 };
 
 // ✅ CANCEL
@@ -180,10 +163,7 @@ export const cancelOrder = async (req, res) => {
 
 // ✅ STATUS UPDATE (ADMIN)
 export const updateOrderStatus = async (req, res) => {
-  const data = await service.updateOrderStatus(
-    req.params.id,
-    req.body
-  );
+  const data = await service.updateOrderStatus(req.params.id, req.body);
   res.json(data);
 };
 
@@ -203,86 +183,57 @@ export const deleteOrder = async (req, res) => {
 //   res.json({ success: true, data });
 // };
 export const createRazorpayOrder = async (req, res) => {
-
   try {
-
-    const data = await service.createRazorpayOrder(
-      req.body,
-      req.user._id
-    );
+    const data = await service.createRazorpayOrder(req.body, req.user._id);
 
     res.json({
       success: true,
       message: "Order created successfully",
       data,
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
-
 };
 
 export const verifyPayment = async (req, res) => {
-
   try {
-
-    const order = await service.verifyRazorpayPayment(
-      req.body,
-      req.user._id
-    );
+    const order = await service.verifyRazorpayPayment(req.body, req.user._id);
 
     res.json({
       success: true,
       message: "Payment verified successfully",
       data: order,
     });
-
   } catch (error) {
-
     res.status(400).json({
       success: false,
       message: error.message,
     });
-
   }
-
 };
 
 export const getAllOrders = async (req, res) => {
+  try {
+    const { startDate, endDate, status } = req.query;
 
-try {
+    const data = await service.getAllOrders({
+      startDate,
+      endDate,
+      status,
+    });
 
-const { startDate, endDate, status } = req.query;
-
-const data = await service.getAllOrders({
-
-startDate,
-endDate,
-status
-
-});
-
-res.json({
-success: true,
-data
-});
-
-}
-catch (err) {
-
-res.status(400).json({
-
-success: false,
-message: err.message
-
-});
-
-}
-
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
 };

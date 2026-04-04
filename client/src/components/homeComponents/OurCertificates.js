@@ -26,7 +26,7 @@ export function OurCertificates() {
           key={index}
           src={logo}
           alt="certificate"
-          className="h-20 object-contain"
+          className="h-28  px-4 object-contain"
         />
       ))}
   </div>
