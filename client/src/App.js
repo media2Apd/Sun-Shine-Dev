@@ -4,7 +4,7 @@ import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './helpers/ScrollToTop';
-import {Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import useFetchLoginUser from './hooks/useFetchLoginUser';
 import { setNavigationHandler } from './common/apiClient';
 import PageLoader from './helpers/PageLoader';

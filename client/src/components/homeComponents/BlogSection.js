@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
 import SummaryApi from "../../common/SummaryApi";
 import api from "../../common/apiClient";
+import { useNavigate } from "react-router-dom";
 
 function BlogSection() {
   const [blogs, setBlogs] = useState([]);
-
+  const navigate = useNavigate();
   const fetchBlogs = async () => {
     try {
       const response = await api({
@@ -45,7 +46,7 @@ function BlogSection() {
           Latest Blogs
         </h2>
 
-        <button className="text-[#354A10] font-medium">
+        <button onClick={ ()=> navigate('/blogs')} className="text-[#354A10] font-medium">
           View all
         </button>
       </div>

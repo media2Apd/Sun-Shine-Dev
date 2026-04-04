@@ -1,4 +1,3 @@
-
 const isLocalNetwork = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
 const backendDomain = process.env.NODE_ENV === 'development'
@@ -32,15 +31,6 @@ const SummaryApi = {
         url: `${backendDomain}/api/user/reset-password`,
         method: "post"
     },
-    googleLogin: {
-        url: `${backendDomain}/api/auth/google-login`,
-        method: "post",
-    },
-    facebookLogin: {
-        url: `${backendDomain}/api/auth/facebook-login`,
-        method: "post",
-    },
-
 
     // ===================== USERS / CUSTOMERS ROUTES =====================
     getProfile: {
@@ -228,10 +218,14 @@ const SummaryApi = {
         url: `${backendDomain}/api/reviews/create`,
         method: "post"
     },
-    viewOnePrdouctReviews: {
+    getReviewsByProduct: {
         url: (productId) => `${backendDomain}/api/reviews/view-all/${productId}`,
         method: "get"
     },
+    getAllReviews: {
+        url: `${backendDomain}/api/reviews/view-all`,
+        method: "get"
+     },
 
     // ===================== DASHBOARD ROUTES =====================
     getDashboardData: {

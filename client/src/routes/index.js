@@ -38,6 +38,15 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import NotFound from "../pages/NotFound";
 import FAQPage from "../pages/FAQPage";
+
+// Policy Pages
+import TermsAndConditions from "../pages/policyPages/TermsAndConditions";
+import PrivacyPolicy from "../pages/policyPages/PrivacyPolicy";
+import ShippingPolicy from "../pages/policyPages/ShippingPolicy";
+import ReturnAndRefundPolicy from "../pages/policyPages/ReturnAndRefundPolicy";
+import ExchangePolicy from "../pages/policyPages/ExchangePolicy";
+import SafePurchasePolicy from "../pages/policyPages/SafePurchasePolicy";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -131,6 +140,19 @@ const router = createBrowserRouter([
         path: 'order/order-details',
         element: <OrderDetails />
       },
+      {
+        path: "policy",
+        children: [
+          { index: true, element: <Navigate to="privacy-policy" replace /> },
+          { path: "privacy-policy", element: <PrivacyPolicy /> },
+          { path: "terms-conditions", element: <TermsAndConditions /> },
+          { path: "shipping-policy", element: <ShippingPolicy /> },
+          { path: "return-refund", element: <ReturnAndRefundPolicy /> },
+          { path: "exchange-policy", element: <ExchangePolicy /> },
+          { path: "safe-purchase", element: <SafePurchasePolicy /> },
+        ]
+      },
+
       {
         path: "admin-panel",
         element: <Layout />,

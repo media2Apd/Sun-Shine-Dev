@@ -145,3 +145,19 @@ export const getProductReviews = async (req, res) => {
   }
 
 };
+
+export const getAllReviews = async (req, res) => {
+  try {
+
+    const reviews = await Review.find()
+      .populate("userId", "firstName lastName")
+      .populate("productId", "name"); // optional (product name)
+
+    res.json(reviews);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};

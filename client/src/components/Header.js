@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect, } from "react";
 
 import {
-  // FiSearch,
+  FiSearch,
   FiUser,
   FiHeart,
   FiShoppingCart,
   FiRefreshCw,
   FiLogOut,
   FiUserCheck,
+  
 } from "react-icons/fi";
 import logo from "../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -61,12 +62,12 @@ export default function Header() {
       <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
         {/* Logo */}
         <div>
-          <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 object-contain" />
+          <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 object-contain cursor-pointer" />
         </div>
 
         {/* Icons */}
         <div className="flex items-center space-x-6 text-gray-700 relative">
-          {/* <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> */}
+          <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> 
 
           {/* User Icon with Dropdown */}
           <div className="relative" ref={dropdownRef}>

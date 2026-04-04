@@ -12,6 +12,7 @@ import { addToLocalWishlist, getLocalWishlist, removeFromLocalWishlist } from ".
 import { formatDateTime } from "../helpers/formatDateTime";
 import { GiLindenLeaf } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
+import UserImage from '.././assets/User.png';
 export default function ProductOverview() {
 
   const location = useLocation();
@@ -81,7 +82,7 @@ export default function ProductOverview() {
           method: SummaryApi.getReviewsByProduct.method,
         });
 
-        setReviews(res.data.data || []);
+        setReviews(res?.data || []);
       } catch (err) {
         console.log(err);
       }
@@ -184,7 +185,13 @@ export default function ProductOverview() {
         p._id !== product._id
     )
     .slice(0, 4);
-
+  const avgRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
+          reviews.length
+        ).toFixed(1)
+      : 0;
   return (
     <div className="container mx-auto px-4 md:px-6 py-6">
 
@@ -237,12 +244,18 @@ export default function ProductOverview() {
 
   {/* RATING */}
   <div className="flex items-center gap-2 mt-2">
-    <div className="flex text-orange-400">
-      {[...Array(5)].map((_, i) => (
-        <Star key={i} size={16} fill="currentColor" />
-      ))}
-    </div>
-    <span className="text-sm text-gray-500">(4 review)</span>
+<div className="flex text-orange-400">
+  {[1,2,3,4,5].map((star) => (
+    <Star
+      key={star}
+      size={16}
+      fill={star <= Math.round(avgRating) ? "currentColor" : "none"}
+    />
+  ))}
+</div>
+    <span className="text-sm text-gray-500">
+  ({reviews.length} review{reviews.length > 1 ? "s" : ""})
+</span>
   </div>
 
   {/* PRICE SECTION */}
@@ -520,57 +533,83 @@ export default function ProductOverview() {
         {activeTab === "feedback" && (
           <div className="max-w-4xl mx-auto mt-8 px-4">
 
-            {reviews.length > 0 ? (
-              <div className="space-y-6">
+{reviews.length > 0 ? (
+  <div className="space-y-6">
 
-                {reviews.map((rev) => (
-                  <div key={rev._id} className="border-b pb-4 flex gap-4">
+    {reviews.map((rev) => (
+      <div key={rev._id} className="border-b pb-4 flex gap-4">
 
-                    {/* PROFILE */}
-                    <img
-                      src={rev.user?.profilePic || "/default-user.png"}
-                      className="w-10 h-10 rounded-full object-cover"
-                      alt="user"
-                    />
+        {/* PROFILE */}
+        <img
+          src={rev.userId?.profileImage?.url || UserImage}
+          className="w-10 h-10 rounded-full object-cover"
+          alt="user"
+        />
 
-                    <div className="flex-1">
+        <div className="flex-1">
 
-                      {/* NAME + TIME */}
-                      <div className="flex justify-between items-center">
-                        <p className="font-medium text-black">
-                          {rev.user?.name || "User"}
-                        </p>
-                        <span className="text-xs text-gray-400">
-                          {formatDateTime(rev.createdAt, true)}
-                        </span>
-                      </div>
+          {/* NAME + TIME */}
+          <div className="flex justify-between items-center">
+            <p className="font-medium text-black">
+              {rev.userId
+                ? `${rev.userId.firstName} ${rev.userId.lastName}`
+                : "User"}
+            </p>
 
-                      {/* ⭐ RATING */}
-                      <div className="flex text-orange-400 mt-1">
-                        {[1,2,3,4,5].map((star) => (
-                          <Star
-                            key={star}
-                            size={14}
-                            fill={star <= rev.rating ? "currentColor" : "none"}
-                          />
-                        ))}
-                      </div>
+            <span className="text-xs text-gray-400">
+              {formatDateTime(rev.createdAt, true)}
+            </span>
+          </div>
 
-                      {/* COMMENT */}
-                      <p className="text-sm text-gray-500 mt-1">
-                        {rev.comment}
-                      </p>
+          {/* ⭐ RATING */}
+          <div className="flex text-orange-400 mt-1">
+            {[1,2,3,4,5].map((star) => (
+              <Star
+                key={star}
+                size={14}
+                fill={star <= rev.rating ? "currentColor" : "none"}
+              />
+            ))}
+          </div>
 
-                    </div>
-                  </div>
-                ))}
+          {/* COMMENT */}
+          {rev.comment && (
+            <p className="text-sm text-gray-500 mt-1">
+              {rev.comment}
+            </p>
+          )}
 
-              </div>
-            ) : (
-              <p className="text-center text-gray-400">
-                No customer feedback yet.
-              </p>
-            )}
+          {/* 🔥 IMAGES */}
+          {rev.images?.length > 0 && (
+            <div className="flex gap-2 mt-2">
+              {rev.images.map((img) => (
+                <img
+                  key={img._id}
+                  src={img.url}
+                  alt="review"
+                  className="w-16 h-16 rounded object-cover border"
+                />
+              ))}
+            </div>
+          )}
+
+          {/* ✅ VERIFIED */}
+          {rev.isVerifiedPurchase && (
+            <span className="text-xs text-green-600 mt-2 inline-block">
+              ✔ Verified Purchase
+            </span>
+          )}
+
+        </div>
+      </div>
+    ))}
+
+  </div>
+) : (
+  <p className="text-center text-gray-400">
+    No customer feedback yet.
+  </p>
+)}
 
           </div>
         )}
