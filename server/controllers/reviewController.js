@@ -1,6 +1,8 @@
 import Review from "../models/Review.js";
 import Order from "../models/Order.js";
 import { uploadToCloudinary } from "../utils/Cloudinary.js";
+import Product from "../models/Product.js";
+import mongoose from "mongoose";
 
 export const createReview = async (req, res) => {
 
@@ -68,28 +70,78 @@ export const createReview = async (req, res) => {
 /*
 GET PRODUCT REVIEWS
 */
-export const getProductReviews=async(req,res)=>{
+// export const getProductReviews=async(req,res)=>{
 
-try{
+// try{
 
-const reviews=await Review.find({
+// const reviews=await Review.find({
 
-productId:req.params.productId
+// productId:req.params.productId
 
-}).populate("userId","firstName lastName");
+// }).populate("userId","firstName lastName");
 
 
-res.json(reviews);
+// res.json(reviews);
 
-}
-catch(error){
+// }
+// catch(error){
 
-res.status(500).json({
+// res.status(500).json({
 
-message:error.message
+// message:error.message
 
-});
+// });
 
-}
+// }
+
+// };
+
+export const getProductReviews = async (req, res) => {
+
+  try {
+
+    const { productIdOrSlug } = req.params;
+
+    let productId = productIdOrSlug;
+
+    /*
+    IF NOT OBJECTID → FIND USING SLUG
+    */
+
+    if (!mongoose.Types.ObjectId.isValid(productIdOrSlug)) {
+
+      const product = await Product.findOne({
+        slug: productIdOrSlug
+      });
+
+      if (!product)
+        throw new Error("Product not found");
+
+      productId = product._id;
+
+    }
+
+    /*
+    FETCH REVIEWS
+    */
+
+    const reviews = await Review.find({
+      productId
+    }).populate("userId", "firstName lastName");
+
+    res.json({
+      success: true,
+      reviews
+    });
+
+  }
+  catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
 
 };

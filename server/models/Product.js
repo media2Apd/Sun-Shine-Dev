@@ -69,4 +69,14 @@ this.slug = slugify(this.name, { lower: true, strict: true });
 next();
 });
 
+productSchema.index({ name: "text", brand: "text", code: "text" });
+
+productSchema.index({ slug: 1 });
+
+productSchema.index({ category: 1 });
+
+productSchema.index({ featuredProduct: 1 });
+
+productSchema.index({ newLaunch: 1 });
+
 export default mongoose.model("Product", productSchema);        

@@ -10,11 +10,13 @@ import wishlistRoutes from "./wishlistRoutes.js";
 import addressRoutes from "./addressRoutes.js";
 import reviewRoutes from "./reviewRoutes.js";
 import dashBoardRoutes from "./dashBoardRoutes.js";
+import searchRoutes from "./searchRoutes.js";
 import express from "express";
 
 const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
+router.use("/search", searchRoutes);
 router.use("/wishlist", wishlistRoutes);
 router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
