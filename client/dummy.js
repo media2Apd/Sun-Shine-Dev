@@ -3,6 +3,7 @@
 ////////////////////////////////
 
 // Price range state
+
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [minPrice, setMinPrice] = useState(0);

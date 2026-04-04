@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect, } from "react";
 
 import {
-  // FiSearch,
+  FiSearch,
   FiUser,
   FiHeart,
   FiShoppingCart,
   FiRefreshCw,
   FiLogOut,
   FiUserCheck,
+  
 } from "react-icons/fi";
 import logo from "../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -66,7 +67,7 @@ export default function Header() {
 
         {/* Icons */}
         <div className="flex items-center space-x-6 text-gray-700 relative">
-          {/* <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> */}
+          <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> 
 
           {/* User Icon with Dropdown */}
           <div className="relative" ref={dropdownRef}>
