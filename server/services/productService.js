@@ -247,6 +247,25 @@ export const getProductBySlugOrIdService = async (slugOrId) => {
   if (!product)
     throw new Error("Product not found");
 
-  return product;
+  // 🔥 Convert mongoose doc to object
+  const productObj = product.toObject();
 
+  // ✅ Add discount variant
+  productObj.variants = productObj.variants.map((variant) => {
+
+    let discount = 0;
+
+    if (variant.mrp && variant.price && variant.mrp > 0) {
+      discount = Math.round(
+        ((variant.mrp - variant.price) / variant.mrp) * 100
+      );
+    }
+
+    return {
+      ...variant,
+      discount   // 👈 NEW FIELD
+    };
+  });
+
+  return productObj;
 };

@@ -87,8 +87,23 @@ useEffect(() => {
 
   const handleBillingToggle = (value) => {
     setUseDifferentBilling(value);
-    if (value) {
+
+    if (!value) {
+      // ✅ same as shipping
       setBillingData(formData);
+    } else {
+      // ✅ empty separate form
+      setBillingData({
+        firstName: "",
+        lastName: "",
+        country: "",
+        street: "",
+        city: "",
+        state: "",
+        zip: "",
+        phone: "",
+        email: "",
+      });
     }
   };
 
@@ -137,7 +152,35 @@ useEffect(() => {
   // };
 
   const handlePlaceOrder = async () => {
+    
     if (loading) return;
+
+    const validateAddress = (data) => {
+      return (
+        data.firstName &&
+        data.lastName &&
+        data.country &&
+        data.street &&
+        data.city &&
+        data.state &&
+        data.zip &&
+        data.phone &&
+        data.email
+      );
+    };
+
+      // ✅ SHIPPING ADDRESS CHECK
+    if (!validateAddress(formData)) {
+      toast.error("Please fill all shipping address fields ❌");
+      return;
+    }
+
+    // ✅ BILLING ADDRESS CHECK (if different)
+    if (useDifferentBilling && !validateAddress(billingData)) {
+      toast.error("Please fill all billing address fields ❌");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -451,9 +494,9 @@ useEffect(() => {
              <label htmlFor="firstName" className="text-sm font-medium mb-1">First Name</label>
              <input
                 id="firstName"
-                value={formData.firstName}
+                value={billingData.firstName}
                 onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
+                  setBillingData({ ...billingData, firstName: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Ex. John"
@@ -463,9 +506,9 @@ useEffect(() => {
               <label htmlFor="lastName" className="text-sm font-medium mb-1">Last Name</label>
               <input
                 id="lastName"
-                value={formData.lastName}
+                value={billingData.lastName}
                 onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
+                  setBillingData({ ...billingData, lastName: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Ex. Doe"
@@ -478,9 +521,9 @@ useEffect(() => {
             <label htmlFor="country" className="text-sm font-medium mb-1">Country</label>
             <input
               id="country"
-              value={formData.country}
+              value={billingData.country}
               onChange={(e) =>
-                setFormData({ ...formData, country: e.target.value })
+                setBillingData({ ...billingData, country: e.target.value })
               }
               className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Select Country"
@@ -492,9 +535,9 @@ useEffect(() => {
             <label htmlFor="street" className="text-sm font-medium mb-1">Street Address</label>
             <input
               id="street"
-              value={formData.street}
+              value={billingData.street}
               onChange={(e) =>
-                setFormData({ ...formData, street: e.target.value })
+                setBillingData({ ...billingData, street: e.target.value })
               }
               className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter Street Address"
@@ -507,9 +550,9 @@ useEffect(() => {
               <label htmlFor="city" className="text-sm font-medium mb-1">City</label>
               <input
                 id="city"
-                value={formData.city}
+                value={billingData.city}
                 onChange={(e) =>
-                  setFormData({ ...formData, city: e.target.value })
+                  setBillingData({ ...billingData, city: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Select City"
@@ -519,9 +562,9 @@ useEffect(() => {
               <label htmlFor="state" className="text-sm font-medium mb-1">State</label>
               <input
                 id="state"
-                value={formData.state}
+                value={billingData.state}
                 onChange={(e) =>
-                  setFormData({ ...formData, state: e.target.value })
+                  setBillingData({ ...billingData, state: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Select State"
@@ -535,9 +578,9 @@ useEffect(() => {
               <label htmlFor="zip" className="text-sm font-medium mb-1">Zip Code</label>
               <input
                 id="zip"
-                value={formData.zip}
+                value={billingData.zip}
                 onChange={(e) =>
-                  setFormData({ ...formData, zip: e.target.value })
+                  setBillingData({ ...billingData, zip: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Enter Zip Code"
@@ -547,9 +590,9 @@ useEffect(() => {
               <label htmlFor="phone" className="text-sm font-medium mb-1">Phone Number</label>
               <input
                 id="phone"
-                value={formData.phone}
+                value={billingData.phone}
                 onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
+                  setBillingData({ ...billingData, phone: e.target.value })
                 }
                 className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Enter Phone Number"
@@ -562,9 +605,9 @@ useEffect(() => {
             <label htmlFor="email" className="text-sm font-medium mb-1">Email Address</label>
             <input
               id="email"
-              value={formData.email}
+              value={billingData.email}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setBillingData({ ...billingData, email: e.target.value })
               }
               className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter Email Address"

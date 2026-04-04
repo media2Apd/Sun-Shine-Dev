@@ -269,7 +269,7 @@ const SelectDropdown = ({
     ReactDOM.createPortal(
       <div
         ref={dropdownRef}
-        className={`fixed z-[9999] rounded-[7px] border shadow-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex flex-col ${dropdownClassName}`}
+        className={`absolute  z-[9999] rounded-[7px] border shadow-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex flex-col ${dropdownClassName}`}
         style={{
           top: dropdownPosition.top,
           left: dropdownPosition.left,

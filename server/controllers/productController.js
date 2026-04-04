@@ -78,12 +78,34 @@ return errorResponse(res,404,err.message);
 };
 
 
-export const getAllProducts=async(req,res)=>{
+export const getAllProducts = async (req, res) => {
 
-const data=await service.getAllProducts();
+  const products = await service.getAllProducts();
 
-return successResponse(res,200,"Products fetched",data);
+  const updatedProducts = products.map((product) => {
 
+    const productObj = product.toObject();
+
+    productObj.variants = productObj.variants.map((variant) => {
+
+      let discount = 0;
+
+      if (variant.mrp && variant.price && variant.mrp > 0) {
+        discount = Math.round(
+          ((variant.mrp - variant.price) / variant.mrp) * 100
+        );
+      }
+
+      return {
+        ...variant,
+        discount
+      };
+    });
+
+    return productObj;
+  });
+
+  return successResponse(res, 200, "Products fetched", updatedProducts);
 };
 
 

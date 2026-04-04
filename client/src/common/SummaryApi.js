@@ -1,4 +1,3 @@
-
 const isLocalNetwork = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
 const backendDomain = process.env.NODE_ENV === 'development'
@@ -223,6 +222,10 @@ const SummaryApi = {
         url: (productId) => `${backendDomain}/api/reviews/view-all/${productId}`,
         method: "get"
     },
+    getAllReviews: {
+        url: `${backendDomain}/api/reviews/view-all`,
+        method: "get"
+     },
 
     // ===================== DASHBOARD ROUTES =====================
     getDashboardData: {
