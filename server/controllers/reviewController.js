@@ -87,17 +87,38 @@ export const createReview = async (req, res) => {
       }
     }
 
-    // ✅ CREATE REVIEW
-    const review = await Review.create({
+    // 🔥 CHECK EXISTING REVIEW
+    let existingReview = await Review.findOne({
       productId,
       userId: req.user.id,
-      rating,
-      comment,
-      images,
-      isVerifiedPurchase: order ? true : false,
     });
 
-    // 🔥 UPDATE PRODUCT RATING (IMPORTANT)
+    let review;
+
+    if (existingReview) {
+      // 🔥 UPDATE REVIEW
+      review = await Review.findByIdAndUpdate(
+        existingReview._id,
+        {
+          rating,
+          comment,
+          ...(images.length > 0 && { images }),
+        },
+        { new: true }
+      );
+    } else {
+      // 🔥 CREATE NEW REVIEW
+      review = await Review.create({
+        productId,
+        userId: req.user.id,
+        rating,
+        comment,
+        images,
+        isVerifiedPurchase: order ? true : false,
+      });
+    }
+
+    // 🔥 UPDATE PRODUCT RATING
     const stats = await Review.aggregate([
       { $match: { productId: review.productId } },
       {
@@ -116,9 +137,11 @@ export const createReview = async (req, res) => {
       });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Review added successfully",
+      message: existingReview
+        ? "Review updated successfully"
+        : "Review added successfully",
       data: review,
     });
 

@@ -7,6 +7,7 @@ import ConfirmModal from "../panelComponents/ConfirmModal";
 import { GoStarFill } from "react-icons/go";
 import { X } from "lucide-react";
 import { IoCameraOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
 export default function OrderDetails() {
   const location = useLocation();
   const id = location.state?.orderId;
@@ -49,11 +50,11 @@ export default function OrderDetails() {
     resetReviewForm(); // 🔥 add this
 
     setSelectedItem(item);
-    setRating(item.rating || 0);
-    setComment(item.comment || "");
+    setRating(item.review?.rating || 0);
+    setComment(item.review?.comment || "");
 
-    const existingImages = (item.images || []).map((img) => ({
-      url: img,
+    const existingImages = (item.review?.images || []).map((img) => ({
+      url: img.url,
       isOld: true,
     }));
 
@@ -140,6 +141,7 @@ export default function OrderDetails() {
       });
 
       if (res.data.success) {
+        toast.success("Review saved successfully");
         setShowReviewModal(false);
 
         setOrder((prev) => ({
@@ -148,10 +150,12 @@ export default function OrderDetails() {
             item.productId._id === selectedItem.productId._id
               ? {
                   ...item,
-                  reviewed: true,
-                  rating,
-                  comment,
-                  images: res.data.data.images, // ✅ fix
+                  isReviewed: true,
+                  review: {
+                    rating,
+                    comment,
+                    images: res.data.data.images,
+                  },
                 }
               : item
           ),
@@ -524,23 +528,23 @@ export default function OrderDetails() {
 
                   {/* 🔥 ADD THIS HERE */}
                   <td className="px-4 text-center">
-                      {order.status === "Delivered" && (
-                        item.reviewed ? (
-                          <button
-                            onClick={() => handleEditReview(item)}
-                            className="text-blue-600 text-xs"
-                          >
-                            Edit Review
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleAddReview(item)}
-                            className="text-green-600 text-xs"
-                          >
-                            Add Review
-                          </button>
-                        )
-                      )}
+                    {order.status === "Delivered" && (
+                      item.isReviewed ? (
+                        <button
+                          onClick={() => handleEditReview(item)}
+                          className="text-blue-600 text-xs"
+                        >
+                          Edit Review
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAddReview(item)}
+                          className="text-green-600 text-xs"
+                        >
+                          Add Review
+                        </button>
+                      )
+                    )}
                   </td>
 
                 </tr>
