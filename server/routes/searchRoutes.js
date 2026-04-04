@@ -1,4 +1,4 @@
-import  {searchProducts}  from "../controllers/searchController";
+import  {searchProducts}  from "../controllers/searchController.js";
 import express from "express";
 
 const router = express.Router();

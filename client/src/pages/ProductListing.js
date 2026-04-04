@@ -442,17 +442,24 @@
 // export default ProductListing;
 
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
 import { IoStar } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import SelectDropdown from "../customStyles/SelectDropdown";
-
+import { useLocation } from "react-router-dom";
+import api from "../common/apiClient";
+import SummaryApi from "../common/SummaryApi";
+import { useDebounce } from "use-debounce";
 const ProductListing = () => {
   const { products } = useContext(ProductContext);
-
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch] = useDebounce(searchQuery, 500);
+  const [productsData, setProductsData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   // FILTER SIDEBAR
@@ -472,8 +479,8 @@ const ProductListing = () => {
 
   // FILTERS
   const [selectedCategory, setSelectedCategory] = useState([]);
- const [selectedDiscount, setSelectedDiscount] = useState([]);
-const [selectedRating, setSelectedRating] = useState([]);
+   const [selectedDiscount, setSelectedDiscount] = useState([]);
+  const [selectedRating, setSelectedRating] = useState([]);
   const [stock, setStock] = useState("in");
 
   // SORT
@@ -483,6 +490,53 @@ const [selectedRating, setSelectedRating] = useState([]);
     { id: "high", label: "Price: High to Low" },
     { id: "rating", label: "Top Rated" },
   ];
+
+  const fetchSearchProducts = useCallback(async (term) => {
+    setLoading(true);
+
+    try {
+      const res = await api({
+        url: `${SummaryApi.searchProducts.url}?q=${encodeURIComponent(term)}`,
+        method: SummaryApi.searchProducts.method,
+      });
+
+      const data = res.data?.products || [];
+
+      const sorted = [...data].sort((a, b) => {
+        if (a.isHidden !== b.isHidden) return a.isHidden - b.isHidden;
+        if (a.availability !== b.availability)
+          return b.availability - a.availability;
+        return 0;
+      });
+
+      setProductsData(sorted);
+
+    } catch (err) {
+      console.error(err);
+      setProductsData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+useEffect(() => {
+  if (location.pathname === "/search") {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || "";
+    setSearchQuery(q);
+  } else {
+    setSearchQuery(""); // 🔥 clear when not search page
+  }
+}, [location.pathname, location.search]);
+
+  useEffect(() => {
+    if (!debouncedSearch || debouncedSearch.trim() === "") {
+      setProductsData(products);
+      return;
+    }
+
+    fetchSearchProducts(debouncedSearch);
+  }, [debouncedSearch, products, fetchSearchProducts]);
 
   // UNIQUE CATEGORIES
   const categories = [
@@ -503,7 +557,7 @@ const [selectedRating, setSelectedRating] = useState([]);
 
   // FILTER + SORT USEEFFECT
   useEffect(() => {
-    let temp = [...products];
+    let temp = [...productsData];
 
     // CATEGORY
     if (selectedCategory.length > 0) {
@@ -549,15 +603,7 @@ if (selectedRating.length > 0) {
     }
 
     setFilteredProducts(temp);
-  }, [
-    products,
-    priceRange,
-    selectedCategory,
-    selectedDiscount,
-    selectedRating,
-    stock,
-    sortValue
-  ]);
+  }, [products, priceRange, selectedCategory, selectedDiscount, selectedRating, stock, sortValue, productsData]);
 
   // TOGGLE CATEGORY
   const toggleCategory = (cat) => {
@@ -611,9 +657,11 @@ const toggleRating = (r) => {
               placeholder="Sort By"
             />
           </div>
-          <span className="text-sm text-gray-500">
-            {filteredProducts.length} Results
-          </span>
+  <span className="text-sm font-semibold text-gray-500">
+
+      result {filteredProducts.length}
+    
+  </span>
         </div>
       </div>
 
@@ -787,24 +835,26 @@ const toggleRating = (r) => {
         )}
 
         {/* PRODUCTS */}
-        <div className="flex-1">
-          {filteredProducts.length === 0 ? (
-            <p className="text-center mt-10 text-gray-500">
-              No Products Found
-            </p>
-          ) : (
-            <div className={`grid gap-4
-              ${showFilter 
-                ? "grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-                : "grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-              }`}
-            >
-              {filteredProducts.map(item => (
-                <ProductCard key={item._id} item={item} />
-              ))}
-            </div>
-          )}
-        </div>
+        {loading ? (
+          <p className="text-center mt-10 text-green-600 font-medium">
+            Searching products...
+          </p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center mt-10 text-gray-500">
+            No Products Found
+          </p>
+        ) : (
+          <div className={`grid gap-4
+            ${showFilter 
+              ? "grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+              : "grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+            }`}
+          >
+            {filteredProducts.map(item => (
+              <ProductCard key={item._id} item={item} />
+            ))}
+          </div>
+        )}
 
       </div>
 

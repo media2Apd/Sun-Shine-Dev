@@ -6,7 +6,7 @@ import { uploadReviewImages } from "../utils/Cloudinary.js";
 
 const router = express.Router();    
 
-router.get("/view-all", reviewController.getAllReviews);
+// router.get("/view-all", reviewController.getAllReviews);
 
 router.use(authMiddleware);
 

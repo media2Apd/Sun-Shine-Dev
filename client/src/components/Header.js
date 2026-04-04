@@ -11,7 +11,7 @@ import {
   
 } from "react-icons/fi";
 import logo from "../assets/logo.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useCart } from "../Context/CartContext";
 import { useWishlist } from "../Context/WishlistContext";
@@ -20,6 +20,7 @@ import { setUserDetails } from "../store/userSlice"; // adjust path
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const user = useSelector((state) => state?.user?.user); // Redux store data
@@ -27,6 +28,8 @@ export default function Header() {
   const { refreshWishlist, wishlistCount } = useWishlist();
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
+
+  
 
   const handleLogout = async () => {
     setOpen(false);
@@ -54,9 +57,19 @@ export default function Header() {
     if (value.trim()) {
       navigate(`/search?q=${value}`);
     } else {
-      navigate("/search");
+      navigate("/search"); // 🔥 important (clear search)
     }
   };
+
+  useEffect(() => {
+  if (location.pathname === "/search") {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || "";
+    setSearch(q);
+  } else {
+    setSearch(""); // 🔥 clear everywhere else
+  }
+}, [location.pathname, location.search]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

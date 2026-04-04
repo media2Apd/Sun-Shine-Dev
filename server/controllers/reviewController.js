@@ -1,8 +1,8 @@
+import mongoose from "mongoose";
 import Review from "../models/Review.js";
 import Order from "../models/Order.js";
 import { uploadToCloudinary } from "../utils/Cloudinary.js";
 import Product from "../models/Product.js";
-
 // export const createReview = async (req, res) => {
 
 //   try {
@@ -231,18 +231,18 @@ export const getProductReviews = async (req, res) => {
 
 };
 
-export const getAllReviews = async (req, res) => {
-  try {
+// export const getAllReviews = async (req, res) => {
+//   try {
 
-    const reviews = await Review.find()
-      .populate("userId", "firstName lastName")
-      .populate("productId", "name"); // optional (product name)
+//     const reviews = await Review.find()
+//       .populate("userId", "firstName lastName")
+//       .populate("productId", "name"); // optional (product name)
 
-    res.json(reviews);
+//     res.json(reviews);
 
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+//   } catch (error) {
+//     res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
