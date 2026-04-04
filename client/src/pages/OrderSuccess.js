@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../common/apiClient";
@@ -254,7 +251,7 @@ const {
         {/* TRACK ORDER */}
         <button
           onClick={() =>
-            navigate('/order-page/order-details', {
+            navigate('/order/order-details', {
               state: { orderId: orderData._id },
             })
           }

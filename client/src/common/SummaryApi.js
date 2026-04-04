@@ -32,15 +32,6 @@ const SummaryApi = {
         url: `${backendDomain}/api/user/reset-password`,
         method: "post"
     },
-    googleLogin: {
-        url: `${backendDomain}/api/auth/google-login`,
-        method: "post",
-    },
-    facebookLogin: {
-        url: `${backendDomain}/api/auth/facebook-login`,
-        method: "post",
-    },
-
 
     // ===================== USERS / CUSTOMERS ROUTES =====================
     getProfile: {
@@ -206,6 +197,10 @@ const SummaryApi = {
         url: `${backendDomain}/api/orders/view-all`,
         method: "get"
     },
+    getAllOrders: {
+        url: `${backendDomain}/api/orders/all`,
+        method: "get"
+    },
     getOrderById: {
         url: (orderId) => `${backendDomain}/api/orders/view-one/${orderId}`,
         method: "get"
@@ -228,6 +223,13 @@ const SummaryApi = {
         url: (productId) => `${backendDomain}/api/reviews/view-all/${productId}`,
         method: "get"
     },
+
+    // ===================== DASHBOARD ROUTES =====================
+    getDashboardData: {
+        url: `${backendDomain}/api/dashboard/overview`,
+        method: "get"
+    },
+
     // ===================== ADDRESS ROUTES =====================
     createAddress: {
         url: `${backendDomain}/api/address/add`,

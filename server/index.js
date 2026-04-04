@@ -12,8 +12,6 @@ const app = express();
 
 const server = http.createServer(app);
 
-
-
 // Define allowed originss
 // const allowedOrigins = ["http://192.168.0.15:3000","http://localhost:3000", "http://localhost:3001", "https://s1g57ln1-3000.inc1.devtunnels.ms", "http://192.168.0.3:3000", "https://naach-boutique.vercel.app", "https://app.naachboutique.com", "https://naach-boutique-five.vercel.app"];
 const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
@@ -39,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for form data
 app.use(express.json());
 app.use('/api', router);
 app.get('/',(req,res)=>{
-  res.end("welcome to Regees Tex API")
+  res.end("welcome to Sunshine API")
 });
 app.use(errorHandler);
 

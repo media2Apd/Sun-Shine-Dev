@@ -118,7 +118,7 @@ const ProductCard = ({ item }) => {
   const mrp = item.variants?.[0]?.mrp;
 
   const handleCardClick = () => {
-    navigate(`/category-products/product-overview`, {
+    navigate(`/category-products/product-overview/${item.slug}`, {
       state: { id: item._id }, // ✅ FIX
     });
   };

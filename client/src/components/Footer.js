@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/footerimage.png";
+import logo from "../assets/logo.svg";
 import { useContext } from "react";
 import { CategoryContext } from "../Context/CategoryContext";
 import { useSelector } from "react-redux";
@@ -35,13 +35,13 @@ export default function Footer() {
         <div>
           <h1 className="text-white font-semibold mb-4">My Account</h1>
           <ul className="space-y-2 text-sm">
-            <li onClick={()=> navigate('./settings-page')} className="cursor-pointer">Profile</li>
+            <li onClick={()=> navigate('./settings')} className="cursor-pointer">Profile</li>
             <li
               onClick={() => {
                 if (user) {
                   navigate("/order-history");
                 } else {
-                  navigate("/login-page", {
+                  navigate("/login", {
                     state: { redirect: "/order-history" },
                   });
                 }
@@ -50,8 +50,8 @@ export default function Footer() {
             >
               Order History
             </li>
-            <li onClick={()=> navigate('./cart-page')} className="cursor-pointer">Shopping Cart</li>
-            <li onClick={()=> navigate('./wishlist-page')} className="cursor-pointer">Wishlist</li>
+            <li onClick={()=> navigate('./cart')} className="cursor-pointer">Shopping Cart</li>
+            <li onClick={()=> navigate('./wishlist')} className="cursor-pointer">Wishlist</li>
           </ul>
         </div>
 
@@ -85,10 +85,10 @@ export default function Footer() {
         <div>
           <h1 className="text-white font-semibold mb-4">Proxy</h1>
           <ul className="space-y-2 text-sm">
-            <li onClick={()=> navigate('./about-page')} className="cursor-pointer">About</li>
+            <li onClick={()=> navigate('./about')} className="cursor-pointer">About</li>
             <li onClick={()=> navigate('./category-products')} className="cursor-pointer">Shop</li>
-            <li onClick={()=> navigate('./blog-page')} className="cursor-pointer">Blog</li>
-            <li onClick={()=> navigate('./gallery-page')} className="cursor-pointer">Gallery</li>
+            <li onClick={()=> navigate('./blogs')} className="cursor-pointer">Blog</li>
+            <li onClick={()=> navigate('./gallery')} className="cursor-pointer">Gallery</li>
           </ul>
         </div>
 
@@ -96,10 +96,10 @@ export default function Footer() {
         <div>
           <h1 className="text-white font-semibold mb-4">Helps</h1>
           <ul className="space-y-2 text-sm">
-            <li onClick={()=> navigate('./contact-page')} className="cursor-pointer">Contact</li>
-            <li>FAQ’s</li>
-            <li>Terms & Condition</li>
-            <li>Privacy Policy</li>
+            <li onClick={()=> navigate('./contact-us')} className="cursor-pointer">Contact</li>
+            <li onClick={()=> navigate('./faqs')} className="cursor-pointer">FAQ’s</li>
+            <li className="cursor-pointer">Terms & Condition</li>
+            <li className="cursor-pointer">Privacy Policy</li>
           </ul>
         </div>
 

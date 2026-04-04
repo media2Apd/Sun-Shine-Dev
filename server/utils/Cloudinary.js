@@ -48,7 +48,8 @@ export const uploadBlogMedia = multer({
   storage: multer.memoryStorage()
 }).fields([
   { name: "featuredImage", maxCount: 100 },
-  { name: "video", maxCount: 1 }
+  { name: "video", maxCount: 1 },
+  { name: "contentImages", maxCount: 100 }
 ]);
 
 export const uploadReviewImages = multer({

@@ -5,63 +5,136 @@ deleteFromCloudinary
 } from "../utils/cloudinary.js";
 
 
-export const createBlog = async(body,files)=>{
+export const createBlog = async (body, files) => {
 
 const exists = await repo.getBlogBySlug(body.slug);
 
-if(exists)
+if (exists)
 throw new Error("Slug already exists");
 
+const data = { ...body };
 
-const data={...body};
 
+/* FEATURED IMAGE */
 
-/* featured image */
-
-if(files?.featuredImage?.[0]){
+if (files?.featuredImage?.[0]) {
 
 const uploaded = await uploadToCloudinary(
-
 files.featuredImage[0].buffer,
-
 "blogs/featured"
-
 );
 
-data.featuredImage=uploaded;
+data.featuredImage = uploaded;
 
 }
+
+
+/* CONTENT IMAGE PROCESSING */
+
+let content = body.content || [];
+
+if (typeof content === "string") {
+content = JSON.parse(content);
+}
+
+let imageIndex = 0;
+
+if (files?.contentImages?.length) {
+
+for (let block of content) {
+
+if (
+block.type === "image" &&
+block.value === "__NEW_IMAGE__"
+) {
+
+const file = files.contentImages[imageIndex++];
+
+if (file) {
+
+const uploaded = await uploadToCloudinary(
+file.buffer,
+"blogs/content"
+);
+
+block.value = uploaded.url;
+
+}
+
+}
+
+}
+
+}
+
+data.content = content;
 
 return repo.createBlog(data);
 
 };
 
 
-export const updateBlog=async(id,body,files)=>{
+export const updateBlog = async (id, body, files) => {
 
-const data={...body};
+const data = { ...body };
 
+/* FEATURED IMAGE REPLACEMENT */
 
-/* replace featured image */
+if (files?.featuredImage?.[0]) {
 
-if(files?.featuredImage?.[0]){
-
-const uploaded=await uploadToCloudinary(
-
+const uploaded = await uploadToCloudinary(
 files.featuredImage[0].buffer,
-
 "blogs/featured"
-
 );
 
-data.featuredImage=uploaded;
+data.featuredImage = uploaded;
 
 }
 
-return repo.updateBlog(id,data);
+
+/* CONTENT IMAGE PROCESSING */
+
+let content = body.content || [];
+
+if (typeof content === "string") {
+content = JSON.parse(content);
+}
+
+let imageIndex = 0;
+
+if (files?.contentImages?.length) {
+
+for (let block of content) {
+
+if (
+block.type === "image" &&
+block.value === "__NEW_IMAGE__"
+) {
+
+const file = files.contentImages[imageIndex++];
+
+if (file) {
+
+const uploaded = await uploadToCloudinary(
+file.buffer,
+"blogs/content"
+);
+
+block.value = uploaded.url;
+
+}
+
+}
+
+}
+
+}
+
+data.content = content;
+
+return repo.updateBlog(id, data);
 
 };
-
 
 export const deleteBlog=async(id)=>{
 

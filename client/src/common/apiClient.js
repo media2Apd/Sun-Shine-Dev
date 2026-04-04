@@ -3,22 +3,13 @@ import axios from "axios";
 
 /**
  * Navigation handler reference
- * Used to perform redirects from Axios interceptors
- * (because hooks like useNavigate cannot be used here)
  */
 let navigationHandler = null;
 
-/**
- * Setter to inject navigation function (useNavigate)
- * from React components during app initialization
- */
 export const setNavigationHandler = (handler) => {
   navigationHandler = handler;
 };
 
-/**
- * Create Axios instance
- */
 const api = axios.create({});
 
 /* ----------------------------------------
@@ -27,9 +18,22 @@ const api = axios.create({});
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
+    const currentPath = window.location.pathname;
 
-    // If token exists, attach it to Authorization header
-    // Otherwise, allow the request to proceed as Guest access
+    // RULE: If path starts with /admin-panel, token is MANDATORY
+    if (currentPath.startsWith("/admin-panel") && !token) {
+      // Redirect to un-authorized immediately
+      if (navigationHandler) {
+        navigationHandler("/un-authorized");
+      } else {
+        window.location.href = "/un-authorized";
+      }
+      
+      // Cancel the request by throwing an error
+      return Promise.reject(new Error("Unauthorized: No token found for admin route."));
+    }
+
+    // Standard behavior: Attach token if it exists
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -48,25 +52,20 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     const currentPath = window.location.pathname;
 
-    // If backend returns 401 (Unauthorized)
+    // If backend returns 401 (Unauthorized) - Token expired or invalid
     if (status === 401) {
-      // Clear invalid or expired token
       localStorage.removeItem("token");
       
-      // If user is currently inside admin routes, redirect to Unauthorized page
       if (currentPath.startsWith("/admin-panel")) {
         if (navigationHandler) {
           navigationHandler("/un-authorized");
         } else {
-          // Fallback navigation if handler is not set
           window.location.href = "/un-authorized";
         }
       } else {
-        // For non-admin routes, redirect to login page
         if (navigationHandler) {
           navigationHandler("/login");
         } else {
-          // Fallback navigation if handler is not set
           window.location.href = "/login";
         }
       }

@@ -104,6 +104,7 @@ import { razorpay } from "../config/razorpay.js";
 import Cart from "../models/Cart.js";
 import * as crypto from "crypto";
 import Review from "../models/Review.js";
+import mongoose from "mongoose";
 
 // ✅ CREATE ORDER
 export const createOrder = async (body, userId) => {
@@ -183,21 +184,21 @@ export const getOrders = (userId) => repo.getOrders(userId);
 
 // export const getOrderById = (id) => repo.getOrderById(id);
 
-export const getOrderById = async (orderId, userId) => {
+export const getOrderById = async (orderId) => {
 
   const order = await repo.getOrderById(orderId);
 
   if (!order)
     throw new Error("Order not found");
 
-  // attach review inside each item
-  order.items = await Promise.all(
+  const updatedItems = await Promise.all(
 
     order.items.map(async (item) => {
 
       const review = await Review.findOne({
-        productId: item.productId._id,
-        userId: userId
+        productId: new mongoose.Types.ObjectId(item.productId._id),
+        userId: new mongoose.Types.ObjectId(order.customerId),
+        // variantId: new mongoose.Types.ObjectId(item.variantId) // ⭐ missing piece
       }).select("rating comment images");
 
       return {
@@ -209,10 +210,11 @@ export const getOrderById = async (orderId, userId) => {
 
   );
 
+  order.items = updatedItems;
+
   return order;
 
 };
-
 export const updateOrderStatus = (id, data) =>
   repo.updateOrder(id, data);
 
@@ -266,6 +268,7 @@ export const createRazorpayOrder = async (body, userId) => {
       price: item.price,
       name: product.name,
       image: product.images?.[0]?.url,
+      
     });
   }
 
@@ -291,6 +294,8 @@ export const createRazorpayOrder = async (body, userId) => {
     razorpayOrderId: razorpayOrder.id,
 
     paymentStatus: "Pending",
+
+    status: "Pending",
   });
 
 
@@ -323,6 +328,7 @@ export const verifyRazorpayPayment = async (body, userId) => {
       razorpayPaymentId: razorpay_payment_id,
       razorpaySignature: razorpay_signature,
       paymentStatus: "SUCCESS",
+      status: "Placed"
     },
     { new: true }
   );

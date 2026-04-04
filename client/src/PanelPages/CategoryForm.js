@@ -1032,6 +1032,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import SummaryApi from "../common/SummaryApi";
 import api from "../common/apiClient";
@@ -1286,17 +1287,32 @@ const CategoryForm = () => {
                   type="button" 
                   disabled={loading}
                   onClick={(e) => handleSubmit(e, "createAnother")} 
-                  className="px-8 py-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-all text-gray-700 font-medium"
+                  className="px-8 py-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-all text-gray-700 font-medium flex items-center gap-2 justify-center disabled:opacity-50"
                 >
-                  Save & Add Another
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Save & Add Another"
+                  )}
                 </button>
               )}
+
               <button 
                 type="submit" 
                 disabled={loading}
-                className="px-12 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-xl shadow-green-100 transition-all disabled:opacity-50 font-bold"
+                className="px-12 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-xl shadow-green-100 transition-all disabled:opacity-50 font-bold flex items-center gap-2 justify-center"
               >
-                {loading ? "Processing..." : isEdit ? "Update Category" : "Save Category"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                    Processing...
+                  </>
+                ) : (
+                  isEdit ? "Update Category" : "Save Category"
+                )}
               </button>
             </>
           )}

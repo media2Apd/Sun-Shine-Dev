@@ -2,7 +2,6 @@ import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home";
-// import CategoryProducts from "../pages/CategoryProducts";
 import Layout from "../panelComponents/Layout";
 import CategoryList from "../PanelPages/CategoryList";
 import CategoryForm from "../PanelPages/CategoryForm";
@@ -24,23 +23,22 @@ import CheckoutPage from "../pages/CheckoutPage";
 import OrderSuccess from "../pages/OrderSuccess";
 import OrderHistoryPage from "../pages/OrderhistoryPage";
 import OrderDetails from "../pages/OrderdetailsPage";
-// import { EnquiryProvider } from "../Context/EnquiryContext";
 import EnquiryList from "../PanelPages/EnquiryList";
 import EnquiryOverview from "../PanelPages/EnquiryOverview";
 import OrderlistPage from "../PanelPages/OrderlistPage";
-import AdminorderOverview from "../PanelPages/AdminorderOverview";
+import AdminOrderOverview from "../PanelPages/AdminOrderOverview";
 import CustomerList from "../PanelPages/CustomerList";
 import CustomerDetail from "../PanelPages/CustomerDetail";
 import AdminDashboard from "../PanelPages/AdminDashboard";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
-// import ChangePassword from "../pages/ChangePassword";
 import AdminSettings from "../PanelPages/AdminSettings";
-import BlogPreview from "../PanelPages/BlogPreview";
 import BlogOverview from "../pages/BlogOverviewpage";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import NotFound from "../pages/NotFound";
+import FAQPage from "../pages/FAQPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,11 +49,11 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login-page",
+        path: "login",
         element: <LoginPage />
       },
       {
-        path: "signup-page",
+        path: "signup",
         element: <SignupPage />
       },
       {
@@ -79,52 +77,51 @@ const router = createBrowserRouter([
         element: <ProductListing />,
       },
       {
-        path: 'category-products/product-overview',
+        path: 'category-products/product-overview/:slug',
         element: <ProductOverview />,
       },
       {
-        path: 'cart-page',
+        path: 'cart',
         element: <CartPage />,
       },
       {
-        path: 'wishlist-page',
+        path: 'wishlist',
         element: <WishlistPage />
       },
       {
-        path: 'about-page',
+        path: 'about',
         element: <AboutPage />
       },
       {
-        path: 'gallery-page',
+        path: 'gallery',
         element: <GalleryPage />
       },
       {
-        path: 'contact-page',
+        path: 'contact-us',
         element: <EnquiryForm />
       },
       {
-        path: 'settings-page',
+        path: 'faqs',
+        element: <FAQPage />
+      },
+      {
+        path: 'settings',
         element: <SettingsPage />
       },
-
       {
-        path: "category-products/product-overview",
-        element: <ProductOverview />
-      },
-      {
-        path: 'blog-page',
+        path: 'blogs',
         element: <BlogPage />
       },
       {
-        path: "blog-overview/:slug",
+        path: "blogs/:slug",
         element: <BlogOverview />
       },
       {
-        path: 'cart-page/checkout-page',
+        path: 'cart/checkout',
         element: <CheckoutPage />
       },
       {
-        path: 'order-page',
+        path: 'order',
         element: <OrderSuccess />
       },
       {
@@ -132,10 +129,10 @@ const router = createBrowserRouter([
         element: <OrderHistoryPage />
       },
       {
-        path: 'order-page/order-details',
+        path: 'order/order-details',
         element: <OrderDetails />
-      }
-      , {
+      },
+      {
         path: "admin-panel",
         element: <Layout />,
         children: [
@@ -197,11 +194,6 @@ const router = createBrowserRouter([
             element: <BlogForm />,
           },
           {
-            path: "blog-preview",
-            element: <BlogPreview />
-          },
-
-          {
             path: "enquiry-list",
             element: <EnquiryList />
           }, 
@@ -214,8 +206,8 @@ const router = createBrowserRouter([
             element: <OrderlistPage />
           },
           {
-            path: "order-list/order-overview",
-            element: <AdminorderOverview />
+            path: "order-list/order-overview/:id",
+            element: <AdminOrderOverview />
           },
           {
             path: "customer-list",

@@ -49,9 +49,9 @@ export default function CartPage() {
 
 const handleCheckout = () => {
   if (!user) {
-    navigate("/login-page", {
+    navigate("/login", {
       state: {
-        redirectTo: "/cart-page",
+        redirectTo: "/cart",
         orderSummary: { items: cartProducts, subtotal, total },
       },
     });
@@ -59,7 +59,7 @@ const handleCheckout = () => {
   }
 
   // ✅ No token logic here
-  navigate("/cart-page/checkout-page", {
+  navigate("/cart/checkout", {
     state: {
       orderSummary: { items: cartProducts, subtotal, total },
     },

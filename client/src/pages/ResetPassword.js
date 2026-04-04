@@ -23,7 +23,7 @@
 //       const data = await response.json();
 //       if (data.success) {
 //         alert("Password reset successful!");
-//         navigate("/login-page");
+//         navigate("/login");
 //       } else {
 //         alert(data.message);
 //       }
@@ -104,7 +104,7 @@ const handleSubmit = async (e) => {
 
     if (data.success) {
       toast.success("Password reset successfully!");
-      navigate("/login-page");
+      navigate("/login");
     } else {
       toast.error(data.message);
     }

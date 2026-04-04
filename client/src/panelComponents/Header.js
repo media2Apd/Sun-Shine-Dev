@@ -1,19 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.jpg";
- 
+import logo from "../assets/logo.svg";
+import { FiMenu } from "react-icons/fi"; 
 
-const Header = () => {
+const Header = ({ toggleMobileSidebar }) => {
   const navigate = useNavigate();
+
   return (
-    <div className="bg-white shadow-sm px-12 py-3 flex items-center border-b">
+    <div className="bg-white shadow-sm px-4 md:px-12 py-3 flex items-center justify-between border-b z-30">
       
-      {/* Logo */}
+      {/* Logo - Stays on the Left */}
       <img 
         src={logo} 
-        onClick={()=>navigate('/')}
+        onClick={() => navigate('/')}
         alt="Logo" 
         className="h-10 w-auto cursor-pointer"
       />
+
+      {/* Hamburger Menu - Now on the Right (Visible only on Mobile/Tablet) */}
+      <button 
+        onClick={toggleMobileSidebar}
+        className="p-2 rounded-lg hover:bg-slate-100 lg:hidden text-slate-600 transition-colors focus:outline-none"
+      >
+        <FiMenu size={24} />
+      </button>
 
     </div>
   );

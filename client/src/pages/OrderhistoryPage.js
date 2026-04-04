@@ -15,7 +15,7 @@ const statusConfig = {
     text: "text-yellow-600",
     icon: <MdPendingActions className="text-yellow-600 text-lg" />,
   },
-  Processing: {
+  Packaged: {
     bg: "bg-orange-100",
     text: "text-orange-600",
     icon: <FaTruckFast className="text-orange-600 text-lg" />,
@@ -259,7 +259,7 @@ export default function OrderHistoryPage() {
                     </button>
                   ) : order.status !== "Cancelled" ? (
                     <button
-                      onClick={() => navigate(`/order-page/order-details`, { state: { orderId: order._id }})}
+                      onClick={() => navigate(`/order/order-details`, { state: { orderId: order._id }})}
                       className="w-56 bg-[#00B207] hover:bg-green-700 text-white py-1.5 rounded-full font-medium"
                     >
                       Track Order
@@ -271,14 +271,14 @@ export default function OrderHistoryPage() {
 
                     {/* VIEW DETAILS */}
                     <button
-                      onClick={() => navigate(`/order-page/order-details`, { state: { orderId: order._id }})}
+                      onClick={() => navigate(`/order/order-details`, { state: { orderId: order._id }})}
                       className="flex-1 border border-[#E3E3E3] bg-white py-2 rounded-md text-sm text-[#747484] hover:bg-gray-100"
                     >
                       View Details
                     </button>
 
                     {/* CANCEL ORDER */}
-                    {(order.status === "Placed" || order.status === "Processing") && (
+                    {(order.status === "Placed" || order.status === "Packaged") && (
                       <button
                         onClick={() => handleCancelOrder(order._id)}
                         className="flex-1 border border-red-300 bg-white text-red-600 py-2 rounded-md text-sm hover:bg-red-50"
