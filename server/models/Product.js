@@ -54,8 +54,11 @@ newLaunch: Boolean,
 
 featuredProduct: Boolean,
 
-variants: [variantSchema]
+variants: [variantSchema],
 
+averageRating: { type: Number, default: 0 },
+
+totalReviews: { type: Number, default: 0 },
 },
 { timestamps: true }
 );
@@ -68,5 +71,15 @@ this.slug = slugify(this.name, { lower: true, strict: true });
 
 next();
 });
+
+productSchema.index({ name: "text", brand: "text", code: "text" });
+
+productSchema.index({ slug: 1 });
+
+productSchema.index({ category: 1 });
+
+productSchema.index({ featuredProduct: 1 });
+
+productSchema.index({ newLaunch: 1 });
 
 export default mongoose.model("Product", productSchema);        

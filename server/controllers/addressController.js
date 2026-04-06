@@ -1,238 +1,144 @@
 import Address from "../models/Address.js";
 
-
 /*
 CREATE ADDRESS
 */
-export const createAddress=async(req,res)=>{
+export const createAddress = async (req, res) => {
+  try {
+    const { isDefault } = req.body;
 
-try{
-
-const {isDefault}=req.body;
-
-
-/*
+    /*
 IF NEW ADDRESS IS DEFAULT
 REMOVE OLD DEFAULT
 */
-if(isDefault){
+    if (isDefault) {
+      await Address.updateMany({ userId: req.user.id }, { isDefault: false });
+    }
 
-await Address.updateMany(
-{userId:req.user.id},
-{isDefault:false}
-);
-
-}
-
-
-/*
+    /*
 CREATE ADDRESS
 */
-const address=await Address.create({
+    const address = await Address.create({
+      ...req.body,
+      userId: req.user.id,
+    });
 
-...req.body,
-userId:req.user.id
-
-});
-
-res.status(201).json(address);
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
-
+    res.status(201).json({
+    success: true,
+    message: "Address created successfully",
+    data: address
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
-
-
-
 
 /*
 GET ALL ADDRESSES
 */
-export const getAddresses=async(req,res)=>{
+export const getAddresses = async (req, res) => {
+  try {
+    const addresses = await Address.find({
+      userId: req.user.id,
+    }).sort({ createdAt: -1 });
 
-try{
-
-const addresses=await Address.find({
-
-userId:req.user.id
-
-}).sort({createdAt:-1});
-
-res.json(addresses);
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
-
+    res.json(addresses);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
-
-
-
 
 /*
 GET DEFAULT ADDRESS
 */
-export const getDefaultAddress=async(req,res)=>{
+export const getDefaultAddress = async (req, res) => {
+  try {
+    const address = await Address.findOne({
+      userId: req.user.id,
+      isDefault: true,
+    });
 
-try{
-
-const address=await Address.findOne({
-
-userId:req.user.id,
-isDefault:true
-
-});
-
-res.json(address);
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
-
+    res.json(address);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
-
-
-
 
 /*
 SET DEFAULT ADDRESS
 */
-export const setDefaultAddress=async(req,res)=>{
+export const setDefaultAddress = async (req, res) => {
+  try {
+    const addressId = req.params.id;
 
-try{
-
-const addressId=req.params.id;
-
-
-/*
+    /*
 REMOVE OLD DEFAULT
 */
-await Address.updateMany(
+    await Address.updateMany({ userId: req.user.id }, { isDefault: false });
 
-{userId:req.user.id},
-{isDefault:false}
-
-);
-
-
-/*
+    /*
 SET NEW DEFAULT
 */
-const address=await Address.findByIdAndUpdate(
+    const address = await Address.findByIdAndUpdate(
+      addressId,
+      { isDefault: true },
+      { new: true },
+    );
 
-addressId,
-{isDefault:true},
-{new:true}
-
-);
-
-
-res.json(address);
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
-
+    res.json(address);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
-
-
-
 
 /*
 UPDATE ADDRESS
 */
-export const updateAddress=async(req,res)=>{
+export const updateAddress = async (req, res) => {
+  try {
+    const addressId = req.params.id;
 
-try{
+    if (req.body.isDefault) {
+      await Address.updateMany({ userId: req.user.id }, { isDefault: false });
+    }
 
-const addressId=req.params.id;
+    const address = await Address.findByIdAndUpdate(addressId, req.body, {
+      new: true,
+    });
 
-
-if(req.body.isDefault){
-
-await Address.updateMany(
-
-{userId:req.user.id},
-{isDefault:false}
-
-);
-
-}
-
-
-const address=await Address.findByIdAndUpdate(
-
-addressId,
-req.body,
-{new:true}
-
-);
-
-res.json(address);
-
-}
-catch(error){
-
-res.status(500).json({
-message:error.message
-});
-
-}
-
+    res.json({
+    success: true,
+    message: "Address updated successfully",
+    data: address
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
-
-
-
 
 /*
 DELETE ADDRESS
 */
-export const deleteAddress=async(req,res)=>{
+export const deleteAddress = async (req, res) => {
+  try {
+    await Address.findByIdAndDelete(req.params.id);
 
-try{
-
-await Address.findByIdAndDelete(
-
-req.params.id
-
-);
-
-res.json({
-
-message:"Address deleted successfully"
-
-});
-
-}
-catch(error){
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-}
-
+    res.json({
+      message: "Address deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };

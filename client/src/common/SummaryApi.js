@@ -98,6 +98,10 @@ const SummaryApi = {
         url: (productId) => `${backendDomain}/api/products/delete-one/${productId}`,
         method: "delete"
     },
+    searchProducts: {
+        url: `${backendDomain}/api/search/search-products`,
+        method: "get"
+    },
 
     // ===================== CART ROUTES =====================
     addToCart: {

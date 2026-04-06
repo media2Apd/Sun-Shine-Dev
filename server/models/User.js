@@ -13,6 +13,10 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   firstName: { type: String, default: "" },
   lastName: { type: String, default: "" },
+  profilePicture: {
+    url: { type: String, default: null },
+    publicId: { type: String, default: null }
+  },
   gender: { type: String },
   birthday: { type: Date },
   phone: { type: String, default: "" },

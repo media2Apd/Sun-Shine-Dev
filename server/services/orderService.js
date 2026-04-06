@@ -184,37 +184,79 @@ export const getOrders = (userId) => repo.getOrders(userId);
 
 // export const getOrderById = (id) => repo.getOrderById(id);
 
-export const getOrderById = async (orderId) => {
+// export const getOrderById = async (orderId) => {
+
+//   const order = await repo.getOrderById(orderId);
+
+//   if (!order)
+//     throw new Error("Order not found");
+
+//   const updatedItems = await Promise.all(
+
+//     order.items.map(async (item) => {
+
+//       const review = await Review.findOne({
+//         productId: new mongoose.Types.ObjectId(item.productId._id),
+//         userId: new mongoose.Types.ObjectId(order.customerId),
+//         variantId: new mongoose.Types.ObjectId(item.variantId) // ⭐ missing piece
+//       }).select("rating comment images");
+
+//       return {
+//         ...item.toObject(),
+//         review: review || null
+//       };
+
+//     })
+
+//   );
+
+//   order.items = updatedItems;
+
+//   return order;
+
+// };
+
+export const getOrderById = async (orderId, userId) => {
 
   const order = await repo.getOrderById(orderId);
 
   if (!order)
     throw new Error("Order not found");
 
+  if (order.customerId.toString() !== userId.toString()) {
+    throw new Error("Unauthorized access");
+  }
+
   const updatedItems = await Promise.all(
 
     order.items.map(async (item) => {
 
+      const productId =
+        item.productId?._id || item.productId;
+
       const review = await Review.findOne({
-        productId: new mongoose.Types.ObjectId(item.productId._id),
-        userId: new mongoose.Types.ObjectId(order.customerId),
-        // variantId: new mongoose.Types.ObjectId(item.variantId) // ⭐ missing piece
+        productId,
+        userId
       }).select("rating comment images");
+
 
       return {
         ...item.toObject(),
-        review: review || null
+        review: review || null,
+        isReviewed: !!review
       };
 
     })
 
   );
 
-  order.items = updatedItems;
+  const orderObj = order.toObject(); // 🔥 FIX
 
-  return order;
+  orderObj.items = updatedItems;
 
+  return orderObj;
 };
+
 export const updateOrderStatus = (id, data) =>
   repo.updateOrder(id, data);
 

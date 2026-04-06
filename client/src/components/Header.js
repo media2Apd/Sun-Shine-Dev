@@ -11,7 +11,7 @@ import {
   
 } from "react-icons/fi";
 import logo from "../assets/logo.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useCart } from "../Context/CartContext";
 import { useWishlist } from "../Context/WishlistContext";
@@ -20,12 +20,16 @@ import { setUserDetails } from "../store/userSlice"; // adjust path
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const user = useSelector((state) => state?.user?.user); // Redux store data
   const { refreshCart, cartCount } = useCart();
   const { refreshWishlist, wishlistCount } = useWishlist();
   const dispatch = useDispatch();
+  const [search, setSearch] = useState("");
+
+  
 
   const handleLogout = async () => {
     setOpen(false);
@@ -45,6 +49,27 @@ export default function Header() {
 
     navigate("/login");
   };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    if (value.trim()) {
+      navigate(`/search?q=${value}`);
+    } else {
+      navigate("/search"); // 🔥 important (clear search)
+    }
+  };
+
+  useEffect(() => {
+  if (location.pathname === "/search") {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || "";
+    setSearch(q);
+  } else {
+    setSearch(""); // 🔥 clear everywhere else
+  }
+}, [location.pathname, location.search]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -67,8 +92,19 @@ export default function Header() {
 
         {/* Icons */}
         <div className="flex items-center space-x-6 text-gray-700 relative">
-          <FiSearch className="text-xl cursor-pointer hover:text-orange-500 transition" /> 
+          <div className="hidden md:flex items-center flex-1 max-w-xl mx-8">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full border rounded-md py-2 px-4 pr-10 focus:outline-none focus:border-orange-500 text-sm"
+                value={search}
+                onChange={handleSearch}
+              />
 
+              <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
           {/* User Icon with Dropdown */}
           <div className="relative" ref={dropdownRef}>
           <div
