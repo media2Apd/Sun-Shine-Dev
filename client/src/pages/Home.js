@@ -8,7 +8,6 @@ import BannerSection from "../components/homeComponents/BannerSection";
 import FeaturedProducts from "../components/homeComponents/FeaturedProducts";
 import BannerSection2 from "../components/homeComponents/BannerSection2";
 import HomeProducts from "../components/homeComponents/HomeProducts";
-import UserReviews from "../components/homeComponents/UserReviews";
 import BlogsSection from "../components/homeComponents/BlogSection";
 import { SimplifiedBuyingProcess } from "../components/homeComponents/SimplifiedBuying";
 import { OurCertificates } from "../components/homeComponents/OurCertificates";
@@ -26,7 +25,7 @@ function Home() {
       </div>
       <BannerSection2 />
       <HomeProducts />
-      <UserReviews />
+     
       <BlogsSection />
       <SimplifiedBuyingProcess />
       <OurCertificates />

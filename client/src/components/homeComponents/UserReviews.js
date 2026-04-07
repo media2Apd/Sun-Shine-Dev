@@ -33,7 +33,7 @@ const UserReviews = () => {
   }
 
   return (
-    <div className="container mx-auto py-10 px-6">
+    <div className="container  py-10 px-6">
 
       {/* Header */}
       <h2 className="text-3xl font-semibold mb-8">User Reviews</h2>

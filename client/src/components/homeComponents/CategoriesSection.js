@@ -50,7 +50,7 @@ const CategoriesSection = () => {
 
       {/* Scroll */}
       <div
-        className="flex gap-2 md:gap-4 lg:gap-8 overflow-x-auto scroll-smooth px-4"
+        className="flex gap-2 md:gap-4 lg:gap-8 overflow-x-auto scroll-smooth md:px-4"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
