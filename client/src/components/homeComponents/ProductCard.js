@@ -123,68 +123,65 @@ const ProductCard = ({ item }) => {
     });
   };
 
-  return (
-    <div
-      onClick={handleCardClick}
-      className="group bg-white border border-[#E6E6E6] rounded-xl hover:shadow-[0_0_15px_rgba(34,197,94,0.35)] hover:ring-2 hover:ring-[#2C742F] transition duration-300 cursor-pointer overflow-hidden"
-    >
-    <div className="bg-[#F3F3F3] flex items-center justify-center h-64 p-4">
+ return (
+  <div
+    onClick={handleCardClick}
+    className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
+  >
+    {/* IMAGE SECTION */}
+    <div className="relative bg-[#F5F5F5] h-64">
+      
+      {/* ❤️ Wishlist Top Right */}
+      <button
+        onClick={handleWishlist}
+        disabled={loadingWishlist}
+        className="absolute top-3 right-3 w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm"
+      >
+        {loadingWishlist ? (
+          <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
+        ) : isLiked ? (
+          <FaHeart className="text-[#2C742F]" />
+        ) : (
+          <CiHeart className="text-gray-600" />
+        )}
+      </button>
+
       <img
         src={item.images?.[0]?.url}
         alt={item.name}
-        className="h-full object-contain"
+        className="h-full w-full object-contain"
       />
     </div>
 
-      <div className="px-4 py-3">
-        <h3 className="text-base text-[#4D4D4D] font-medium mb-3 group-hover:text-[#2C742F]">
-          {item.name}
-        </h3>
+    {/* CONTENT */}
+    <div className="p-4">
 
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-xl font-semibold text-black">
-            Rs.{price}
-          </span>
-          <span className="text-lg text-black line-through">
-            Rs.{mrp}
-          </span>
-        </div>
+      {/* TITLE */}
+      <h3 className="text-lg font-medium text-gray-700 leading-snug mb-2">
+        {item.name}
+      </h3>
 
-        <div className="flex justify-between items-center">
-          {/* ✅ FIX BUTTON */}
-          <button
-            onClick={handleAddToCart}
-            className="px-6 py-2 text-sm font-semibold rounded-md bg-[#F2F2F2] text-black hover:bg-[#2C742F] hover:text-white transition"
-          >
-            Add to Cart
-          </button>
-
-          {/* ❤️ Wishlist */}
-          <button
-            onClick={handleWishlist}
-            disabled={loadingWishlist}
-            className={`w-9 h-9 flex items-center justify-center text-xl rounded-md transition-all duration-300 
-            ${
-              isLiked
-                ? "text-[#2C742F] bg-[#F2F2F2] scale-110"
-                : "bg-[#F2F2F2] text-gray-600 hover:bg-[#2C742F] hover:text-white"
-            }
-            ${loadingWishlist ? "opacity-60 cursor-not-allowed" : ""}
-            `}
-          >
-            {loadingWishlist ? (
-              // 🔥 LOADING SPINNER
-              <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
-            ) : isLiked ? (
-              <FaHeart className="transition-transform duration-300 scale-110 animate-[scaleIn_0.3s_ease]" />
-            ) : (
-              <CiHeart />
-            )}
-          </button>
-        </div>
+      {/* PRICE */}
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-xl font-semibold text-black">
+          Rs.{price}
+        </span>
+        <span className="text-gray-400 line-through">
+          Rs.{mrp}
+        </span>
       </div>
+
+      {/* BUTTON */}
+      <button
+        onClick={handleAddToCart}
+        className="w-full py-3 rounded-lg bg-gray-100 text-black font-medium hover:bg-[#2C742F] hover:text-white transition"
+      >
+        Add to Cart
+      </button>
+
     </div>
-  );
-};
+  </div>
+);
+}
 
 export default ProductCard;
