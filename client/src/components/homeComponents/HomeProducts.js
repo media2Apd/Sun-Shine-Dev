@@ -29,7 +29,7 @@ const HomeProducts = () => {
         }
 
         return (
-          <div key={cat._id || index} className="container mx-auto py-4 px-4">
+          <div key={cat._id || index} className="container mx-auto py-4 px-4 md:px-8 ">
 
             {/* Header */}
             <div className="flex justify-between items-center mb-6">

@@ -4,7 +4,7 @@ import banner4 from "../../assets/banner4.png";
 
 const BannerSection2 = () => {
   return (
-    <div className="container mx-auto bg-white py-4 px-8">
+    <div className="container mx-auto bg-white py-4  px-4 md:px-8">
       <div className="flex flex-col md:flex-row gap-8">
 
         {/* Left Banner */}

@@ -42,7 +42,7 @@ const CategoriesSection = () => {
     };
 
   return (
-    <div className="container mx-auto bg-white py-4 px-8">
+    <div className="container mx-auto bg-white py-4 px-4 md:px-8 ">
       {/* Heading */}
       <h2 className="text-2xl lg:text-3xl font-semibold mb-8">
         Shop by Categories
@@ -75,7 +75,7 @@ const CategoriesSection = () => {
               <img
                 src={item?.image?.url}
                 alt={item.name}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
 
