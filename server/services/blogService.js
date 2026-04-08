@@ -2,7 +2,7 @@ import * as repo from "../repositories/blogRepo.js";
 import {
 uploadToCloudinary,
 deleteFromCloudinary
-} from "../utils/cloudinary.js";
+} from "../utils/Cloudinary.js";
 
 
 export const createBlog = async (body, files) => {
