@@ -289,7 +289,7 @@ useEffect(() => {
               return (
                 <div
                   key={i}
-                  className="bg-green-50 border-l-4 border-green-500 p-4 rounded"
+                  className="bg-[#00B207] border-l-4 border-green-500 p-4 rounded"
                   dangerouslySetInnerHTML={{ __html: block.value }}
                 />
               );

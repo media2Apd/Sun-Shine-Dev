@@ -122,7 +122,7 @@ const FAQPage = () => {
         </p>
         <button 
           onClick={() => navigate("/contact-us")}
-          className="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition shadow-lg "
+          className="bg-[#00B207] text-white px-8 py-3 rounded-full font-semibold transition shadow-lg "
         >
           Contact Support
         </button>

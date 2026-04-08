@@ -576,7 +576,7 @@ const CustomerList = () => {
 
               <button 
                 onClick={handleUpdateRole}
-                className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl mt-10 shadow-lg shadow-green-100 hover:bg-green-700 active:scale-95 transition-all tracking-wide"
+                className="w-full bg-[#00B207] text-white font-bold py-4 rounded-2xl mt-10 shadow-lg shadow-green-100 active:scale-95 transition-all tracking-wide"
               >
                 Apply Changes
               </button>

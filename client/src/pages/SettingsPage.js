@@ -357,7 +357,7 @@ const handleAddressChange = (e) => {
                   {/* SAVE */}
                   <button
                     onClick={saveProfile}
-                    className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+                    className="bg-[#00B207] text-white px-6 py-2 rounded-full "
                   >
                     Save Changes
                   </button>
@@ -373,7 +373,7 @@ const handleAddressChange = (e) => {
               ) : (
                 <button
                   onClick={() => setIsEditingProfile(true)}
-                  className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+                  className="bg-[#00B207] text-white px-6 py-2 rounded-full"
                 >
                   Edit
                 </button>
@@ -405,7 +405,7 @@ const handleAddressChange = (e) => {
 
             {/* IMAGE BUTTON */}
             {isEditingProfile && (
-              <label className="border border-green-600 text-green-600 px-4 py-2 rounded-full cursor-pointer hover:bg-green-600 hover:text-white transition">
+              <label className="border border-green-600 text-green-600 px-4 py-2 rounded-full cursor-pointer hover:bg-[#00B207] hover:text-white transition">
                 Choose Image
                 <input
                   type="file"
@@ -590,7 +590,7 @@ const handleAddressChange = (e) => {
             <>
               <button
                 onClick={saveAddress}
-                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+                className="bg-[#00B207] text-white px-6 py-2 rounded-full"
               >
                 Save Changes
               </button>
@@ -605,7 +605,7 @@ const handleAddressChange = (e) => {
           ) : (
             <button
               onClick={() => setIsEditingAddress(true)}
-              className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+              className="bg-[#00B207] text-white px-6 py-2 rounded-full"
             >
               Edit
             </button>

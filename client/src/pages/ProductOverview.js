@@ -305,7 +305,7 @@ export default function ProductOverview() {
           onClick={() => setSelectedPack(pack)}
           className={`px-5 py-2 rounded-full border text-sm transition ${
             selectedPack === pack
-              ? "bg-green-600 text-white border-green-600"
+              ? "bg-[#00B207] text-white border-green-600"
               : "border-gray-300 hover:border-green-600"
           }`}
         >
@@ -320,7 +320,7 @@ export default function ProductOverview() {
   {/* ADD TO CART */}
   <button
     onClick={handleAddToCart}
-    className="w-[300px] md:w-[380px] flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-full text-sm md:text-base hover:bg-green-700 transition"
+    className="w-[300px] md:w-[380px] flex items-center justify-center gap-2 bg-[#00B207] text-white py-3 rounded-full text-sm md:text-base transition"
   >
     <ShoppingCart size={18} />
     Add to Cart

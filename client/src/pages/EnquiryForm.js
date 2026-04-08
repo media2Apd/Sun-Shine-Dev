@@ -425,7 +425,7 @@ const categoryOptions = category
 
             <button
               onClick={() => setShowSuccess(false)}
-              className="mt-4 px-6 py-2 bg-green-600 text-white rounded-md"
+              className="mt-4 px-6 py-2 bg-[#00B207] text-white rounded-md"
             >
               OK
             </button>

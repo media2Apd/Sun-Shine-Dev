@@ -253,14 +253,14 @@ export default function OrderHistoryPage() {
                           state: { id: order.items[0]?.productId },
                         })
                       }
-                      className="w-56 bg-[#00B207] hover:bg-green-700 text-white py-1.5 rounded-full font-medium"
+                      className="w-56 bg-[#00B207] text-white py-1.5 rounded-full font-medium"
                     >
                       Buy Again
                     </button>
                   ) : order.status !== "Cancelled" ? (
                     <button
                       onClick={() => navigate(`/order/order-details`, { state: { orderId: order._id }})}
-                      className="w-56 bg-[#00B207] hover:bg-green-700 text-white py-1.5 rounded-full font-medium"
+                      className="w-56 bg-[#00B207] text-white py-1.5 rounded-full font-medium"
                     >
                       Track Order
                     </button>

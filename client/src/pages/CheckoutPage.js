@@ -15,7 +15,7 @@ const CheckoutPage = () => {
   const location = useLocation();
   const orderSummary = location.state?.orderSummary;
   const [paymentMethod, setPaymentMethod] = useState("COD");
-  
+
   const { refreshCart } = useCart();
   const { address } = useSettings();
   const { setOrderData } = useOrder();
@@ -48,7 +48,7 @@ const CheckoutPage = () => {
     email: "",
   });
 
-    useEffect(() => {
+  useEffect(() => {
     if (!user) {
       navigate("/login", {
         state: { redirectTo: "/cart/checkout" },
@@ -57,33 +57,33 @@ const CheckoutPage = () => {
   }, [navigate, user]);
 
   // autofill address
-useEffect(() => {
-  if (address) {
-    setFormData({
-      firstName: address.firstName || "",
-      lastName: address.lastName || "",
-      country: address.country || "",
-      street: address.street || "",
-      city: address.city || "",
-      state: address.state || "",
-      zip: address.zip || "",
-      phone: address.phone || "",
-      email: address.email || "",
-    });
+  useEffect(() => {
+    if (address) {
+      setFormData({
+        firstName: address.firstName || "",
+        lastName: address.lastName || "",
+        country: address.country || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zip: address.zip || "",
+        phone: address.phone || "",
+        email: address.email || "",
+      });
 
-    setBillingData({
-      firstName: address.firstName || "",
-      lastName: address.lastName || "",
-      country: address.country || "",
-      street: address.street || "",
-      city: address.city || "",
-      state: address.state || "",
-      zip: address.zip || "",
-      phone: address.phone || "",
-      email: address.email || "",
-    });
-  }
-}, [address]);
+      setBillingData({
+        firstName: address.firstName || "",
+        lastName: address.lastName || "",
+        country: address.country || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zip: address.zip || "",
+        phone: address.phone || "",
+        email: address.email || "",
+      });
+    }
+  }, [address]);
 
   const handleBillingToggle = (value) => {
     setUseDifferentBilling(value);
@@ -152,7 +152,7 @@ useEffect(() => {
   // };
 
   const handlePlaceOrder = async () => {
-    
+
     if (loading) return;
 
     const validateAddress = (data) => {
@@ -169,7 +169,7 @@ useEffect(() => {
       );
     };
 
-      // ✅ SHIPPING ADDRESS CHECK
+    // ✅ SHIPPING ADDRESS CHECK
     if (!validateAddress(formData)) {
       toast.error("Please fill all shipping address fields ❌");
       return;
@@ -207,7 +207,7 @@ useEffect(() => {
           method: SummaryApi.createOrder.method,
           data: finalOrder,
         });
-      }else {
+      } else {
         const res = await api({
           url: SummaryApi.createOnlineOrder.url,
           method: SummaryApi.createOnlineOrder.method,
@@ -338,11 +338,11 @@ useEffect(() => {
 
           {/* (ALL YOUR EXISTING FORM CODE SAME - NO CHANGE) */}
 
-            {/* First + Last Name */}
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col">
-             <label htmlFor="firstName" className="text-sm font-medium mb-1">First Name</label>
-             <input
+          {/* First + Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col">
+              <label htmlFor="firstName" className="text-sm font-medium mb-1">First Name</label>
+              <input
                 id="firstName"
                 value={formData.firstName}
                 onChange={(e) =>
@@ -465,7 +465,7 @@ useEffect(() => {
           </div>
 
           {/* Billing toggle */}
-          <h3 className="text-xl font-bold mt-4">Billing Address</h3>
+          {/* <h3 className="text-xl font-bold mt-4">Billing Address</h3>
           <div className="flex flex-col md:flex-row gap-4">
             <label
               className="flex items-center gap-2 border rounded-lg px-4 py-3 w-full cursor-pointer"
@@ -482,137 +482,191 @@ useEffect(() => {
               <input type="radio" checked={useDifferentBilling} readOnly />
               Use a different billing address
             </label>
+          </div> */}
+
+          <h3 className="text-xl font-bold mt-4">Billing Address</h3>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <label
+              className="flex items-center gap-2 border rounded-lg px-4 py-3 w-full cursor-pointer"
+              onClick={() => handleBillingToggle(false)}
+            >
+              <div className="relative">
+                <input
+                  type="radio"
+                  checked={!useDifferentBilling}
+                  readOnly
+                  className="hidden"
+                />
+
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center
+      ${!useDifferentBilling ? "border-[#00B207]" : "border-gray-400"}`}
+                >
+                  {!useDifferentBilling && (
+                    <div className="w-2.5 h-2.5 bg-[#00B207] rounded-full"></div>
+                  )}
+                </div>
+              </div>
+
+              Same as shipping address
+            </label>
+
+            <label
+              className="flex items-center gap-2 border rounded-lg px-4 py-3 w-full cursor-pointer"
+              onClick={() => handleBillingToggle(true)}
+            >
+              <div className="relative">
+                <input
+                  type="radio"
+                  checked={useDifferentBilling}
+                  readOnly
+                  className="hidden"
+                />
+
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center
+      ${useDifferentBilling ? "border-[#00B207]" : "border-gray-400"}`}
+                >
+                  {useDifferentBilling && (
+                    <div className="w-2.5 h-2.5 bg-[#00B207] rounded-full"></div>
+                  )}
+                </div>
+              </div>
+
+              Use a different billing address
+            </label>
           </div>
 
           {useDifferentBilling && (
             <div className="space-y-4 mt-4">
               <h1 className="text-xl font-bold">Billing Details</h1>
 
-                          {/* First + Last Name */}
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col">
-             <label htmlFor="firstName" className="text-sm font-medium mb-1">First Name</label>
-             <input
-                id="firstName"
-                value={billingData.firstName}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, firstName: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Ex. John"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="lastName" className="text-sm font-medium mb-1">Last Name</label>
-              <input
-                id="lastName"
-                value={billingData.lastName}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, lastName: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Ex. Doe"
-              />
-            </div>
-          </div>
+              {/* First + Last Name */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label htmlFor="firstName" className="text-sm font-medium mb-1">First Name</label>
+                  <input
+                    id="firstName"
+                    value={billingData.firstName}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, firstName: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Ex. John"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="lastName" className="text-sm font-medium mb-1">Last Name</label>
+                  <input
+                    id="lastName"
+                    value={billingData.lastName}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, lastName: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Ex. Doe"
+                  />
+                </div>
+              </div>
 
-          {/* Country */}
-          <div className="flex flex-col">
-            <label htmlFor="country" className="text-sm font-medium mb-1">Country</label>
-            <input
-              id="country"
-              value={billingData.country}
-              onChange={(e) =>
-                setBillingData({ ...billingData, country: e.target.value })
-              }
-              className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Select Country"
-            />
-          </div>
+              {/* Country */}
+              <div className="flex flex-col">
+                <label htmlFor="country" className="text-sm font-medium mb-1">Country</label>
+                <input
+                  id="country"
+                  value={billingData.country}
+                  onChange={(e) =>
+                    setBillingData({ ...billingData, country: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Select Country"
+                />
+              </div>
 
-          {/* Street Address */}
-          <div className="flex flex-col">
-            <label htmlFor="street" className="text-sm font-medium mb-1">Street Address</label>
-            <input
-              id="street"
-              value={billingData.street}
-              onChange={(e) =>
-                setBillingData({ ...billingData, street: e.target.value })
-              }
-              className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter Street Address"
-            />
-          </div>
+              {/* Street Address */}
+              <div className="flex flex-col">
+                <label htmlFor="street" className="text-sm font-medium mb-1">Street Address</label>
+                <input
+                  id="street"
+                  value={billingData.street}
+                  onChange={(e) =>
+                    setBillingData({ ...billingData, street: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter Street Address"
+                />
+              </div>
 
-          {/* City + State */}
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col w-full md:w-[48%]">
-              <label htmlFor="city" className="text-sm font-medium mb-1">City</label>
-              <input
-                id="city"
-                value={billingData.city}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, city: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Select City"
-              />
-            </div>
-            <div className="flex flex-col w-full md:w-[48%]">
-              <label htmlFor="state" className="text-sm font-medium mb-1">State</label>
-              <input
-                id="state"
-                value={billingData.state}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, state: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Select State"
-              />
-            </div>
-          </div>
+              {/* City + State */}
+              <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col w-full md:w-[48%]">
+                  <label htmlFor="city" className="text-sm font-medium mb-1">City</label>
+                  <input
+                    id="city"
+                    value={billingData.city}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, city: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Select City"
+                  />
+                </div>
+                <div className="flex flex-col w-full md:w-[48%]">
+                  <label htmlFor="state" className="text-sm font-medium mb-1">State</label>
+                  <input
+                    id="state"
+                    value={billingData.state}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, state: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Select State"
+                  />
+                </div>
+              </div>
 
-          {/* Zip + Phone */}
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col w-full md:w-[48%]">
-              <label htmlFor="zip" className="text-sm font-medium mb-1">Zip Code</label>
-              <input
-                id="zip"
-                value={billingData.zip}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, zip: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Enter Zip Code"
-              />
-            </div>
-            <div className="flex flex-col w-full md:w-[48%]">
-              <label htmlFor="phone" className="text-sm font-medium mb-1">Phone Number</label>
-              <input
-                id="phone"
-                value={billingData.phone}
-                onChange={(e) =>
-                  setBillingData({ ...billingData, phone: e.target.value })
-                }
-                className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Enter Phone Number"
-              />
-            </div>
-          </div>
+              {/* Zip + Phone */}
+              <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col w-full md:w-[48%]">
+                  <label htmlFor="zip" className="text-sm font-medium mb-1">Zip Code</label>
+                  <input
+                    id="zip"
+                    value={billingData.zip}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, zip: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter Zip Code"
+                  />
+                </div>
+                <div className="flex flex-col w-full md:w-[48%]">
+                  <label htmlFor="phone" className="text-sm font-medium mb-1">Phone Number</label>
+                  <input
+                    id="phone"
+                    value={billingData.phone}
+                    onChange={(e) =>
+                      setBillingData({ ...billingData, phone: e.target.value })
+                    }
+                    className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter Phone Number"
+                  />
+                </div>
+              </div>
 
-          {/* Email */}
-          <div className="flex flex-col">
-            <label htmlFor="email" className="text-sm font-medium mb-1">Email Address</label>
-            <input
-              id="email"
-              value={billingData.email}
-              onChange={(e) =>
-                setBillingData({ ...billingData, email: e.target.value })
-              }
-              className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter Email Address"
-            />
-          </div>
+              {/* Email */}
+              <div className="flex flex-col">
+                <label htmlFor="email" className="text-sm font-medium mb-1">Email Address</label>
+                <input
+                  id="email"
+                  value={billingData.email}
+                  onChange={(e) =>
+                    setBillingData({ ...billingData, email: e.target.value })
+                  }
+                  className="border rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter Email Address"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -643,7 +697,7 @@ useEffect(() => {
               <span>₹5.00</span>
             </div>
           </div> */}
-  </div>
+          </div>
           <div className="border-t border-dashed my-4"></div>
 
           <div className="flex justify-between items-center text-lg font-semibold">
@@ -653,45 +707,43 @@ useEffect(() => {
 
           <div className="border-t my-4"></div>
 
-            <div className="space-y-3">
-              <div className="text-sm text-gray-600 mb-2">Payment Method</div>
+          <div className="space-y-3">
+            <div className="text-sm text-gray-600 mb-2">Payment Method</div>
 
-              {/* COD */}
-              <label
-                className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${
-                  paymentMethod === "COD" ? "border-green-500 bg-green-50" : ""
+            {/* COD */}
+            <label
+              className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${paymentMethod === "COD" ? "border-green-500 bg-green-50" : ""
                 }`}
-                onClick={() => setPaymentMethod("COD")}
-              >
-                <div>
-                  <div className="font-medium">Cash on Delivery</div>
-                  <div className="text-xs text-gray-500">
-                    Pay when order is delivered
-                  </div>
+              onClick={() => setPaymentMethod("COD")}
+            >
+              <div>
+                <div className="font-medium">Cash on Delivery</div>
+                <div className="text-xs text-gray-500">
+                  Pay when order is delivered
                 </div>
-                <input type="radio" checked={paymentMethod === "COD"} readOnly />
-              </label>
+              </div>
+              <input type="radio" checked={paymentMethod === "COD"} readOnly />
+            </label>
 
-              {/* ONLINE */}
-              <label
-                className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${
-                  paymentMethod === "ONLINE" ? "border-green-500 bg-green-50" : ""
+            {/* ONLINE */}
+            <label
+              className={`flex items-center justify-between border rounded-lg px-4 py-3 cursor-pointer ${paymentMethod === "ONLINE" ? "border-green-500 bg-green-50" : ""
                 }`}
-                onClick={() => setPaymentMethod("ONLINE")}
-              >
-                <div>
-                  <div className="font-medium">Online Payment</div>
-                  <div className="text-xs text-gray-500">
-                    Pay using Razorpay / UPI / Card
-                  </div>
+              onClick={() => setPaymentMethod("ONLINE")}
+            >
+              <div>
+                <div className="font-medium">Online Payment</div>
+                <div className="text-xs text-gray-500">
+                  Pay using Razorpay / UPI / Card
                 </div>
-                <input type="radio" checked={paymentMethod === "ONLINE"} readOnly />
-              </label>
-            </div>
+              </div>
+              <input type="radio" checked={paymentMethod === "ONLINE"} readOnly />
+            </label>
+          </div>
 
           <button
             onClick={handlePlaceOrder}
-            className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-full font-medium transition"
+            className="mt-6 w-full bg-[#00B207] text-white py-3 rounded-full font-medium transition"
           >
             Place Order →
           </button>

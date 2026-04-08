@@ -311,7 +311,7 @@ const CategoryList = () => {
         </div>
         <button 
           onClick={() => navigate("/admin-panel/products-category/create-category")} 
-          className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-700 transition-all shadow-md"
+          className="bg-[#00B207] text-white w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md"
         >
           <FiPlus size={26} />
         </button>

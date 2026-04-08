@@ -421,7 +421,7 @@ export default function AdminBloglist() {
 
         <button
           onClick={() => navigate("/admin-panel/blog-list/blog-form")}
-          className="bg-green-600 text-white w-10 h-10 items-center justify-center rounded-full hover:bg-green-700 hidden min-[431px]:flex"
+          className="bg-[#00B207] text-white w-10 h-10 items-center justify-center rounded-full hidden min-[431px]:flex"
         >
           <FiPlus size={26} />
         </button>
@@ -429,7 +429,7 @@ export default function AdminBloglist() {
 
       <button
         onClick={() => navigate("/admin-panel/blog-list/blog-form")}
-        className="bg-green-600 text-white px-4 py-2 rounded-lg w-full max-[430px]:block hidden mb-4"
+        className="bg-[#00B207] text-white px-4 py-2 rounded-lg w-full max-[430px]:block hidden mb-4"
       >
         + Add Blog
       </button>

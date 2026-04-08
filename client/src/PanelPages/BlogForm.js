@@ -3671,7 +3671,7 @@ const BlogForm = () => {
           </button>
           <button
             onClick={saveBlog}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 shadow-lg shadow-green-100 transition-all"
+            className="px-6 py-2 bg-[#00B207] text-white rounded-lg font-semibold shadow-lg shadow-green-100 transition-all"
           >
             {editBlog ? "Update Publication" : "Publish Blog"}
           </button>
