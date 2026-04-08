@@ -824,7 +824,7 @@ const toggleRating = (r) => {
         />
       ))}
     </div>
-    <span className="text-sm text-gray-600">{r}.0 & up</span>
+    <span className="text-sm text-gray-600 whitespace-nowrap">& up</span>
   </label>
 ))}
                 </div>
@@ -846,8 +846,8 @@ const toggleRating = (r) => {
         ) : (
           <div className={`grid gap-4
             ${showFilter 
-              ? "grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-              : "grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+              ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+              : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
             }`}
           >
             {filteredProducts.map(item => (

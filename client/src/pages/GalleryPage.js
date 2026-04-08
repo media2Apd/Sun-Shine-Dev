@@ -19,12 +19,12 @@ const Card = ({ image, title, desc }) => {
         className="w-full h-cover object-cover"
       />
 
-      <div className="p-4">
+      <div className="p-4 mb-8">
         <h3 className="font-semibold text-gray-800">
           {title}
         </h3>
 
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 mt-3">
           {desc}
         </p>
       </div>

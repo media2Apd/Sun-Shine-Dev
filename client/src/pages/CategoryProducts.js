@@ -27,16 +27,16 @@ const filteredProducts = categoryId
     <div>
       <img src={banner} alt="Banner" className="w-full" />
 
-      <div className="px-8 py-10">
+      <div className="py-10">
         
         <CategoriesSection />
 
-        <div className="container mx-auto px-8">
+        <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-2xl lg:text-3xl font-semibold mb-8 mt-10">
             {categoryName || "All Products"}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((item) => (
                 <ProductCard key={item._id} item={item} /> 
