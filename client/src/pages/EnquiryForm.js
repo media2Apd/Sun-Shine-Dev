@@ -6,6 +6,7 @@ import api from "../common/apiClient";
 import SummaryApi from "../common/SummaryApi";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import SelectDropdown from "../customStyles/SelectDropdown";
 
 const EnquiryForm = () => {
   const { category } = useCategory(); // ✅ FIX
@@ -107,6 +108,12 @@ const EnquiryForm = () => {
       setLoading(false);
     }
   };
+const categoryOptions = category
+  ?.filter((cat) => cat.showOnWebsite)
+  .map((cat) => ({
+    id: cat.name,
+    label: cat.name,
+  }));
 
   return (
     <div className="min-h-screen bg-white px-4 md:px-10 lg:px-24 py-8">
@@ -120,7 +127,7 @@ const EnquiryForm = () => {
       </button>
 
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-semibold text-balck">Enquiry Details</h1>
+        <h1 className="text-2xl mb-4 lg:text-3xl font-semibold text-balck ">Enquiry Details</h1>
         <p className="text-[#64748B] text-sm lg:text-base">
           Fill the form below and our team will contact you shortly.
         </p>
@@ -203,37 +210,48 @@ const EnquiryForm = () => {
 
           <div>
             <label className="label">Enquiry Type</label>
-            <select name="enquiryType" value={formData.enquiryType} onChange={handleChange} className="input">
-              <option>Product</option>
-              <option>Bulk Order</option>
-              <option>Dealer</option>
-            </select>
+            <SelectDropdown
+  options={categoryOptions}
+  value={formData.product}
+  onChange={(val) =>
+    setFormData((prev) => ({
+      ...prev,
+      product: val,
+    }))
+  }
+  placeholder="Select Category"
+  searchable={true}
+  parentClassName="w-full "
+  ChildClassName="input"
+/>
           </div>
 
           <div>
             <label className="label">Product Interested</label>
 
             {/* ✅ FIXED DROPDOWN */}
-            <select
-              name="product"
-              value={formData.product}
-              onChange={handleChange}
-              className="input"
-            >
-              <option value="">Select Category</option>
-
-              {category && category.length > 0 ? (
-                category
-                  .filter((cat) => cat.showOnWebsite) // optional but correct
-                  .map((cat) => (
-                    <option key={cat._id} value={cat.name}>
-                      {cat.name}
-                    </option>
-                  ))
-              ) : (
-                <option disabled>No Categories</option>
-              )}
-            </select>
+            <SelectDropdown
+  options={
+    category && category.length > 0
+      ? category
+          .filter((cat) => cat.showOnWebsite)
+          .map((cat) => ({
+            id: cat.name,   // value
+            label: cat.name // display
+          }))
+      : []
+  }
+  value={formData.product}
+  onChange={(val) =>
+    setFormData((prev) => ({
+      ...prev,
+      product: val
+    }))
+  }
+  placeholder="Select Category"
+  parentClassName="w-full"
+  ChildClassName="input"
+/>
 
           </div>
 
@@ -347,7 +365,7 @@ const EnquiryForm = () => {
         className={`px-8 py-2 rounded-full text-white transition ${
           loading
             ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#17CF45] hover:bg-[#2C742F]"
+            : "bg-[#00B207]"
         }`}
       >
         {loading ? "Submitting..." : "Submit Enquiry"}
@@ -362,7 +380,7 @@ const EnquiryForm = () => {
 
         {/* 📍 Address */}
         <div className="flex-1 px-6">
-          <MapPin strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <MapPin strokeWidth={1} className="mx-auto text-[#00B207] mb-3" size={26} />
           <p className="text-sm text-gray-600 leading-relaxed">
             71/151/1, Door no W2/15/11,<br />
             Mariyaponusami Mill Complex, Annanji Vilakku,<br />
@@ -376,7 +394,7 @@ const EnquiryForm = () => {
 
         {/* 📧 Email */}
         <div className="flex-1 px-6 mt-6 md:mt-0">
-          <Mail strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <Mail strokeWidth={1} className="mx-auto text-[#00B207] mb-3" size={26} />
           <p className="text-sm text-gray-600 break-all">
             sunshineagriteech@gmail.com
           </p>
@@ -387,7 +405,7 @@ const EnquiryForm = () => {
 
         {/* 📞 Phone */}
         <div className="flex-1 px-6 mt-6 md:mt-0">
-          <Phone strokeWidth={1} className="mx-auto text-[#2C742F] mb-3" size={26} />
+          <Phone strokeWidth={1} className="mx-auto text-[#00B207] mb-3" size={26} />
           <p className="text-sm text-gray-600 leading-relaxed">
             (91) 84899 43519 <br />
             (91) 84899 43523

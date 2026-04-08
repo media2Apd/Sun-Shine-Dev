@@ -2,22 +2,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply globally */
+body {
+  font-family: 'Poppins', sans-serif;
+}
 
 body {
   margin: 0;
 }
 
 @layer base {
-  body {
+  /* body {
     @apply font-sans;
-  }
+  } */
 }
 
-code {
+/* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */
 
 /* Disable browser autofill background color */
 input:-webkit-autofill,
@@ -79,7 +88,7 @@ scrollbar-width: none;
 .editor:empty:before {
   content: attr(data-placeholder);
   color: #9ca3af;
-  font-style: italic;
+  /* font-style: italic; */
   pointer-events: none;
   display: block; 
 }

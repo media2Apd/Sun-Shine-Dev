@@ -140,7 +140,7 @@
 //         {loadingWishlist ? (
 //           <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
 //         ) : isLiked ? (
-//           <FaHeart className="text-[#2C742F]" />
+//           <FaHeart className="text-[#00B207]" />
 //         ) : (
 //           <CiHeart className="text-gray-600" />
 //         )}
@@ -174,7 +174,7 @@
 //       {/* BUTTON */}
 //       <button
 //         onClick={handleAddToCart}
-//         className="w-full py-3 rounded-lg bg-gray-100 text-black font-medium hover:bg-[#2C742F] hover:text-white transition"
+//         className="w-full py-3 rounded-lg bg-gray-100 text-black font-medium hover:bg-[#00B207] hover:text-white transition"
 //       >
 //         Add to Cart
 //       </button>
@@ -200,8 +200,8 @@ import {
   removeFromLocalWishlist,
   getLocalWishlist,
 } from "../../helpers/wishlistHelper";
-import { CiHeart } from "react-icons/ci";
-import { FaHeart } from "react-icons/fa";
+import { IoMdHeart } from "react-icons/io";
+import { IoMdHeartEmpty } from "react-icons/io";
 
 const ProductCard = ({ item }) => {
   const navigate = useNavigate();
@@ -320,14 +320,13 @@ const ProductCard = ({ item }) => {
         <button
           onClick={handleWishlist}
           disabled={loadingWishlist}
-          className="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center shadow-sm"
-        >
+className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center shadow-sm"        >
           {loadingWishlist ? (
             <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
           ) : isLiked ? (
-            <FaHeart className="text-[#2C742F] text-sm sm:text-base" />
+            <IoMdHeart  className="text-[#00B207] text-sm sm:text-base" />
           ) : (
-            <CiHeart className="text-gray-600 text-sm sm:text-base" />
+            < IoMdHeartEmpty className="text-gray-600 text-sm sm:text-base" />
           )}
         </button>
 
@@ -348,7 +347,7 @@ const ProductCard = ({ item }) => {
 
         {/* PRICE */}
         <div className="flex items-center gap-2 mb-3 sm:mb-4">
-          <span className="text-base sm:text-lg md:text-xl font-semibold text-black">
+          <span className="text-bold  sm:text-lg md:text-xl  text-black">
             Rs.{price}
           </span>
           <span className="text-xs sm:text-sm md:text-base text-gray-400 line-through">
@@ -359,7 +358,7 @@ const ProductCard = ({ item }) => {
         {/* BUTTON */}
         <button
           onClick={handleAddToCart}
-          className="w-full py-2  text-sm sm:text-base rounded-lg bg-gray-100 text-black font-medium hover:bg-[#2C742F] hover:text-white transition"
+          className="w-full py-2  text-sm sm:text-base rounded-lg bg-gray-100 text-black font-medium hover:bg-[#00B207] hover:text-white transition"
         >
           Add to Cart
         </button>

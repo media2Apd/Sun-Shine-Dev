@@ -97,7 +97,7 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full border rounded-md py-2 px-4 pr-10 focus:outline-none focus:border-orange-500 text-sm"
+                className="w-full border rounded-md py-2 px-4 pr-10 focus:outline-none focus:border-[#00B207] text-sm"
                 value={search}
                 onChange={handleSearch}
               />
@@ -112,7 +112,7 @@ export default function Header() {
               if (!user) navigate("/login");
               else setOpen(!open);
             }}
-            className={`text-xl cursor-pointer hover:text-orange-500 transition`}
+            className={`text-xl cursor-pointer hover:text-[#00B207] transition`}
           >
             {user ? (
               <FiUserCheck strokeWidth={1.5} className="text-xl" />
@@ -175,7 +175,7 @@ export default function Header() {
           <Link to="/wishlist" className="relative">
             <FiHeart
               strokeWidth={1.5}
-              className="text-xl cursor-pointer hover:text-orange-500 transition"
+              className="text-xl cursor-pointer hover:text-[#00B207] transition"
             />
 
             {wishlistCount > 0 && (
@@ -188,7 +188,7 @@ export default function Header() {
           <Link to="/cart" className="relative">
             <FiShoppingCart
               strokeWidth={1.5}
-              className="text-xl cursor-pointer hover:text-orange-500 transition"
+              className="text-xl cursor-pointer hover:text-[#00B207] transition"
             />
 
             {cartCount > 0 && (
