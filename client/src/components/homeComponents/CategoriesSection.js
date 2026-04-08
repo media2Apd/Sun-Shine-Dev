@@ -81,7 +81,7 @@ const CategoriesSection = () => {
 
             {/* Name */}
             <p
-              className={`mt-3 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis transition
+              className={`mt-3 text-14px font-medium whitespace-nowrap overflow-hidden text-ellipsis transition
               ${
                 activeCategory === item.name
                   ? "text-[#00B207]"

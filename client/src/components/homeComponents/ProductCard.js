@@ -130,7 +130,7 @@
 //   >
 //     {/* IMAGE SECTION */}
 //     <div className="relative bg-[#F5F5F5] h-64">
-      
+
 //       {/* ❤️ Wishlist Top Right */}
 //       <button
 //         onClick={handleWishlist}
@@ -315,16 +315,16 @@ const ProductCard = ({ item }) => {
     >
       {/* IMAGE */}
       <div className="relative bg-[#F5F5F5] h-40 sm:h-52 md:h-60 overflow-hidden">
-        
+
         {/* ❤️ Wishlist */}
         <button
           onClick={handleWishlist}
           disabled={loadingWishlist}
-className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center shadow-sm"        >
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center shadow-sm"        >
           {loadingWishlist ? (
             <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
           ) : isLiked ? (
-            <IoMdHeart  className="text-[#00B207] text-sm sm:text-base" />
+            <IoMdHeart className="text-[#00B207] text-sm sm:text-base" />
           ) : (
             < IoMdHeartEmpty className="text-gray-600 text-sm sm:text-base" />
           )}
@@ -341,9 +341,9 @@ className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-8 h-8 sm:w-10 sm:h-
       <div className="p-3 sm:p-4">
 
         {/* TITLE */}
-      <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-2 overflow-hidden text-ellipsis whitespace-nowrap w-full">
-  {item.name}
-</h3>
+        <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-2 overflow-hidden text-ellipsis whitespace-nowrap w-full">
+          {item.name}
+        </h3>
 
         {/* PRICE */}
         <div className="flex items-center gap-2 mb-3 sm:mb-4">
