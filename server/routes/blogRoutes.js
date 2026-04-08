@@ -6,7 +6,7 @@ from "../controllers/blogController.js";
 import {
 uploadBlogMedia
 }
-from "../utils/cloudinary.js";
+from "../utils/Cloudinary.js";
 
 const router=express.Router();
 
