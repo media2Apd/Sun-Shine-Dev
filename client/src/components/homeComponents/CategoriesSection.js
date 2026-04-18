@@ -42,58 +42,57 @@ const CategoriesSection = () => {
     };
 
   return (
-    <div className="container mx-auto bg-white py-4 px-4 md:px-8 ">
-      {/* Heading */}
-      <h2 className="text-2xl lg:text-3xl font-semibold mb-8">
-        Shop by Categories
-      </h2>
+   <div className="container mx-auto bg-white py-4 px-4 md:px-8">
+  {/* Heading */}
+  <h2 className="text-2xl lg:text-3xl font-semibold mb-8">
+    Shop by Categories
+  </h2>
 
-      {/* Scroll */}
+  {/* Scroll */}
+  <div
+    className="flex items-start gap-3 md:gap-4 lg:gap-8 overflow-x-auto scroll-smooth md:px-4"
+    style={{
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+    }}
+  >
+    <style>
+      {`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}
+    </style>
+
+    {categories.map((item, index) => (
       <div
-        className="flex gap-2 md:gap-4 lg:gap-8 overflow-x-auto scroll-smooth md:px-4"
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
+        key={item._id || index}
+        onClick={() => handleCategoryClick(item)}
+        className="w-[90px] sm:w-[100px] md:w-[110px] flex-shrink-0 text-center cursor-pointer group snap-start"
       >
-        <style>
-          {`
-            div::-webkit-scrollbar {
-              display: none;
-            }
-          `}
-        </style>
+        {/* Image */}
+        <div className="border w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden mx-auto transition-transform duration-300 group-hover:scale-105 flex items-center justify-center">
+          <img
+            src={item?.image?.url}
+            alt={item.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-        {categories.map((item, index) => (
-          <div
-            key={item._id || index}
-            onClick={() => handleCategoryClick(item)}
-            className="min-w-[30%] sm:min-w-[20%] md:min-w-[100px] flex-shrink-0 text-center cursor-pointer group"
-          >
-            {/* Image */}
-            <div className="border w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden mx-auto transition-transform duration-300 group-hover:scale-105">
-              <img
-                src={item?.image?.url}
-                alt={item.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Name */}
-            <p
-              className={`mt-3 text-14px font-medium whitespace-nowrap overflow-hidden text-ellipsis transition
-              ${
-                activeCategory === item.name
-                  ? "text-[#00B207]"
-                  : "text-black group-hover:text-[#00B207]"
-              }`}
-            >
-              {item.name}
-            </p>
-          </div>
-        ))}
+        {/* Name */}
+        <p
+          className={`mt-2 text-xs sm:text-sm font-medium text-center leading-4 h-10 overflow-hidden ${
+            activeCategory === item.name
+              ? "text-[#00B207]"
+              : "text-black group-hover:text-[#00B207]"
+          }`}
+        >
+          {item.name}
+        </p>
       </div>
-    </div>
+    ))}
+  </div>
+</div>
   );
 };
 
