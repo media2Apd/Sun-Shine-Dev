@@ -142,7 +142,7 @@ const categories = [
             options={sortOptions}
             value={sort}
             onChange={setSort}
-            placeholder="Latest" // ✅ ADD THIS
+            placeholder="" // ✅ ADD THIS
             parentClassName="w-40 border border-[#E6E6E6] rounded-lg"
             ChildClassName="py-2"
          />

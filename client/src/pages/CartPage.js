@@ -236,7 +236,7 @@ const handleRemove = async (id, productId, variantId) => {
               {/* BUTTON */}
               <button
                 onClick={() => navigate("/")}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full font-medium transition"
+                className="bg-[#00B207] text-white px-6 py-3 rounded-full font-medium transition"
               >
                 Continue Shopping →
               </button>
@@ -364,7 +364,7 @@ const handleRemove = async (id, productId, variantId) => {
             className={`mt-6 w-full py-3 rounded-full font-medium transition ${
               cartProducts.length === 0
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-green-600 text-white hover:bg-green-700"
+                : "bg-[#00B207] text-white"
             }`}
             onClick={handleCheckout}
           >

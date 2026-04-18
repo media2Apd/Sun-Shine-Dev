@@ -153,7 +153,7 @@ export default function Footer() {
   const linkStyle = "cursor-pointer hover:text-white transition-colors duration-300 ease-in-out";
 
   return (
-    <div className="bg-[#111111] text-gray-300 py-16 px-6">
+    <div className="bg-[#111111] text-gray-300 py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-5 gap-10">
 

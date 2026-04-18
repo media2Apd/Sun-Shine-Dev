@@ -1303,7 +1303,7 @@ const CategoryForm = () => {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="px-12 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-xl shadow-green-100 transition-all disabled:opacity-50 font-bold flex items-center gap-2 justify-center"
+                className="px-12 py-3 bg-[#00B207] text-white rounded-full shadow-xl transition-all disabled:opacity-50 font-bold flex items-center gap-2 justify-center"
               >
                 {loading ? (
                   <>

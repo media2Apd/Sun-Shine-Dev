@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Star, Heart, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
 import { ProductContext } from "../Context/ProductContext";
 import ProductCard from "../components/homeComponents/ProductCard";
@@ -13,6 +13,9 @@ import { formatDateTime } from "../helpers/formatDateTime";
 import { GiLindenLeaf } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
 import UserImage from '.././assets/User.png';
+import { IoMdHeart } from "react-icons/io";
+import { IoMdHeartEmpty } from "react-icons/io";
+
 export default function ProductOverview() {
 
   const location = useLocation();
@@ -132,7 +135,7 @@ export default function ProductOverview() {
           setAnimateHeart(true);
           setTimeout(() => setAnimateHeart(false), 300);
 
-          toast.success("Added to Wishlist ❤️");
+          toast.success("Added to Wishlist");
         }
       } else {
         if (liked) {
@@ -232,7 +235,7 @@ export default function ProductOverview() {
 
   {/* STOCK STATUS */}
   {selectedVariant?.stock > 0 ? (
-    <span className="bg-[#20B526]/20 text-[#2C742F] text-sm px-2 py-1 rounded">
+    <span className="bg-[#20B526]/20 text-[#00B207] text-sm px-2 py-1 rounded">
       In Stock
     </span>
   ) : (
@@ -264,7 +267,7 @@ export default function ProductOverview() {
       ₹{selectedVariant?.mrp}
     </span>
 
-    <span className="text-2xl text-[#2C742F] font-bold">
+    <span className="text-2xl text-[#00B207] font-bold">
       ₹{selectedVariant?.price}
     </span>
 
@@ -302,7 +305,7 @@ export default function ProductOverview() {
           onClick={() => setSelectedPack(pack)}
           className={`px-5 py-2 rounded-full border text-sm transition ${
             selectedPack === pack
-              ? "bg-green-600 text-white border-green-600"
+              ? "bg-[#00B207] text-white border-green-600"
               : "border-gray-300 hover:border-green-600"
           }`}
         >
@@ -317,7 +320,7 @@ export default function ProductOverview() {
   {/* ADD TO CART */}
   <button
     onClick={handleAddToCart}
-    className="w-[300px] md:w-[380px] flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-full text-sm md:text-base hover:bg-green-700 transition"
+    className="w-[300px] md:w-[380px] flex items-center justify-center gap-2 bg-[#00B207] text-white py-3 rounded-full text-sm md:text-base transition"
   >
     <ShoppingCart size={18} />
     Add to Cart
@@ -327,21 +330,19 @@ export default function ProductOverview() {
   <button
     onClick={handleWishlistToggle}
     disabled={loadingWishlist}
-    className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-300 ${
-      liked
-        ? "bg-green-600 text-white border-green-600 scale-110"
-        : "text-gray-600 hover:bg-green-600 hover:text-white"
-    } ${loadingWishlist ? "opacity-60 cursor-not-allowed" : ""}`}
+    className={`w-12 h-12 flex items-center justify-center rounded-full  bg-[#20B5261A]  transition-all duration-300 ${loadingWishlist ? "opacity-60 cursor-not-allowed" : ""}`}
   >
-    {loadingWishlist ? (
-      <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
-    ) : (
-      <Heart
-        size={18}
-        className={`${animateHeart ? "animate-[scaleIn_0.3s_ease]" : ""}`}
-        fill={liked ? "currentColor" : "none"}
-      />
-    )}
+   {loadingWishlist ? (
+  <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></span>
+) : liked ? (
+ <IoMdHeart
+  className={`text-[#00B207] text-sm sm:text-base ${
+    animateHeart ? "animate-[scaleIn_0.3s_ease]" : ""
+  }`}
+/>
+) : (
+  <IoMdHeartEmpty className="text-gray-600 text-sm sm:text-base" />
+)}
   </button>
 
 </div>
@@ -619,7 +620,7 @@ export default function ProductOverview() {
       <div className="mt-16">
         <h2 className="text-xl font-semibold mb-6">Related products</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {related.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}

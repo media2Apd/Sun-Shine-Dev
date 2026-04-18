@@ -68,14 +68,14 @@ export default function Newsletter() {
             className="px-5 py-3 outline-none w-full sm:w-72"
           />
 
-          <button className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition">
+          <button className="bg-[#00B207] text-white px-6 py-3 rounded-full transition">
             Subscribe
           </button>
         </div>
 
         {/* Icons */}
         <div className="flex items-center gap-4">
-          <div className="bg-green-600 text-white p-3 rounded-full">
+          <div className="bg-[#00B207] text-white p-3 rounded-full">
             <FaFacebookF size={14} />
           </div>
 

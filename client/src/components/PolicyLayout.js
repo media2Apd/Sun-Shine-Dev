@@ -146,7 +146,7 @@ export default function PolicyLayout({ children }) {
                     to={item.path}
                     className={`w-full flex items-center justify-between px-5 py-3.5 transition-all duration-300 text-sm font-medium rounded-full group ${
                       isActive
-                        ? 'bg-[#45A301] text-white shadow-lg shadow-green-100' 
+                        ? 'bg-[#00B207] text-white shadow-lg' 
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >

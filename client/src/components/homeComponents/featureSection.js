@@ -26,7 +26,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto bg-white py-4 px-8">
+    <div className="max-w-7xl mx-auto bg-white py-4 px-4 md:px-8 ">
       <div className="bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.08)] p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((item, index) => (

@@ -14,7 +14,7 @@ const server = http.createServer(app);
 
 // Define allowed originss
 // const allowedOrigins = ["http://192.168.0.15:3000","http://localhost:3000", "http://localhost:3001", "https://s1g57ln1-3000.inc1.devtunnels.ms", "http://192.168.0.3:3000", "https://naach-boutique.vercel.app", "https://app.naachboutique.com", "https://naach-boutique-five.vercel.app"];
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://sunshine-agree.vercel.app", "https://www.sunshineagritech.in"];
 
 // Setup CORS middleware
 const corsOptions = {

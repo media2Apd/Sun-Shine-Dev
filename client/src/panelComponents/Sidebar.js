@@ -411,7 +411,7 @@ const Sidebar = ({
           className={({ isActive }) => `
             group flex items-center transition-all duration-300 rounded-full h-12
             ${isActive 
-              ? "bg-green-600 text-white shadow-md shadow-green-200" 
+              ? "bg-[#00B207] text-white shadow-md" 
               : "text-slate-600 hover:bg-green-50 hover:text-green-700"}
             ${!isExpanded ? "justify-center w-12 mx-auto" : "px-4 w-full"}
           `}
@@ -497,7 +497,7 @@ const Sidebar = ({
               setCollapsed(!collapsed);
               setHovered(false);
             }}
-            className="group flex items-center justify-center p-2 h-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-green-600 hover:text-white transition-all duration-300 w-full"
+            className="group flex items-center justify-center p-2 h-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-[#00B207] hover:text-white transition-all duration-300 w-full"
           >
             {isExpanded ? (
               <FiChevronsLeft size={20} />

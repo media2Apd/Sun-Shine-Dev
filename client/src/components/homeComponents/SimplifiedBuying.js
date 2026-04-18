@@ -14,7 +14,7 @@ export function SimplifiedBuyingProcess() {
   ];
 
   return (
-    <div className="container mx-auto bg-white py-4 px-8">
+    <div className="container mx-auto bg-white py-4  px-4 md:px-8">
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-2xl md:text-2xl lg:text-3xl font-semibold">Simplified Buying Process</h2>
       </div>

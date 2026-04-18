@@ -172,7 +172,6 @@ import { ArrowLeft, Leaf, Headphones, ShieldCheck, Truck, Package, Eye, Target }
 import farm1 from "../assets/about1.png";
 import farm2 from "../assets/about2.png";
 import farm3 from "../assets/about3.png";
-import UserReviews from "../components/homeComponents/UserReviews";
 import { useNavigate } from "react-router-dom";
 
 const AboutPage = () => {
@@ -283,7 +282,7 @@ const AboutPage = () => {
             <p className="text-gray-600 mb-6 leading-relaxed">
               At Sunshine, quality is our priority. We ensure every product is developed with carefully selected ingredients and proven formulations to deliver consistent results in the field.
             </p>
-            <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition" onClick={() => navigate("/")}>
+            <button className="bg-[#00B207] text-white px-6 py-2 rounded-full transition" onClick={() => navigate("/")}>
               Shop Now →
             </button>
           </div>
@@ -291,10 +290,6 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* USER REVIEWS */}
-      <div className="w-full py-10 bg-gray-50">
-        <UserReviews />
-      </div>
     </>
   );
 };

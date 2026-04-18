@@ -87,7 +87,7 @@ const FAQPage = () => {
             >
               <div className="flex items-center gap-3">
                 <HelpCircle size={20} className="text-green-600 shrink-0" />
-                <span className="font-semibold text-gray-800 md:text-lg">
+                <span className=" text-gray-800 md:text-lg">
                   {item.question}
                 </span>
               </div>
@@ -122,7 +122,7 @@ const FAQPage = () => {
         </p>
         <button 
           onClick={() => navigate("/contact-us")}
-          className="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition shadow-lg shadow-green-200"
+          className="bg-[#00B207] text-white px-8 py-3 rounded-full font-semibold transition shadow-lg "
         >
           Contact Support
         </button>
