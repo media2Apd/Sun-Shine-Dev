@@ -155,10 +155,10 @@ const HeroPage = () => {
       </picture>
 
       {/* Overlay Text - Responsive */}
-      <div className="absolute left-4 bottom-8 md:left-10 md:bottom-16 bg-black/40 backdrop-blur-sm text-white p-6 md:p-8 rounded-xl w-[90%] md:w-[500px] lg:w-[600px] z-20 border border-white/10 shadow-2xl">
+      <div className="absolute left-2 bottom-8 md:left-10 md:bottom-16 bg-black/40 backdrop-blur-sm text-white p-2 md:p-6 rounded-xl w-[95%] md:w-[500px] lg:w-[600px] z-20 border border-white/10 shadow-2xl">
         
         {/* Tamil Kural */}
-        <h1 className="text-xs md:text-sm font-bold leading-relaxed mb-2 drop-shadow-lg">
+        <h1 className="text-[11px] md:text-sm font-bold leading-relaxed mb-2 drop-shadow-lg">
           {dailyKural.Line1} <br />
           {dailyKural.Line2}
         </h1>
@@ -171,7 +171,7 @@ const HeroPage = () => {
         <div className="h-[1px] w-full bg-white/20 mb-4"></div>
 
         {/* English Translation */}
-        <p className="text-xs md:text-sm font-medium leading-normal mb-2 opacity-90">
+        <p className="text-[11px] md:text-sm font-medium leading-normal mb-2 opacity-90">
           {dailyKural.Translation}
         </p>
 

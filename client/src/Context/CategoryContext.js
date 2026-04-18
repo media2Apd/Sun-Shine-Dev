@@ -43,7 +43,7 @@ export const CategoryProvider = ({ children }) => {
         method: SummaryApi.getAllCategories.method,
       });
 
-      setCategory(res.data?.data || []);
+      setCategory(res?.data?.data || []);
     } catch (err) {
       console.log("Category fetch error:", err);
     }
