@@ -195,8 +195,11 @@ const AboutPage = () => {
             <p className="text-gray-600 mb-4 leading-relaxed">
               Sunshine is a trusted provider of high-quality agricultural inputs, offering a wide range of organic manures, bio fertilizers, bio pesticides, plant growth promoters and specialty nutrient solutions.
             </p>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 mb-4 leading-relaxed">
               We focus on improving soil fertility, crop health, and farm productivity through eco-friendly and sustainable products that support modern agriculture.
+            </p>
+            <p className="text-gray-600 leading-relaxed">
+              Along with agricultural products, we are also involved in the cultivation of Oyster Mushrooms and the production of Endrillus eugeniae earthworms, supporting eco-friendly farming and advanced vermicomposting practices.
             </p>
           </div>
           <img src={farm1} alt="farm" className="rounded-xl shadow-md w-full" />
