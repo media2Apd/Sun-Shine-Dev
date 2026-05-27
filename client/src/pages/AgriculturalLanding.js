@@ -817,11 +817,21 @@ import Container3 from '../assets/container3.png';
 import HeroPage from '../components/homeComponents/HeroPage';
 import { useNavigate } from 'react-router-dom';
 
+import img1 from "../assets/gallery1.png";
+import img2 from "../assets/gallery2.png";
+import img3 from "../assets/gallery3.png";
+import img4 from "../assets/gallery4.png";
+import img5 from "../assets/gallery5.png";
+import img6 from "../assets/gallery6.png";
+import img7 from "../assets/gallery7.png";
+import img8 from "../assets/gallery8.png";
+
 const AgricultureLanding = () => {
 
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [page, setPage] = useState(0);
 
   const marqueeItems = [
     "Soil Health", "Sustainable Farming", "Crop Nutrition",
@@ -843,15 +853,110 @@ const AgricultureLanding = () => {
   ];
 
   const faqList = [
-    { q: "What products does Sunshine Agritech offer?", a: "We offer a wide range of bio fertilizers, bio control agents, bio insecticides, water soluble fertilizers, soil conditioners, and micronutrients for all crop types." },
-    { q: "Are your products safe for the environment?", a: "Yes! All our products are 100% eco-friendly and bio-based, designed to support sustainable farming without harming the environment." },
-    { q: "Which crops are your products suitable for?", a: "Our products are formulated for all crop types including vegetables, fruits, cereals, pulses, and commercial crops." },
-    { q: "How do bio fertilizers improve soil health?", a: "Bio fertilizers introduce beneficial microorganisms that enhance nutrient availability, improve soil structure, and promote long-term soil fertility." },
-    { q: "Where can I buy Sunshine Agritech products?", a: "You can contact us directly through our website or reach out to our nearest dealer in your region." },
-    { q: "Do you provide guidance on product usage?", a: "Yes, our team provides full support and guidance on the correct application of our products for best results." },
-    { q: "What makes Sunshine Agritech different?", a: "We combine scientific research with farmer-focused solutions, ensuring every product delivers real, measurable results in the field." },
-    { q: "Are your products certified?", a: "Yes, our products are scientifically developed and meet quality standards for agricultural use." },
+    {
+      q: "What products does Sunshine Agritech offer?",
+      a: "Sunshine Agritech offers bio-fertilizers, organic crop nutrients, soil health solutions, and plant growth promoters designed to support healthy crop growth and sustainable farming."
+    },
+    {
+      q: "What are bio-fertilizers?",
+      a: "Bio-fertilizers are natural agricultural inputs containing beneficial microorganisms that improve soil fertility and help plants absorb nutrients effectively."
+    },
+    {
+      q: "Are Sunshine Agritech products safe for crops and soil?",
+      a: "Yes. Our products are eco-friendly and developed to improve soil health, support plant growth, and promote sustainable agricultural practices."
+    },
+    {
+      q: "Which crops can use Sunshine Agritech products?",
+      a: "Our products are suitable for a wide range of crops including paddy, vegetables, fruits, pulses, cotton, sugarcane, plantation crops, and horticultural crops."
+    },
+    {
+      q: "How do bio-fertilizers benefit farmers?",
+      a: null,
+      bullets: ["Improve soil fertility", "Enhance root development", "Increase nutrient absorption", "Support better crop yield", "Reduce dependency on chemical fertilizers"]
+    },
+    {
+      q: "How should the products be applied?",
+      a: "Depending on the product, applications may include:",
+      bullets: ["Soil application", "Drip irrigation", "Seed treatment", "Foliar spray"]
+    },
+    {
+      q: "Are the products suitable for organic farming?",
+      a: "Many of our products are developed to support eco-friendly and sustainable farming practices. Please contact us for specific product recommendations for organic cultivation."
+    },
+    {
+      q: "How should the products be stored?",
+      a: "Products should be stored in a cool, dry place away from direct sunlight and moisture."
+    },
+    {
+      q: "Why choose Sunshine Agritech?",
+      a: "Farmers trust Sunshine Agritech for:",
+      bullets: ["Quality agricultural solutions", "Sustainable farming support", "Reliable product performance", "Farmer-focused approach", "Commitment to crop and soil health"]
+    },
   ];
+
+
+  const galleryData = [
+    { image: img1, title: "Product Packaging & Quality Control", desc: "Careful packaging, sealing and quality checks.", category: "industry" },
+    { image: img2, title: "Production & Storage Facility", desc: "Well equipped facility ensuring product safety.", category: "industry" },
+    { image: img3, title: "Field Support Team", desc: "Dedicated team assisting farmers with guidance.", category: "workers" },
+    { image: img4, title: "Warehouse & Operations Staff", desc: "Inventory management and dispatch process.", category: "workers" },
+    { image: img5, title: "Crop Application", desc: "Farmers applying crop solutions in fields.", category: "field" },
+    { image: img6, title: "Soil Treatment", desc: "Improving soil fertility using bio inputs.", category: "field" },
+    { image: img7, title: "Healthy Crop Growth", desc: "Visible improvement after product usage.", category: "results" },
+    { image: img8, title: "High Yield Harvest", desc: "Better yield achieved through nutrition.", category: "results" },
+  ];
+
+  const sectionMeta = [
+    { title: "Our Industry", subtitle: "Manufacturing, packaging, quality & infrastructure" },
+    { title: "Our Workers", subtitle: "People behind the brand" },
+    { title: "Field Work", subtitle: "On-ground application & real usage" },
+    { title: "Crop Results", subtitle: "Outcomes & proof" },
+  ];
+
+  const itemsPerPage = 2;
+  const totalPages = Math.ceil(galleryData.length / itemsPerPage);
+
+  const paginatedIndustry = galleryData.slice(
+    page * itemsPerPage,
+    (page + 1) * itemsPerPage
+  );
+
+  const currentMeta = sectionMeta[page];
+
+  const prevPage = () => setPage((prev) => (prev <= 0 ? totalPages - 1 : prev - 1));
+  const nextPage = () => setPage((prev) => (prev >= totalPages - 1 ? 0 : prev + 1));
+
+
+
+  const Card = ({ image, title, desc }) => {
+    return (
+      <div className="bg-white p-3 border rounded-3xl hover:shadow-md transition">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-64 md:h-96 object-cover rounded-2xl mb-4"
+        />
+        <h3 className="font-bold px-2">{title}</h3>
+        <p className="text-sm text-gray-500 mt-2 px-2">{desc}</p>
+      </div>
+    );
+  };
+
+  const Section = ({ title, subtitle, children }) => {
+    return (
+      <div className="mb-16 md:mb-24">
+        <h2 className="text-[#00B207] font-medium mb-2">
+          — {title}
+        </h2>
+        <p className="text-sm text-gray-500 mb-6">
+          {subtitle}
+        </p>
+        {children}
+      </div>
+    );
+  };
+
+
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans text-slate-900">
@@ -870,10 +975,19 @@ const AgricultureLanding = () => {
 
           {/* DESKTOP MENU */}
           <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
-            {['About', 'Products', 'Why Us', 'FAQ'].map((item) => (
+            {['About', 'Shop', 'Why Us', 'FAQ', 'Blogs'].map((item) => (
               <button
                 key={item}
-                onClick={() => item === 'Products' ? navigate('/homepage') : null}
+                onClick={() => {
+                  if (item === 'Shop') navigate('/homepage');
+                  else if (item === 'About') navigate('/about');
+                  else if (item === 'FAQ') navigate('/faqs');
+                  else if (item === 'Blogs') navigate('/blogs');
+                  else if (item === 'Why Us') {
+                    const section = document.getElementById('why-us');
+                    if (section) section.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className="text-gray-500 hover:text-green-600 font-medium text-[15px] transition-colors"
               >
                 {item}
@@ -883,7 +997,10 @@ const AgricultureLanding = () => {
 
           {/* CTA BUTTON */}
           <div className="hidden md:block z-10">
-            <button className="bg-[#00cc00] hover:bg-[#00b300] text-white px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300">
+            <button
+              onClick={() => navigate('/contact-us')}
+              className="bg-[#00cc00] hover:bg-[#00b300] text-white px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300"
+            >
               Get in Touch
             </button>
           </div>
@@ -960,10 +1077,17 @@ const AgricultureLanding = () => {
               </div>
 
               <div className="flex flex-wrap gap-3 pt-1">
-                <button className="bg-[#00c000] hover:bg-[#00a800] text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 shadow-sm">
+                <button
+                  onClick={() => navigate('/homepage')}
+                  className="bg-[#00c000] hover:bg-[#00a800] text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 shadow-sm"
+                >
                   Explore Products
                 </button>
-                <button className="border border-[#cfe8cf] hover:bg-[#f5fbf5] text-[#00a000] px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300">
+
+                <button
+                  onClick={() => navigate('/about')}
+                  className="border border-[#cfe8cf] hover:bg-[#e9f8e9] hover:border-[#00a000] text-[#00a000] px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300"
+                >
                   Our Story
                 </button>
               </div>
@@ -1084,7 +1208,7 @@ const AgricultureLanding = () => {
                   { title: "Yield", desc: "Crop productivity" },
                   { title: "Proven", desc: "Science-backed" }
                 ].map((item, index) => (
-                  <div key={index}>
+                  <div key={index} className="p-3 rounded-xl hover:bg-[#e9f8e9] transition-all duration-300 cursor-pointer">
                     <h3 className="text-[#00b300] text-[22px] md:text-[28px] font-medium leading-none">{item.title}</h3>
                     <p className="text-gray-400 text-[11px] md:text-xs mt-2">{item.desc}</p>
                   </div>
@@ -1163,7 +1287,7 @@ const AgricultureLanding = () => {
                 className="bg-[linear-gradient(180deg,rgba(0,255,76,0.06),rgba(255,255,255,0.02))] border border-[rgba(255,255,255,0.06)] rounded-[1.5rem] p-5 md:p-7 hover:border-[#00d12f]/30 transition-all duration-300"
               >
                 <h3
-                  className="text-[#00ff3c] text-[64px] leading-[44.8px] tracking-[0px]"
+                  className="text-[#00ff3c] text-[60px] leading-[44.8px] tracking-[0px]"
                   style={{
                     fontFamily: "'Style Script', cursive",
                     fontWeight: 400,
@@ -1171,7 +1295,8 @@ const AgricultureLanding = () => {
                   }}
                 >
                   {item.no}
-                </h3>              <h4 className="text-white text-base md:text-lg font-medium mt-4">{item.title}</h4>
+                </h3>
+                <h4 className="text-white text-base md:text-lg font-medium mt-4">{item.title}</h4>
                 <p className="text-[#b9c4b7] text-[13px] md:text-sm leading-relaxed mt-3">{item.desc}</p>
               </div>
             ))}
@@ -1215,10 +1340,10 @@ const AgricultureLanding = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
               {productList.map((item, index) => (
-                <div key={index} className="bg-white p-5 md:p-7 border border-[#00B207]/20 rounded-2xl flex flex-col items-start hover:border-[#00B207] transition-all">
+                <div key={index} className="bg-white p-5 md:p-7 border border-[#00B207]/20 rounded-2xl flex flex-col items-start hover:border-[#00B207] transition-all group cursor-pointer">
                   <h3 className="text-[#00B207] text-xs font-medium tracking-wide mb-3">{item.cat}</h3>
-                  <div className="w-10 h-10 mb-3 flex items-center justify-center bg-green-50 rounded-lg text-lg">{item.icon}</div>
-                  <h4 className="text-base md:text-lg font-bold mb-2">{item.title}</h4>
+                  <div className="w-10 h-10 mb-3 flex items-center justify-center bg-green-50 group-hover:bg-[#00B207] rounded-lg text-lg transition-all duration-300">{item.icon}</div>
+                  <h4 className="text-base md:text-lg  mb-2">{item.title}</h4>
                   <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
@@ -1226,24 +1351,32 @@ const AgricultureLanding = () => {
           </section>
 
           {/* Gallery Section */}
-          <section className="mb-14 md:mb-20">
-            <h2 className="text-[#00B207] font-medium text-xs tracking-widest uppercase mb-2">— Gallery</h2>
-            <h1 className="text-2xl md:text-3xl font-bold mb-6">Our Industry</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="bg-white p-3 border rounded-3xl">
-                <div className="w-full h-52 sm:h-72 md:h-80 bg-gray-100 rounded-2xl mb-3 overflow-hidden flex items-center justify-center text-gray-400 text-sm">
-                  Photo Coming Soon
-                </div>
-                <h3 className="font-bold px-2 text-sm md:text-base">Product Packaging & Quality Control</h3>
-              </div>
-              <div className="bg-white p-3 border rounded-3xl">
-                <div className="w-full h-52 sm:h-72 md:h-80 bg-gray-100 rounded-2xl mb-3 overflow-hidden flex items-center justify-center text-gray-400 text-sm">
-                  Photo Coming Soon
-                </div>
-                <h3 className="font-bold px-2 text-sm md:text-base">Production & Storage Facility</h3>
-              </div>
+          <Section
+            title={currentMeta.title}
+            subtitle={currentMeta.subtitle}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {paginatedIndustry.map((item, i) => (
+                <Card key={i} {...item} />
+              ))}
             </div>
-          </section>
+
+            <div className="flex justify-center mt-8 gap-12">
+              <button
+                onClick={prevPage}
+                className="w-12 h-12 rounded-full border border-[#00B207] text-[#00B207] hover:bg-[#00B207] hover:text-white transition-all duration-300"
+              >
+                &lt;
+              </button>
+
+              <button
+                onClick={nextPage}
+                className="w-12 h-12 rounded-full border border-[#00B207] text-[#00B207] hover:bg-[#00B207] hover:text-white transition-all duration-300"
+              >
+                &gt;
+              </button>
+            </div>
+          </Section>
 
           {/* FAQ Section */}
           <section id="faq" className="py-10 md:py-16 border-t">
@@ -1264,13 +1397,23 @@ const AgricultureLanding = () => {
                       <span className={`text-sm md:text-base font-medium transition-colors ${openFaq === i ? 'text-[#00B207]' : 'text-gray-700'}`}>
                         {item.q}
                       </span>
-<span className={`text-xl font-bold shrink-0 transition-colors ${openFaq === i ? 'text-[#00B207]' : 'text-gray-400'}`}>
-  {openFaq === i ? '−' : '+'}
-</span>
+                      <span className="w-7 h-7 rounded-full border border-[#00B207] text-[#00B207]  flex items-center justify-center shrink-0 font-bold text-base">
+                        {openFaq === i ? '−' : '+'}
+                      </span>
                     </div>
                     {openFaq === i && (
                       <div className="pb-4 text-sm text-gray-500 leading-relaxed pr-8">
-                        {item.a}
+                        {item.a && <p className="mb-2">{item.a}</p>}
+                        {item.bullets && (
+                          <ul className="list-none space-y-1 mt-1">
+                            {item.bullets.map((point, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#00B207] shrink-0"></span>
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     )}
                   </div>
