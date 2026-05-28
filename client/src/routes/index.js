@@ -46,6 +46,7 @@ import ShippingPolicy from "../pages/policyPages/ShippingPolicy";
 import ReturnAndRefundPolicy from "../pages/policyPages/ReturnAndRefundPolicy";
 import ExchangePolicy from "../pages/policyPages/ExchangePolicy";
 import SafePurchasePolicy from "../pages/policyPages/SafePurchasePolicy";
+import AgricultureLanding from "../pages/AgriculturalLanding";
 
 const router = createBrowserRouter([
   {
@@ -54,9 +55,13 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <AgricultureLanding />
       },
       {
+        path: "shop",
+        element: <Home />
+      }
+      ,{
         path: "login",
         element: <LoginPage />
       },
