@@ -1,8 +1,7 @@
 import React from 'react';
 import PolicyLayout from '../../components/PolicyLayout';
 import { 
-  RotateCcw, XCircle, CheckCircle2, CreditCard, 
-  Clock, AlertCircle, MapPin, Phone, Mail, 
+  RotateCcw, XCircle, CheckCircle2, AlertCircle, 
   ShieldCheck, Ban, History 
 } from "lucide-react";
 
