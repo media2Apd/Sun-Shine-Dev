@@ -6,48 +6,51 @@ const FAQPage = () => {
   const navigate = useNavigate();
   const [openIndex, setOpenIndex] = useState(null);
 
-  const faqData = [
-    {
-      question: "What is Sunshine?",
-      answer: "Sunshine is an agricultural brand offering organic manures, bio fertilizers, bio pesticides, plant growth promoters and specialty nutrients for better crop growth and soil health."
-    },
-    {
-      question: "Are Sunshine products safe for organic farming?",
-      answer: "Yes, Sunshine products are eco-friendly and support sustainable farming practices."
-    },
-    {
-      question: "Which crops are suitable for Sunshine products?",
-      answer: "Sunshine products are suitable for all crops, including field crops, vegetables, fruits, flowers, plantation crops, and horticultural crops."
-    },
-    {
-      question: "How do bio fertilizers help crops?",
-      answer: "Bio fertilizers improve plant growth by increasing nutrient availability like nitrogen and phosphorus naturally and improving root development."
-    },
-    {
-      question: "What is the use of Vermicompost Green Gold?",
-      answer: "Green Gold Vermicompost improves soil fertility, soil structure, and crop productivity by adding natural nutrients and beneficial microorganisms."
-    },
-    {
-      question: "How can I apply Sunshine products?",
-      answer: "Sunshine products can be applied through soil application, seed treatment, root dipping, drip irrigation, or foliar spray, based on the product type."
-    },
-    {
-      question: "What are bio pesticides used for?",
-      answer: "Bio pesticides help control pests and diseases naturally without harming beneficial insects and maintaining soil microbial balance."
-    },
-    {
-      question: "Can I use Sunshine products with chemical fertilizers?",
-      answer: "Yes, most Sunshine products can be used along with chemical fertilizers, but for best results, follow recommended usage instructions."
-    },
-    {
-      question: "How do plant growth promoters help plants?",
-      answer: "Plant growth promoters improve flowering, fruit setting, plant vigor, and stress tolerance for better yield and crop performance."
-    },
-    {
-      question: "How do I choose the right Sunshine product for my crop?",
-      answer: "You can choose products based on your crop needs such as soil improvement, nitrogen support, pest control, disease control, or growth boosting. Our team can guide you to select the best solution."
-    }
-  ];
+const faqData = [
+  {
+    question: "What products does Sunshine Agritech offer?",
+    answer: "Sunshine Agritech offers bio-fertilizers, organic crop nutrients, soil health solutions, and plant growth promoters designed to support healthy crop growth and sustainable farming."
+  },
+  {
+    question: "What are bio-fertilizers?",
+    answer: "Bio-fertilizers are natural agricultural inputs containing beneficial microorganisms that improve soil fertility and help plants absorb nutrients effectively."
+  },
+  {
+    question: "Are Sunshine Agritech products safe for crops and soil?",
+    answer: "Yes. Our products are eco-friendly and developed to improve soil health, support plant growth, and promote sustainable agricultural practices."
+  },
+  {
+    question: "Which crops can use Sunshine Agritech products?",
+    answer: "Our products are suitable for a wide range of crops including paddy, vegetables, fruits, pulses, cotton, sugarcane, plantation crops, and horticultural crops."
+  },
+  {
+    question: "How do bio-fertilizers benefit farmers?",
+    answer: "Bio-fertilizers help:",
+    bullets: ["Improve soil fertility", "Enhance root development", "Increase nutrient absorption", "Support better crop yield", "Reduce dependency on chemical fertilizers"]
+  },
+  {
+    question: "How should the products be applied?",
+    answer: "Depending on the product, applications may include:",
+    bullets: ["Soil application", "Drip irrigation", "Seed treatment", "Foliar spray"]
+  },
+  {
+    question: "Can Sunshine Agritech products improve crop yield?",
+    answer: "Yes. Our products are designed to support healthier plant growth, stronger roots, improved nutrient uptake, and better overall crop productivity."
+  },
+  {
+    question: "Are the products suitable for organic farming?",
+    answer: "Many of our products are developed to support eco-friendly and sustainable farming practices. Please contact us for specific product recommendations."
+  },
+  {
+    question: "How should the products be stored?",
+    answer: "Products should be stored in a cool, dry place away from direct sunlight and moisture."
+  },
+  {
+    question: "Why choose Sunshine Agritech?",
+    answer: "Farmers trust Sunshine Agritech for:",
+    bullets: ["Quality agricultural solutions", "Sustainable farming support", "Reliable product performance", "Farmer-focused approach", "Commitment to crop and soil health"]
+  },
+];
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -100,13 +103,23 @@ const FAQPage = () => {
 
             {/* Answer with Animation */}
             <div 
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-              }`}
+             className={`overflow-hidden transition-all duration-300 ease-in-out ${
+  openIndex === index ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+}`}
             >
               <div className="p-5 pt-0 text-gray-600 leading-relaxed border-t border-gray-50">
-                {item.answer}
-              </div>
+  {item.answer && <p className="mb-2">{item.answer}</p>}
+  {item.bullets && (
+    <ul className="list-none space-y-1 mt-1">
+      {item.bullets.map((point, idx) => (
+        <li key={idx} className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#00B207] shrink-0"></span>
+          {point}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
             </div>
           </div>
         ))}
