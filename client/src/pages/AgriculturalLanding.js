@@ -647,6 +647,8 @@
 // export default AgricultureLanding;
 
 
+//============================================================================================//
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 
@@ -1420,3 +1422,5 @@ const AgricultureLanding = () => {
 };
 
 export default AgricultureLanding;
+
+//===================================================================================//
