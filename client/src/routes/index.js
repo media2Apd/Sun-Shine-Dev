@@ -58,7 +58,7 @@ const router = createBrowserRouter([
         element: <AgricultureLanding />
       },
       {
-        path: "homepage",
+        path: "shop",
         element: <Home />
       }
       ,{
