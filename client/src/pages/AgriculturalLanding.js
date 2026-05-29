@@ -667,7 +667,7 @@ import img5 from "../assets/gallery5.png";
 import img6 from "../assets/gallery6.png";
 import img7 from "../assets/gallery7.png";
 import img8 from "../assets/gallery8.png";
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.svg';
 
 // ── Reusable animation hook ──────────────────────────────────────────────────
 function useInView(threshold = 0.15) {
@@ -797,7 +797,7 @@ const AgricultureLanding = () => {
   const [page, setPage] = useState(0);
 
   // Vision/Mission color fill animation
-  const [vmRef, vmVisible] = useInView();
+  const [vmRef] = useInView();
 
   const marqueeItems = [
     "Soil Health", "Sustainable Farming", "Crop Nutrition",
@@ -930,15 +930,14 @@ const AgricultureLanding = () => {
 
       {/* ===== HEADER ===== */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 h-16 md:h-20 flex items-center justify-between relative">
-
+      <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
           {/* LOGO */}
           <div className="flex items-center gap-2 z-10">
 
             <img
               src={logo}
               alt="Sunshine Agritech"
-              className="h-12 md:h-16 w-auto object-contain"
+              className="h-18 md:h-14 lg:h-16 w-auto object-contain cursor-pointer"
             />
           </div>
 
