@@ -647,7 +647,9 @@
 // export default AgricultureLanding;
 
 
-//============================================================================================//
+
+
+//==================================ORIGINAL CODE ==========================================================//
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
@@ -910,6 +912,7 @@ const AgricultureLanding = () => {
       </div>
     );
   };
+
 
   const Section = ({ title, subtitle, children }) => {
     return (
