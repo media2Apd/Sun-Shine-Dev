@@ -87,7 +87,7 @@ export default function Header() {
       <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
         {/* Logo */}
         <div>
-          <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 object-contain cursor-pointer" />
+          <img onClick={()=> navigate('/')} src={logo} alt="Sunshine Logo" className="h-12 md:h-14 lg:h-16 w-auto object-contain cursor-pointer" />
         </div>
 
         {/* Icons */}

@@ -647,7 +647,9 @@
 // export default AgricultureLanding;
 
 
-//============================================================================================//
+
+
+//==================================ORIGINAL CODE ==========================================================//
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
@@ -667,7 +669,7 @@ import img5 from "../assets/gallery5.png";
 import img6 from "../assets/gallery6.png";
 import img7 from "../assets/gallery7.png";
 import img8 from "../assets/gallery8.png";
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.svg';
 
 // ── Reusable animation hook ──────────────────────────────────────────────────
 function useInView(threshold = 0.15) {
@@ -797,7 +799,7 @@ const AgricultureLanding = () => {
   const [page, setPage] = useState(0);
 
   // Vision/Mission color fill animation
-  const [vmRef, vmVisible] = useInView();
+  const [vmRef] = useInView();
 
   const marqueeItems = [
     "Soil Health", "Sustainable Farming", "Crop Nutrition",
@@ -911,6 +913,7 @@ const AgricultureLanding = () => {
     );
   };
 
+
   const Section = ({ title, subtitle, children }) => {
     return (
       <div className="mb-16 md:mb-24">
@@ -930,15 +933,14 @@ const AgricultureLanding = () => {
 
       {/* ===== HEADER ===== */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 h-16 md:h-20 flex items-center justify-between relative">
-
+      <div className="container mx-auto px-8 py-4 flex items-center justify-between relative">
           {/* LOGO */}
           <div className="flex items-center gap-2 z-10">
 
             <img
               src={logo}
               alt="Sunshine Agritech"
-              className="h-12 md:h-16 w-auto object-contain"
+              className="h-18 md:h-14 lg:h-16 w-auto object-contain cursor-pointer"
             />
           </div>
 
@@ -1047,7 +1049,7 @@ const AgricultureLanding = () => {
 
               <div className="flex flex-wrap gap-3 pt-1">
                 <button
-                  onClick={() => navigate('/homepage')}
+                  onClick={() => navigate('/shop')}
                   className="bg-[#00c000] hover:bg-[#00a800] text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 shadow-sm"
                 >
                   Explore Products
@@ -1281,37 +1283,31 @@ const AgricultureLanding = () => {
           {/* Vision & Mission — color fill animation on scroll */}
           <section
             ref={vmRef}
-            className="flex flex-col lg:flex-row w-full mb-14 md:mb-20 border border-[#00B207]/10 rounded-2xl overflow-hidden"
+            className="flex flex-col lg:flex-row w-full mb-14 md:mb-20 border border-[#00B207]/10 rounded-2xl overflow-hidden group"
+
           >
-            <div className="flex-1 p-6 sm:p-10 md:p-14 bg-[#F8FDF8]">
-              <h2 className="text-[#00B207] font-medium text-xs tracking-widest uppercase mb-3">— Our Vision</h2>
-              <h1 className="text-2xl md:text-3xl font-bold mb-4 text-[#00B207]">A Greener, More Productive Future</h1>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base">To become a trusted agricultural brand that supports sustainable farming and improves farmer productivity.</p>
+
+            <div className="flex-1 p-6 sm:p-10 md:p-14 transition-all duration-700 ease-in-out bg-[#F8FDF8] group-hover:bg-[#00B207]">
+              <h2 className="text-[#00B207] font-medium text-xs tracking-widest uppercase mb-3 transition-colors duration-700 group-hover:text-white/75">
+                — Our Vision
+              </h2>
+              <h1 className="text-2xl md:text-3xl font-bold mb-4 text-[#00B207] transition-colors duration-700 group-hover:text-white">
+                A Greener, More Productive Future
+              </h1>
+              <p className="text-gray-600 leading-relaxed text-sm md:text-base transition-colors duration-700 group-hover:text-white/88">
+                To become a trusted agricultural brand that supports sustainable farming and improves farmer productivity.
+              </p>
             </div>
-            {/* Mission panel — fills green when scrolled into view */}
-            <div
-              className="flex-1 p-6 sm:p-10 md:p-14 text-white transition-all duration-1000 ease-in-out"
-              style={{
-                background: vmVisible ? '#00B207' : '#e9f8e9',
-                color: vmVisible ? '#fff' : '#00B207',
-              }}
-            >
-              <h2
-                className="font-medium text-xs tracking-widest uppercase mb-3 transition-colors duration-700"
-                style={{ color: vmVisible ? 'rgba(255,255,255,0.75)' : '#009900' }}
-              >
+
+            {/* Mission panel — green by default, white bg on hover */}
+            <div className="flex-1 p-6 sm:p-10 md:p-14 transition-all duration-700 ease-in-out bg-[#00B207] group-hover:bg-[#F8FDF8]">
+              <h2 className="font-medium text-xs tracking-widest uppercase mb-3 transition-colors duration-700 text-white/75 group-hover:text-[#009900]">
                 — Our Mission
               </h2>
-              <h1
-                className="text-2xl md:text-3xl font-bold mb-4 transition-colors duration-700"
-                style={{ color: vmVisible ? '#fff' : '#00B207' }}
-              >
+              <h1 className="text-2xl md:text-3xl font-bold mb-4 transition-colors duration-700 text-white group-hover:text-[#00B207]">
                 Delivering Quality, Every Harvest
               </h1>
-              <p
-                className="leading-relaxed text-sm md:text-base transition-colors duration-700"
-                style={{ color: vmVisible ? 'rgba(255,255,255,0.88)' : '#338833' }}
-              >
+              <p className="leading-relaxed text-sm md:text-base transition-colors duration-700 text-white/88 group-hover:text-[#338833]">
                 To provide high-quality bio-fertilizers and crop nutrition products that help farmers achieve healthier crops.
               </p>
             </div>
@@ -1335,16 +1331,21 @@ const AgricultureLanding = () => {
 
             {/* Products — left to right one by one */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-              {productList.map((item, index) => (
-                <Reveal key={index} direction="left" delay={index * 80}>
-                  <div className="bg-white p-5 md:p-7 border border-[#00B207]/20 rounded-2xl flex flex-col items-start hover:border-[#00B207] transition-all group cursor-pointer h-full">
-                    <h3 className="text-[#00B207] text-xs font-medium tracking-wide mb-3">{item.cat}</h3>
-                    <div className="w-10 h-10 mb-3 flex items-center justify-center bg-green-50 group-hover:bg-[#00B207] rounded-lg text-lg transition-all duration-300">{item.icon}</div>
-                    <h4 className="text-base md:text-lg mb-2">{item.title}</h4>
-                    <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-                  </div>
-                </Reveal>
-              ))}
+              {productList.map((item, index) => {
+                const row = Math.floor(index / 2);          // 2 columns → row 0,0,1,1,2,2...
+                const direction = row % 2 === 0 ? "left" : "right";  // even rows → left, odd → right
+
+                return (
+                  <Reveal key={index} direction={direction} delay={index * 80}>
+                    <div className="bg-white p-5 md:p-7 border border-[#00B207]/20 rounded-2xl flex flex-col items-start hover:border-[#00B207] transition-all group cursor-pointer h-full">
+                      <h3 className="text-[#00B207] text-xs font-medium tracking-wide mb-3">{item.cat}</h3>
+                      <div className="w-10 h-10 mb-3 flex items-center justify-center bg-green-50 group-hover:bg-[#00B207] rounded-lg text-lg transition-all duration-300">{item.icon}</div>
+                      <h4 className="text-base md:text-lg mb-2">{item.title}</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
           </section>
 
