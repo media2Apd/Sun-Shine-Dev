@@ -14,9 +14,10 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const loading = useFetchLoginUser();
+  
   const isAdminPanel = location.pathname.startsWith('/admin-panel');
+  const isLandingPage = location.pathname === '/';  // ← உங்க landing page route
 
-  // Set up navigation handler for API client
   useEffect(() => {
     setNavigationHandler(navigate);
   }, [navigate]);
@@ -33,17 +34,16 @@ function App() {
     <>
       <ScrollToTop />
         
-      {!isAdminPanel && <Header />}
+      {!isAdminPanel && !isLandingPage && <Header />}
    
-      <main className='min-h-[calc(100vh-120px)] '>
+      <main className='min-h-[calc(100vh-120px)]'>
         <Outlet />
       </main>
-      {!isAdminPanel && <Footer />}
+
+      {!isAdminPanel && !isLandingPage && <Footer />}
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </>
   );
 }
 
 export default App;
-
-

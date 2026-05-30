@@ -237,7 +237,7 @@ const LoginPage = () => {
   };
   const location = useLocation();
 
-  const redirectTo = location.state?.redirectTo || "/";
+  const redirectTo = location.state?.redirectTo || "/shop";
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
