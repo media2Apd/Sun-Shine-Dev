@@ -593,7 +593,7 @@ const AgricultureLanding = () => {
                   {/* Bottom Content */}
                   <div className="absolute bottom-4 left-0 right-0 px-4 sm:px-5 z-20">
 
-                    <div className="flex justify-center mb-3">
+                    <div className="flex justify-center mb-0 mt-6">
                       <h3 className="text-[14px] sm:text-[16px] md:text-[18px] font-semibold text-[#00B207] text-center">
                         Rooted in Nature
                       </h3>
