@@ -3,9 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 
-import Container2 from '../assets/Container2.png';
-import Container1 from '../assets/container1.png';
-import Container3 from '../assets/container3.png';
+
+import Leafs from '../assets/Leaf.webm';
 
 import HeroPage from '../components/homeComponents/HeroPage';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +18,8 @@ import img6 from "../assets/gallery6.png";
 import img7 from "../assets/gallery7.png";
 import img8 from "../assets/gallery8.png";
 import logo from '../assets/logo.svg';
+import PlantVideo from '../assets/plant.webm';
+import RootVideo from '../assets/Root.webm';
 
 // ── Reusable animation hook ──────────────────────────────────────────────────
 function useInView(threshold = 0.15) {
@@ -458,12 +459,86 @@ const AgricultureLanding = () => {
             </Reveal>
 
             {/* RIGHT IMAGE — slides in from right */}
-            <Reveal direction="right" className="w-full lg:w-1/2 flex justify-center">
-              <img
-                src={Container1}
-                alt="Agriculture product"
-                className="w-full max-w-[260px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[500px] h-auto object-contain"
-              />
+            <Reveal
+              direction="right"
+              className="w-full lg:w-1/2 flex justify-center items-center"
+            >
+              <div className="relative w-full max-w-[420px] sm:max-w-[480px] md:max-w-[520px] lg:max-w-[560px]">
+
+                {/* Main Green Box */}
+                <div
+                  className="
+        relative
+        bg-[#f0faf0]
+        rounded-3xl
+        flex
+        flex-col
+        items-center
+        overflow-hidden
+        px-3
+        sm:px-5
+        pt-4
+        sm:pt-6
+        pb-4
+        sm:pb-5
+        gap-4
+      "
+                >
+
+                  {/* Plant Video */}
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    disablePictureInPicture
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    className="
+          relative
+          z-10
+          w-full
+          max-w-[300px]
+          sm:max-w-[360px]
+          md:max-w-[420px]
+          lg:max-w-[460px]
+          h-auto
+          object-contain
+        "
+                  >
+                    <source src={PlantVideo} type="video/webm" />
+                  </video>
+
+                  {/* White Content Card */}
+                  <div className="relative z-10 w-full bg-white rounded-3xl shadow-sm p-5 sm:p-6">
+
+                    <h3 className="text-[18px] sm:text-[20px] font-semibold text-[#111111] leading-snug">
+                      Rooted in Nature. Proven in Fields.
+                    </h3>
+
+                    <p className="text-[13px] sm:text-[14px] text-gray-500 mt-2 leading-relaxed">
+                      Scientifically developed bio-fertilizers for sustainable,
+                      productive farming across all crop types.
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mt-4">
+
+                      <span className="bg-[#f0faf0] text-[#00B207] text-[11px] sm:text-[12px] font-medium px-3 py-1.5 rounded-full border border-[#c8e6c8]">
+                        Eco-Friendly
+                      </span>
+
+                      <span className="bg-[#f0faf0] text-[#00B207] text-[11px] sm:text-[12px] font-medium px-3 py-1.5 rounded-full border border-[#c8e6c8]">
+                        Science-Backed
+                      </span>
+
+                      <span className="bg-[#f0faf0] text-[#00B207] text-[11px] sm:text-[12px] font-medium px-3 py-1.5 rounded-full border border-[#c8e6c8]">
+                        Field-Proven
+                      </span>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             </Reveal>
           </div>
         </div>
@@ -475,14 +550,76 @@ const AgricultureLanding = () => {
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-center">
 
             {/* LEFT IMAGE — slides from left */}
-            <Reveal direction="left" className="w-full lg:w-1/2 flex justify-center order-2 lg:order-1">
-              <img
-                src={Container2}
-                alt="Agriculture approach"
-                className="w-full max-w-[260px] sm:max-w-[340px] md:max-w-[430px] lg:max-w-[500px] h-auto object-contain"
-              />
-            </Reveal>
+            <Reveal
+              direction="left"
+              className="w-full lg:w-1/2 flex justify-center order-2 lg:order-1"
+            >
+              <div className="relative w-full max-w-[95vw] sm:max-w-[460px] md:max-w-[520px] lg:max-w-[560px]">
 
+                <div
+                  className="
+        relative
+        bg-[#e8f8e8]
+        rounded-3xl
+        overflow-hidden
+        h-[420px]
+        sm:h-[500px]
+        md:h-[560px]
+        lg:h-[620px]
+      "
+                >
+
+                  {/* Video */}
+                  <div className="absolute inset-0 flex items-center justify-center px-2 pt-2 pb-20 sm:pb-24 md:pb-28">
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      disablePictureInPicture
+                      controlsList="nodownload nofullscreen noremoteplayback"
+                      className="
+            w-full
+            h-full
+            object-contain
+            scale-[1.15]
+            sm:scale-[1.2]
+          "
+                    >
+                      <source src={RootVideo} type="video/webm" />
+                    </video>
+                  </div>
+
+                  {/* Bottom Content */}
+                  <div className="absolute bottom-4 left-0 right-0 px-4 sm:px-5 z-20">
+
+                    <div className="flex justify-center mb-3">
+                      <h3 className="text-[14px] sm:text-[16px] md:text-[18px] font-semibold text-[#00B207] text-center">
+                        Rooted in Nature
+                      </h3>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <div className="bg-[#00B207] text-white rounded-xl px-2 py-2 sm:px-3 sm:py-2.5 text-center min-w-[65px] sm:min-w-[80px] shadow-md">
+
+                        <p className="text-[14px] sm:text-[18px] font-bold leading-none">
+                          100%
+                        </p>
+
+                        <p className="text-[6px] sm:text-[7px] mt-1 leading-tight opacity-90">
+                          Bio-Based
+                          <br />
+                          Formulations
+                        </p>
+
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </Reveal>
             {/* RIGHT CONTENT — slides from right */}
             <Reveal direction="right" className="w-full lg:w-1/2 space-y-6 order-1 lg:order-2">
               <p className="text-[#00cc00] font-semibold uppercase tracking-[0.2em] text-[11px] md:text-[13px]">
@@ -585,19 +722,54 @@ const AgricultureLanding = () => {
             </Reveal>
 
             {/* RIGHT IMAGE — from right */}
-            <Reveal direction="right" className="w-full lg:w-1/2 flex justify-center relative">
-              <div className="relative inline-block">
-                <img
-                  src={Container3}
-                  alt="About Agriculture"
-                  className="w-full max-w-[260px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[480px] h-auto object-contain"
-                />
-                <div className="absolute top-3 right-0 sm:right-0 z-20 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-sm border border-[#e6eee5] shadow-sm">
-                  <h4 className="text-[#00b300] text-xs sm:text-sm font-semibold">Sunshine</h4>
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">Agritech Brand</p>
-                </div>
-              </div>
-            </Reveal>
+
+   <Reveal
+  direction="right"
+  className="w-full lg:w-1/2 flex justify-center relative"
+>
+  <div className="relative w-full max-w-[95vw] sm:max-w-[500px] md:max-w-[560px]">
+
+    {/* Video Container */}
+    <div className="overflow-hidden rounded-[32px] bg-[#eef8ee] p-3 sm:p-4 shadow-lg">
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        className="
+          w-full
+          h-auto
+          object-contain
+          rounded-[24px]
+        "
+      >
+        <source src={Leafs} type="video/webm" />
+      </video>
+
+    </div>
+
+    {/* Floating Badge */}
+    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-sm border border-[#e6eee5] shadow-sm">
+
+      <h4 className="text-[#00b300] text-xs sm:text-sm font-semibold">
+        Sunshine
+      </h4>
+
+      <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
+        Agritech Brand
+      </p>
+
+    </div>
+
+  </div>
+</Reveal>
+
+
+
+
           </div>
         </div>
       </section>

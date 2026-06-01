@@ -235,7 +235,7 @@ const handleRemove = async (id, productId, variantId) => {
 
               {/* BUTTON */}
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/shop")}
                 className="bg-[#00B207] text-white px-6 py-3 rounded-full font-medium transition"
               >
                 Continue Shopping →
