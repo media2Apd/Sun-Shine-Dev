@@ -401,7 +401,7 @@ const AgricultureLanding = () => {
       </div>
 
       {/* ===== SECTION 1 — HERO CONTENT ===== */}
-      <section className="py-10 md:py-16 lg:py-20">
+      <section className="py-8 md:py-12 lg:py-14">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-10 xl:gap-16 items-center">
 
@@ -547,7 +547,7 @@ const AgricultureLanding = () => {
       {/* ===== SECTION 2 — OUR APPROACH ===== */}
       <section id="approach" className="py-10 md:py-16 lg:py-20">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 items-center">
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
 
             {/* LEFT IMAGE — slides from left */}
             <Reveal
@@ -669,7 +669,7 @@ const AgricultureLanding = () => {
       </section>
 
       {/* ===== SECTION 3 — ABOUT ===== */}
-      <section id="about" className="py-10 md:py-20 lg:py-24 bg-white">
+      <section id="about" className="py-8 md:py-12 lg:py-14 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
 

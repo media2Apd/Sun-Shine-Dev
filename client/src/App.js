@@ -16,7 +16,7 @@ function App() {
   const loading = useFetchLoginUser();
   
   const isAdminPanel = location.pathname.startsWith('/admin-panel');
-  const isLandingPage = location.pathname === '/';  // ← உங்க landing page route
+  const isLandingPage = location.pathname === '/';  
 
   useEffect(() => {
     setNavigationHandler(navigate);
@@ -40,7 +40,7 @@ function App() {
         <Outlet />
       </main>
 
-      {!isAdminPanel && !isLandingPage && <Footer />}
+      {!isAdminPanel  && <Footer />}
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </>
   );
