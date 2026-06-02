@@ -265,7 +265,7 @@ const AboutPage = () => {
               </div>
               <div className="flex gap-3 items-start">
                 <Truck size={22} className="text-green-600 min-w-[22px]" />
-                <p className="text-sm text-gray-600">Free Shipping</p>
+                <p className="text-sm text-gray-600">Quality Assured</p>
               </div>
               <div className="flex gap-3 items-start">
                 <Leaf size={22} className="text-green-600 min-w-[22px]" />

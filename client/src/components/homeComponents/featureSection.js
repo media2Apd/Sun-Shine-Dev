@@ -1,12 +1,17 @@
 import React from "react";
-import { Truck, Headphones, ShieldCheck, Box } from "lucide-react";
+import { Headphones, ShieldCheck, Box, PackageCheck } from "lucide-react";
 
 const FeaturesSection = () => {
   const features = [
+    // {
+    //   icon: <Truck size={28} className="text-[#00B207]" />,
+    //   title: "Free Shipping",
+    //   desc: "Free shipping on all your order",
+    // },
     {
-      icon: <Truck size={28} className="text-[#00B207]" />,
-      title: "Free Shipping",
-      desc: "Free shipping on all your order",
+      icon: <PackageCheck size={28} className="text-[#00B207]" />,
+      title: "Quality Assured",
+      desc: "Every product undergoes quality checks",
     },
     {
       icon: <Headphones size={28} className="text-[#00B207]" />,
@@ -32,7 +37,7 @@ const FeaturesSection = () => {
           {features.map((item, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 text-center sm:text-left"
+              className="flex items-start gap-4 text-left"
             >
               <div >{item.icon}</div>
               <div>

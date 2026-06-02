@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import Leafs from '../assets/Leaf.webm';
 
 import HeroPage from '../components/homeComponents/HeroPage';
-import { useNavigate } from 'react-router-dom';
 
 import img1 from "../assets/gallery1.png";
 import img2 from "../assets/gallery2.png";
@@ -142,7 +141,7 @@ const FaqItem = ({ item, index, openFaq, setOpenFaq }) => {
 };
 
 const AgricultureLanding = () => {
-
+  const location = useLocation();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
@@ -305,8 +304,8 @@ const AgricultureLanding = () => {
 
       {/* ===== HEADER ===== */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95
-             backdrop-blur-md border-b border-gray-100">
-        <div className="container mx-auto px-6 py-3
+             backdrop-blur-md shadow-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 md:px-6 py-3
               flex items-center justify-between relative">
 
           {/* LOGO — h-8 mobile, h-12 desktop */}
@@ -322,16 +321,22 @@ const AgricultureLanding = () => {
           {/* DESKTOP MENU */}
           <div className="hidden md:flex absolute left-1/2
                 -translate-x-1/2 items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNav(item)}
-                className="text-gray-500 hover:text-green-600
-                       font-medium text-[15px] transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.path && location.pathname === item.path;
+
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => handleNav(item)}
+                  className={`font-medium text-[15px] transition-colors ${isActive
+                      ? "text-green-600"
+                      : "text-gray-500 hover:text-green-600"
+                    }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* CTA — desktop */}
@@ -358,17 +363,22 @@ const AgricultureLanding = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t
                 border-gray-100 px-4 py-4 flex flex-col gap-3">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNav(item)} // ✅ same handler
-                className="text-gray-500 hover:text-green-600
-                       font-medium text-[15px] transition-colors
-                       text-left"
-              >
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.path && location.pathname === item.path;
+
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => handleNav(item)}
+                  className={`font-medium text-[15px] transition-colors text-left ${isActive
+                      ? "text-green-600"
+                      : "text-gray-500 hover:text-green-600"
+                    }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
             <button
               onClick={() => { navigate('/contact-us'); setIsMenuOpen(false); }}
               className="bg-[#00cc00] hover:bg-[#00b300]
@@ -723,49 +733,49 @@ const AgricultureLanding = () => {
 
             {/* RIGHT IMAGE — from right */}
 
-   <Reveal
-  direction="right"
-  className="w-full lg:w-1/2 flex justify-center relative"
->
-  <div className="relative w-full max-w-[95vw] sm:max-w-[500px] md:max-w-[560px]">
+            <Reveal
+              direction="right"
+              className="w-full lg:w-1/2 flex justify-center relative"
+            >
+              <div className="relative w-full max-w-[95vw] sm:max-w-[500px] md:max-w-[560px]">
 
-    {/* Video Container */}
-    <div className="overflow-hidden rounded-[32px] bg-[#eef8ee] p-3 sm:p-4 shadow-lg">
+                {/* Video Container */}
+                <div className="overflow-hidden rounded-[32px] bg-[#eef8ee] p-3 sm:p-4 shadow-lg">
 
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        disablePictureInPicture
-        controlsList="nodownload nofullscreen noremoteplayback"
-        className="
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    disablePictureInPicture
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    className="
           w-full
           h-auto
           object-contain
           rounded-[24px]
         "
-      >
-        <source src={Leafs} type="video/webm" />
-      </video>
+                  >
+                    <source src={Leafs} type="video/webm" />
+                  </video>
 
-    </div>
+                </div>
 
-    {/* Floating Badge */}
-    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-sm border border-[#e6eee5] shadow-sm">
+                {/* Floating Badge */}
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-sm border border-[#e6eee5] shadow-sm">
 
-      <h4 className="text-[#00b300] text-xs sm:text-sm font-semibold">
-        Sunshine
-      </h4>
+                  <h4 className="text-[#00b300] text-xs sm:text-sm font-semibold">
+                    Sunshine
+                  </h4>
 
-      <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
-        Agritech Brand
-      </p>
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
+                    Agritech Brand
+                  </p>
 
-    </div>
+                </div>
 
-  </div>
-</Reveal>
+              </div>
+            </Reveal>
 
 
 

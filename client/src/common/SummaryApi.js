@@ -3,8 +3,7 @@ const isLocalNetwork = window.location.hostname !== 'localhost' && window.locati
 const backendDomain = process.env.NODE_ENV === 'development'
     ? (isLocalNetwork ? `http://${window.location.hostname}:5000` : "http://localhost:5000")
     : process.env.NODE_ENV === 'production'
-        // ? "https://naach-boutique.onrender.com"   // Use the production API in production environment
-        ? "https://sunshine-agree.onrender.com"
+        ? "https://sunshine-agree.onrender.com"  // Use the production API in production environment
         : "http://192.168.0.1:5000";
 
 //cSpell: ignore deactive

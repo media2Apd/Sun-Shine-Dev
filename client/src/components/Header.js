@@ -501,7 +501,10 @@ export default function Header() {
   useEffect(() => {
     setMobileMenuOpen(false);
     setOpen(false);
-    setSearchOpen(false);
+
+    if (location.pathname !== "/search") {
+      setSearchOpen(false);
+    }
   }, [location.pathname]);
 
   useEffect(() => {
@@ -526,6 +529,7 @@ export default function Header() {
 
   const navLinks = [
     { to: "/about", label: "About" },
+    { to: "/shop", label: "Shop" },
     { to: "/gallery", label: "Gallery" },
     { to: "/faqs", label: "FAQ" },
     { to: "/blogs", label: "Blogs" },
@@ -549,7 +553,7 @@ export default function Header() {
           </div>
 
           {/* Desktop Nav — md and above */}
-          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-gray-700">
+          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-gray-500">
             {navLinks.map(({ to, label }) => (
               <Link
                 key={to}
@@ -564,7 +568,7 @@ export default function Header() {
           </nav>
 
           {/* Right Side Icons */}
-          <div className="flex items-center gap-3 sm:gap-4 text-gray-700">
+          <div className="flex items-center gap-3 sm:gap-4 text-gray-500">
 
             {/* Search icon — all screens, triggers below-header bar */}
             <button
@@ -795,7 +799,7 @@ export default function Header() {
               </button>
             ) : (
               <Link
-                to="/login"
+                to="/contact-us"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full bg-[#00B207] hover:bg-[#009a06] text-white font-semibold py-3.5 rounded-full text-[15px] text-center transition-colors"
               >
