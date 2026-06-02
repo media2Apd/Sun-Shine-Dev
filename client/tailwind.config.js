@@ -25,7 +25,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins'], // 👈 default font
+        sans: ['Poppins'], // default font
+        styleScript: ['"Style Script"', 'cursive'],
       },
     },
   },

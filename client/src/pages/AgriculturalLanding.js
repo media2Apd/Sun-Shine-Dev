@@ -417,7 +417,7 @@ const AgricultureLanding = () => {
 
             {/* LEFT CONTENT — slides in from left */}
             <Reveal direction="left" className="w-full lg:w-1/2 space-y-5">
-              <span className="inline-flex items-center bg-[#e9f8e9] text-[#00b300] px-4 py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide">
+              <span className="inline-flex items-center bg-[#e9f8e9] text-[#00b300] px-4 py-1.5 rounded-full text-[12px] md:text-[13px] font-semibold tracking-wide">
                 • Premium Bio Fertilizers
               </span>
 
@@ -632,7 +632,7 @@ const AgricultureLanding = () => {
             </Reveal>
             {/* RIGHT CONTENT — slides from right */}
             <Reveal direction="right" className="w-full lg:w-1/2 space-y-6 order-1 lg:order-2">
-              <p className="text-[#00cc00] font-semibold uppercase tracking-[0.2em] text-[11px] md:text-[13px]">
+              <p className="text-[#00cc00] font-semibold tracking-wide text-[11px] md:text-[13px]">
                 — Our Approach
               </p>
               <h1 className="text-[30px] sm:text-[38px] md:text-[48px] lg:text-[56px] leading-[1.2] font-medium tracking-[-0.02em] text-[#111111]">
@@ -818,8 +818,7 @@ const AgricultureLanding = () => {
               <Reveal key={index} direction="up" delay={index * 100}>
                 <div className="bg-[linear-gradient(180deg,rgba(0,255,76,0.06),rgba(255,255,255,0.02))] border border-[rgba(255,255,255,0.06)] rounded-[1.5rem] p-5 md:p-7 hover:border-[#00d12f]/30 transition-all duration-300">
                   <h3
-                    className="text-[#00ff3c] text-[60px] leading-[44.8px] tracking-[0px]"
-                    style={{ fontFamily: "'Style Script', cursive", fontWeight: 400, verticalAlign: "middle" }}
+                    className="font-styleScript text-[#00ff3c] text-[60px] leading-[44.8px] tracking-[0px]"
                   >
                     {item.no}
                   </h3>
@@ -849,7 +848,7 @@ const AgricultureLanding = () => {
               className={`flex-1 p-6 sm:p-10 md:p-14 transition-all duration-700 ease-in-out cursor-default
       ${visionHovered ? "bg-[#00B207]" : "bg-[#F8FDF8]"}`}
             >
-              <h2 className={`font-medium text-xs tracking-widest uppercase mb-3 transition-colors duration-700
+              <h2 className={`font-medium text-[12px] md:text-[13px] tracking-widest mb-3 transition-colors duration-700
       ${visionHovered ? "text-white/75" : "text-[#00B207]"}`}>
                 — Our Vision
               </h2>
@@ -868,7 +867,7 @@ const AgricultureLanding = () => {
               className={`flex-1 p-6 sm:p-10 md:p-14 transition-all duration-700 ease-in-out cursor-default
       ${visionHovered ? "bg-[#F8FDF8]" : "bg-[#00B207]"}`}
             >
-              <h2 className={`font-medium text-xs tracking-widest uppercase mb-3 transition-colors duration-700
+              <h2 className={`font-medium text-[12px] md:text-[13px] tracking-widest mb-3 transition-colors duration-700
       ${visionHovered ? "text-[#009900]" : "text-white/75"}`}>
                 — Our Mission
               </h2>
@@ -887,7 +886,7 @@ const AgricultureLanding = () => {
           <section id="products" className="mb-14 md:mb-20">
             <div className="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10 md:mb-14">
               <Reveal direction="left" className="lg:w-1/2">
-                <h2 className="text-[#00B207] font-medium text-xs tracking-widest uppercase mb-3">— Our Products</h2>
+                <h2 className="text-[#00B207] font-medium text-[12px] md:text-[13px] tracking-widest mb-3">— Our Products</h2>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
                   A Complete Range of <br /><span className="text-[#00B207]">Natural Solutions</span>
                 </h1>
@@ -950,7 +949,7 @@ const AgricultureLanding = () => {
           <section id="faq" className="py-10 md:py-16 border-t">
             <div className="flex flex-col lg:flex-row gap-8 md:gap-14">
               <Reveal direction="left" className="lg:w-1/3">
-                <h2 className="text-[#00B207] font-medium text-xs tracking-widest uppercase mb-3">— FAQ</h2>
+                <h2 className="text-[#00B207] font-medium text-[12px] md:text-[13px] tracking-widest mb-3">— FAQ</h2>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Common <span className="text-[#00B207]">Questions</span></h1>
                 <p className="text-gray-500 text-sm md:text-base leading-relaxed">Everything you need to know about our products and services.</p>
               </Reveal>
@@ -973,7 +972,7 @@ const AgricultureLanding = () => {
       </div>
 
       {/* ===== ANIMATIONS ===== */}
-      <style jsx>{`
+      <style>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
