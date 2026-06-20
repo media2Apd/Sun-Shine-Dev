@@ -1,7 +1,7 @@
 import React from "react";
 
 // Home sections
-import HeroPage from "../components/homeComponents/HeroPage";
+import HeroPage from "../components/homeComponents/heropage";
 import FeaturesSection from "../components/homeComponents/featureSection";
 import CategoriesSection from "../components/homeComponents/CategoriesSection";
 import BannerSection from "../components/homeComponents/BannerSection";

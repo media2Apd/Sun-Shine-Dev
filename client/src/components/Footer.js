@@ -155,14 +155,14 @@ export default function Footer() {
   return (
     <div className="bg-[#111111] text-gray-300 py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-10">
 
-          {/* Logo + Address */}
+          {/* Logo + Updated Address & Email */}
           <div>
             <img src={logo} alt="logo" className="w-40 mb-4" />
-            <p className="text-sm leading-6 text-gray-400">
-              71/151/1, Door no W2/151, Mariyaponusami Mill Complex,<br/>
-              Annanji Vilakku, Unjampatti, Theni Dist-625531, Tamilnadu.
+          <p className="text-sm leading-snug text-gray-400">
+              D.No 19, ST-6, WD-12, Company Street, Genguvarpatti,<br/>
+              Theni District - 625 203, Tamilnadu, India.
             </p>
 
             <p className="text-sm mt-4 text-gray-400">
@@ -175,8 +175,8 @@ export default function Footer() {
             </p>
 
             <p className="text-sm mt-2 text-gray-400">
-              <a href="mailto:sunshineagrotech@gmail.com" className="hover:underline hover:text-white transition">
-                sunshineagrotech@gmail.com
+              <a href="mailto:sunshineagreetech@gmail.com" className="hover:underline hover:text-white transition">
+                sunshineagreetech@gmail.com
               </a>
             </p>
           </div>

@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import Leafs from '../assets/Leaf.webm';
 
-import HeroPage from '../components/homeComponents/HeroPage';
+import HeroPage from '../components/homeComponents/heropage.js';
 
 import img1 from "../assets/gallery1.png";
 import img2 from "../assets/gallery2.png";

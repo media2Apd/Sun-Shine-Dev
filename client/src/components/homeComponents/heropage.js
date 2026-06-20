@@ -120,8 +120,8 @@ import React, { useMemo } from "react";
 // thirukkural.json 
 import thirukkuralData from "../../assets/thirukkural.json"; 
 
-import HeroImage from '../../assets/HeroImage.webp'; // 1696*624px
-import HeroImageMobile from '../../assets/HeroImageMobile.webp'; // 410*600px
+import HeroImage from '../../assets/HeroImage.png'; // 1696*624px
+import HeroImageMobile from '../../assets/HeroImageMobile.png'; // 410*600px
 
 const HeroPage = () => {
   // Daily Kural Logic
@@ -149,8 +149,8 @@ const HeroPage = () => {
         <img
           src={HeroImage}
           alt="Thiruvalluvar"
-          // 'object-right' is used to ensure the focus is on the right side of the image where Thiruvalluvar is, especially on wider screens. On smaller screens, 'object-center' ensures the main subject remains visible.
-          className="w-full h-full object-cover object-right md:object-center lg:object-fill shadow-inner"
+          // 'object-contain' ensures the full image is visible, and 'object-center' centers it in the container, preventing cropping.
+          className="w-full h-full object-contain object-center shadow-inner"
         />
       </picture>
 
@@ -162,7 +162,7 @@ const HeroPage = () => {
           {dailyKural.Line1} <br />
           {dailyKural.Line2}
         </h1>
-         
+          
         <p className="text-[10px] md:text-xs text-gray-300 text-right italic mb-4">
           திருக்குறள் - குறள் - {dailyKural.Number}
         </p>
@@ -179,9 +179,6 @@ const HeroPage = () => {
           Thirukkural - Kural - {dailyKural.Number}
         </p>
       </div>
-
-      {/* Gradient overlay for better text readability on dark areas */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none"></div>
 
     </div>
   );
