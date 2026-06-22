@@ -265,46 +265,47 @@ const HeroPage = () => {
               className="
                 absolute
                 md:hidden
-                top-[18%]
-                left-[8%]
-                w-[56%]
+                top-[35%]
+                left-[14%]
+                w-[72%]
                 text-center
+                flex flex-col items-center justify-center
               "
             >
               <h2
-                className="flex flex-col items-center w-full font-bold text-white text-center leading-tight"
+                className="inline-flex flex-col items-start font-bold text-black text-left leading-tight"
                 style={{
-                  fontSize: "clamp(6.5px, 1.6vw, 10.5px)",
+                  fontSize: "clamp(7.5px, 2.2vw, 12px)",
                 }}
               >
-                <div className="whitespace-nowrap text-center">{dailyKural.Line1}</div>
-                <div className="whitespace-nowrap text-center">{dailyKural.Line2}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line1}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line2}</div>
               </h2>
 
               <p
-                className="italic text-white/80 mt-1"
+                className="italic text-black/90 mt-1"
                 style={{
-                  fontSize: "clamp(6px,1.5vw,8.5px)",
+                  fontSize: "clamp(6.5px, 1.8vw, 9.5px)",
                 }}
               >
-                திருக்குறள் - குறள் - {dailyKural.Number}
+                திருக்கிழமை - குறள் - {dailyKural.Number}
               </p>
 
               <div className="w-full h-px bg-white/20 my-2" />
 
               <p
-                className="text-white leading-relaxed"
+                className="text-black leading-relaxed max-w-[90%]"
                 style={{
-                  fontSize: "clamp(6.5px,1.6vw,9.5px)",
+                  fontSize: "clamp(7.5px, 2vw, 11px)",
                 }}
               >
                 {dailyKural.Translation}
               </p>
 
               <p
-                className="italic text-white/80 mt-1"
+                className="italic text-black/90 mt-1"
                 style={{
-                  fontSize: "clamp(6px,1.5vw,8.5px)",
+                  fontSize: "clamp(6.5px, 1.8vw, 9.5px)",
                 }}
               >
                 Thirukkural - Kural - {dailyKural.Number}
@@ -316,83 +317,76 @@ const HeroPage = () => {
               className="
                 hidden md:block lg:hidden
                 absolute
-                top-[18%]
+                top-[41%]
                 left-[18%]
-                w-[34%]
+                w-[45%]
                 text-center
+                flex flex-col items-center justify-center
               "
             >
               <h2
-                className="flex flex-col items-center w-full font-bold text-white text-center leading-tight"
+                className="inline-flex flex-col items-start font-bold text-black text-left leading-tight"
                 style={{
-                  fontSize: "clamp(9px, 1.3vw, 13.5px)",
+                  fontSize: "clamp(11px, 1.6vw, 15px)",
                 }}
               >
-                <div className="whitespace-nowrap text-center">{dailyKural.Line1}</div>
-                <div className="whitespace-nowrap text-center">{dailyKural.Line2}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line1}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line2}</div>
               </h2>
 
-              <p className="italic text-white/80 mt-1.5 text-[10px]">
+              <p className="italic text-black/90 mt-1.5 text-[11px]">
                 திருக்குறள் - குறள் - {dailyKural.Number}
               </p>
 
               <div className="w-full h-px bg-white/20 my-2.5" />
 
-              <p className="text-white text-[11px] leading-relaxed">
+              <p className="text-black text-[12px] leading-relaxed max-w-[90%]">
                 {dailyKural.Translation}
               </p>
 
-              <p className="italic text-white/80 mt-1.5 text-[10px]">
+              <p className="italic text-black/90 mt-1.5 text-[11px]">
                 Thirukkural - Kural - {dailyKural.Number}
               </p>
             </div>
 
-            {/* ================= DESKTOP ================= */}
+            {/* ================= DESKTOP / LAPTOP ================= */}
             <div
               className="
                 hidden lg:block
                 absolute
-                top-[10%]
-                left-[15%]
-                w-[42%]
+                top-[25%]
+                left-[18%]
+                w-[25%]
                 text-center
+                flex flex-col items-center justify-center
               "
             >
               <h2
-                className="flex flex-col items-center w-full font-bold text-white text-center leading-tight"
+                className="inline-flex flex-col items-start font-bold text-black text-left leading-tight drop-shadow-sm"
                 style={{
-                  fontSize: "clamp(16px,1.5vw,28px)",
+                  fontSize: "clamp(12px, 1vw, 16px)",
                 }}
               >
-                <div className="whitespace-nowrap text-center">{dailyKural.Line1}</div>
-                <div className="whitespace-nowrap text-center">{dailyKural.Line2}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line1}</div>
+                <div className="whitespace-nowrap">{dailyKural.Line2}</div>
               </h2>
 
               <p
-                className="italic text-white/80 mt-2"
-                style={{
-                  fontSize: "clamp(10px,0.9vw,16px)",
-                }}
+                className="italic text-black/90 mt-1.5 text-[11px]"
               >
                 திருக்குறள் - குறள் - {dailyKural.Number}
               </p>
 
-              <div className="w-full h-px bg-white/20 my-3" />
+              <div className="w-full h-px bg-white/15 my-2.5" />
 
               <p
-                className="text-white leading-relaxed"
-                style={{
-                  fontSize: "clamp(11px,1vw,18px)",
-                }}
+                className="text-black leading-relaxed max-w-[95%] text-[12px] drop-shadow-sm px-2"
               >
                 {dailyKural.Translation}
               </p>
 
               <p
-                className="italic text-white/80 mt-2"
-                style={{
-                  fontSize: "clamp(10px,0.9vw,16px)",
-                }}
+                className="italic text-black/90 mt-1.5 text-[11px]"
               >
                 Thirukkural - Kural - {dailyKural.Number}
               </p>
@@ -405,6 +399,7 @@ const HeroPage = () => {
 };
 
 export default HeroPage;
+
 // import React, { useMemo, useState, useEffect } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
 
