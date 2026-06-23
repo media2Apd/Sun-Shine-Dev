@@ -265,7 +265,7 @@ const HeroPage = () => {
               className="
                 absolute
                 md:hidden
-                top-[35%]
+                top-[37%]
                 left-[14%]
                 w-[72%]
                 text-center
@@ -288,7 +288,7 @@ const HeroPage = () => {
                   fontSize: "clamp(6.5px, 1.8vw, 9.5px)",
                 }}
               >
-                திருக்கிழமை - குறள் - {dailyKural.Number}
+                திருக்குறள் - குறள் - {dailyKural.Number}
               </p>
 
               <div className="w-full h-px bg-white/20 my-2" />
@@ -317,7 +317,7 @@ const HeroPage = () => {
               className="
                 hidden md:block lg:hidden
                 absolute
-                top-[41%]
+                top-[38%] 
                 left-[18%]
                 w-[45%]
                 text-center
@@ -354,8 +354,9 @@ const HeroPage = () => {
               className="
                 hidden lg:block
                 absolute
-                top-[25%]
-                left-[18%]
+                top-[25%] 2xl:top-[35%]
+                lg:left-[17%]
+                xl:left-[18%]
                 w-[25%]
                 text-center
                 flex flex-col items-center justify-center
