@@ -117,22 +117,33 @@
 // export default HeroPage;
 
 import React, { useMemo, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import thirukkuralData from "../../assets/thirukkural.json";
-import HeroImage from "../../assets/HeroImage.png";
-import HeroImageMobile from "../../assets/HeroImageMobile.png";
+import HeroImage from "../../assets/HeroImage.webp";
+import HeroImageMobile from "../../assets/HeroImageMobile.webp";
 import logo from "../../assets/logo.svg"; 
 
 const HeroPage = () => {
-  const [showIntro, setShowIntro] = useState(true);
+  const location = useLocation(); // Get current path
+  const isHomePage = location.pathname === "/";
+  const [showIntro, setShowIntro] = useState(isHomePage);
 
   // Smoothly transition from Intro to your original Hero after 4.5 seconds
   useEffect(() => {
+    // If not on home page, ensure intro is hidden
+    if (!isHomePage) {
+      setShowIntro(false);
+      return;
+    }
+
+    // If on home page, start the timer
     const timer = setTimeout(() => {
       setShowIntro(false);
     }, 4500);
+
     return () => clearTimeout(timer);
-  }, []);
+  }, [isHomePage]); // Re-run if path changes
 
   const dailyKural = useMemo(() => {
     const kurals = thirukkuralData.kural;
@@ -150,7 +161,7 @@ const HeroPage = () => {
   return (
     <div className="w-full bg-white">
       <AnimatePresence mode="wait">
-        {showIntro ? (
+        {isHomePage && showIntro ? (
           /* ================= 1. PREMIUM WHITE INTRO ANIMATION ================= */
           <motion.div
             key="intro-screen"
@@ -266,7 +277,7 @@ const HeroPage = () => {
                 absolute
                 md:hidden
                 top-[37%]
-                left-[14%]
+                left-[10%]
                 w-[72%]
                 text-center
                 flex flex-col items-center justify-center
@@ -315,13 +326,13 @@ const HeroPage = () => {
             {/* ================= TABLET ================= */}
             <div
               className="
-                hidden md:block lg:hidden
+                hidden md:flex lg:hidden
                 absolute
                 top-[38%] 
                 left-[18%]
                 w-[45%]
                 text-center
-                flex flex-col items-center justify-center
+                flex-col items-center justify-center
               "
             >
               <h2
@@ -352,20 +363,20 @@ const HeroPage = () => {
             {/* ================= DESKTOP / LAPTOP ================= */}
             <div
               className="
-                hidden lg:block
+                hidden lg:flex
                 absolute
                 top-[25%] 2xl:top-[35%]
-                lg:left-[17%]
-                xl:left-[18%]
-                w-[25%]
+                left-[15.3%]
+                xl:left-[15%]
+                w-[35%]
                 text-center
-                flex flex-col items-center justify-center
+                flex-col items-center justify-center
               "
             >
               <h2
                 className="inline-flex flex-col items-start font-bold text-black text-left leading-tight drop-shadow-sm"
                 style={{
-                  fontSize: "clamp(12px, 1vw, 16px)",
+                  fontSize: "clamp(11px, 1vw, 16px)",
                 }}
               >
                 <div className="whitespace-nowrap">{dailyKural.Line1}</div>
@@ -400,214 +411,3 @@ const HeroPage = () => {
 };
 
 export default HeroPage;
-
-// import React, { useMemo, useState, useEffect } from "react";
-// import { motion, AnimatePresence } from "framer-motion";
-
-// import thirukkuralData from "../../assets/thirukkural.json";
-// import HeroImageDesktop from "../../assets/HeroImage.png";
-// import HeroImageMobile from "../../assets/HeroImageMobile.png";
-// import logo from "../../assets/logo.svg";
-
-// const HeroPage = () => {
-//   const [showSplash, setShowSplash] = useState(true);
-
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       setShowSplash(false);
-//     }, 5000);
-
-//     return () => clearTimeout(timer);
-//   }, []);
-
-//   const dailyKural = useMemo(() => {
-//     const kurals = thirukkuralData.kural;
-//     const totalKurals = kurals.length;
-
-//     const now = new Date();
-//     const daysSinceEpoch = Math.floor(
-//       now.getTime() / (1000 * 60 * 60 * 24)
-//     );
-
-//     return kurals[daysSinceEpoch % totalKurals];
-//   }, []);
-
-//   return (
-//     <>
-//       {/* Splash Screen */}
-//       <AnimatePresence>
-//         {showSplash && (
-//           <motion.div
-//             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gradient-to-b from-green-950 via-green-900 to-black px-4"
-//             exit={{ opacity: 0 }}
-//             transition={{ duration: 0.8 }}
-//           >
-//             <motion.img
-//               src={logo}
-//               alt="Sunshine Logo"
-//               className="w-32 sm:w-40 md:w-52"
-//               initial={{ scale: 0.4, opacity: 0 }}
-//               animate={{ scale: [0.4, 1.1, 1], opacity: 1 }}
-//               transition={{ duration: 1.8 }}
-//             />
-
-//             <motion.h1
-//               className="mt-6 text-3xl font-bold text-green-400 sm:text-4xl md:text-5xl"
-//               initial={{ opacity: 0, y: 25 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               transition={{ delay: 0.8 }}
-//             >
-//               Sunshine
-//             </motion.h1>
-
-//             <motion.p
-//               className="mt-3 text-center text-green-300 text-sm sm:text-lg"
-//               initial={{ opacity: 0 }}
-//               animate={{ opacity: 1 }}
-//               transition={{ delay: 1.4 }}
-//             >
-//               Gives Sunrise In Each Plant
-//             </motion.p>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-
-//       {/* Hero Section */}
-//       {!showSplash && (
-//         <section className="relative min-h-screen overflow-hidden">
-//           {/* Desktop Image */}
-//           <img
-//             src={HeroImageDesktop}
-//             alt="Hero"
-//             className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"
-//           />
-
-//           {/* Mobile Image */}
-//           <img
-//             src={HeroImageMobile}
-//             alt="Hero"
-//             className="md:hidden absolute inset-0 w-full h-full object-cover object-center"
-//           />
-
-//           {/* Dark Overlay */}
-//           <div className="absolute inset-0 bg-black/45 z-10" />
-
-//           {/* Content */}
-//           <div
-//             className="
-//               relative
-//               z-20
-//               flex
-//               justify-center
-//               items-start
-//               md:items-center
-//               min-h-screen
-//               px-4
-//               pt-28
-//               pb-10
-//               md:pt-0
-//             "
-//           >
-//             <motion.div
-//               initial={{ opacity: 0, y: 50 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 1 }}
-//               className="
-//                 w-full
-//                 max-w-[900px]
-//                 rounded-[35px]
-//                 border
-//                 border-green-400/20
-//                 bg-black/50
-//                 backdrop-blur-xl
-//                 shadow-[0_0_40px_rgba(0,0,0,0.5)]
-//                 p-5
-//                 sm:p-8
-//                 md:p-10
-//                 lg:p-12
-//               "
-//             >
-//               <div className="text-center">
-//                 <p
-//                   className="
-//                     text-green-200
-//                     tracking-[0.25em]
-//                     uppercase
-//                     text-xs
-//                     sm:text-sm
-//                     mb-4
-//                   "
-//                 >
-//                   திருக்குறள்
-//                 </p>
-
-//                 <h1
-//                   className="
-//                     text-green-50
-//                     font-bold
-//                     leading-tight
-
-//                     text-[26px]
-//                     sm:text-[38px]
-//                     md:text-[52px]
-//                     lg:text-[64px]
-//                   "
-//                 >
-//                   {dailyKural.Line1}
-//                   <br />
-//                   {dailyKural.Line2}
-//                 </h1>
-
-//                 <p
-//                   className="
-//                     mt-4
-//                     text-right
-//                     italic
-//                     text-green-200
-//                     text-sm
-//                     md:text-lg
-//                   "
-//                 >
-//                   திருக்குறள் - குறள் - {dailyKural.Number}
-//                 </p>
-
-//                 <div className="w-36 h-px bg-gradient-to-r from-transparent via-green-300 to-transparent mx-auto my-6" />
-
-//                 <p
-//                   className="
-//                     text-green-100
-//                     leading-relaxed
-//                     max-w-3xl
-//                     mx-auto
-
-//                     text-base
-//                     sm:text-lg
-//                     md:text-xl
-//                     lg:text-2xl
-//                   "
-//                 >
-//                   {dailyKural.Translation}
-//                 </p>
-
-//                 <p
-//                   className="
-//                     mt-5
-//                     text-right
-//                     italic
-//                     text-green-200
-//                     text-sm
-//                     md:text-lg
-//                   "
-//                 >
-//                   Thirukkural - Kural - {dailyKural.Number}
-//                 </p>
-//               </div>
-//             </motion.div>
-//           </div>
-//         </section>
-//       )}
-//     </>
-//   );
-// };
-
-// export default HeroPage;

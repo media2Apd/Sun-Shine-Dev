@@ -187,7 +187,7 @@ const NotFound = () => {
             {/* ACTION BUTTONS */}
             <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/shop")}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-green-600 text-white text-sm sm:text-base font-semibold hover:bg-green-700 shadow-lg shadow-green-200 transition-all active:scale-95"
               >
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />

@@ -382,10 +382,8 @@ const categoryOptions = category
         <div className="flex-1 px-6">
           <MapPin strokeWidth={1} className="mx-auto text-[#00B207] mb-3" size={26} />
           <p className="text-sm text-gray-600 leading-relaxed">
-            71/151/1, Door no W2/15/11,<br />
-            Mariyaponusami Mill Complex, Annanji Vilakku,<br />
-            Unjampatti, Theni Dist - 625 531,<br />
-            Tamilnadu.
+            D.No 19, ST-6, WD-12, Company Street, Genguvarpatti,<br/>
+            Theni District - 625 203, Tamilnadu, India.
           </p>
         </div>
 
@@ -407,8 +405,8 @@ const categoryOptions = category
         <div className="flex-1 px-6 mt-6 md:mt-0">
           <Phone strokeWidth={1} className="mx-auto text-[#00B207] mb-3" size={26} />
           <p className="text-sm text-gray-600 leading-relaxed">
-            (91) 84899 43519 <br />
-            (91) 84899 43523
+            (+91) 84899 43514 <br />
+            (+91) 84899 43666
           </p>
         </div>
 

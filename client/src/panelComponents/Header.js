@@ -11,7 +11,7 @@ const Header = ({ toggleMobileSidebar }) => {
       {/* Logo - Stays on the Left */}
       <img 
         src={logo} 
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/admin-panel/admin-dashboard')}
         alt="Logo" 
         className="h-10 w-auto cursor-pointer"
       />

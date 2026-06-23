@@ -262,7 +262,7 @@ const {
 
         {/* CONTINUE SHOPPING */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/shop")}
           className="bg-[#00B207] text-white px-8 py-2 rounded-full w-full md:w-auto"
         >
           Continue Shopping

@@ -158,7 +158,7 @@ export default function OrderHistoryPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/shop")}
           className="mt-6 px-6 py-2 bg-[#15803D] text-white rounded-lg transition"
         >
           Start Shopping

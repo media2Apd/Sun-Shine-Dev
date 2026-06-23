@@ -167,7 +167,7 @@
 
 
 import React from "react";
-import { ArrowLeft, Leaf, Headphones, ShieldCheck, Truck, Package, Eye, Target } from "lucide-react"; // Eye மற்றும் Target ஐகான்கள் சேர்க்கப்பட்டுள்ளன
+import { Leaf, Headphones, ShieldCheck, Truck, Package, Eye, Target } from "lucide-react"; // Eye மற்றும் Target ஐகான்கள் சேர்க்கப்பட்டுள்ளன
 
 import farm1 from "../assets/about1.png";
 import farm2 from "../assets/about2.png";
@@ -179,30 +179,25 @@ const AboutPage = () => {
 
   return (
     <>
-      <div className="min-h-screen px-5 md:px-10 lg:px-24 py-6">
-
-        {/* Back Button */}
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-500 mb-8 hover:text-black">
-          <ArrowLeft size={18} /> Back
-        </button>
+      <div className="min-h-screen px-5 md:px-10 xl:px-24 py-6">
 
         {/* SECTION 1 - Introduction */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          <div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="order-2 lg:order-1">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               100% Trusted Agricultural Solutions Provider
             </h1>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Sunshine is a trusted provider of high-quality agricultural inputs, offering a wide range of organic manures, bio fertilizers, bio pesticides, plant growth promoters and specialty nutrient solutions.
+              <span className="font-bold text-gray-800">Sunshine International Agritech</span>, established in the year <span className="font-semibold text-gray-800">2012</span>, is a trusted provider of high-quality agricultural inputs, offering a wide range of <span className="font-semibold text-gray-800">organic manures, bio fertilizers, bio pesticides, plant growth promoters</span> and <span className="font-semibold text-gray-800">specialty nutrient solutions</span>.
             </p>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              We focus on improving soil fertility, crop health, and farm productivity through eco-friendly and sustainable products that support modern agriculture.
+              We focus on improving <span className="font-semibold text-gray-800">soil fertility, crop health, and farm productivity</span> through <span className="font-semibold text-gray-800">eco-friendly and sustainable products</span> that support modern agriculture.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              Along with agricultural products, we are also involved in the cultivation of Oyster Mushrooms and the production of Endrillus eugeniae earthworms, supporting eco-friendly farming and advanced vermicomposting practices.
+              Along with agricultural products, we are also involved in the cultivation of <span className="font-semibold text-gray-800">Oyster Mushrooms</span> and the production of <span className="font-semibold text-gray-800">Eudrilus eugeniae earthworms</span>, supporting eco-friendly farming and advanced <span className="font-semibold text-gray-800">vermicomposting practices</span>.
             </p>
           </div>
-          <img src={farm1} alt="farm" className="rounded-xl shadow-md w-full" />
+          <img src={farm1} alt="farm" className="order-1 lg:order-2 rounded-xl shadow-md w-full" />
         </div>
 
         {/* SECTION 2 - Mission & Vision */}
@@ -212,11 +207,11 @@ const AboutPage = () => {
           <img
             src={farm2}
             alt="plant"
-            className="rounded-xl shadow-md w-full order-2 md:order-1"
+            className="rounded-xl shadow-md w-full md:order-1"
           />
 
           {/* CONTENT */}
-          <div className="order-1 md:order-2">
+          <div className="md:order-2">
             
             {/* Mission & Vision Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
@@ -278,18 +273,18 @@ const AboutPage = () => {
 
         {/* SECTION 3 - Call to Action */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mt-16 pb-10">
-          <div>
+          <div className="order-2 md:order-1">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
               We Deliver Quality, You Enjoy Better Harvests
             </h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
               At Sunshine, quality is our priority. We ensure every product is developed with carefully selected ingredients and proven formulations to deliver consistent results in the field.
             </p>
-            <button className="bg-[#00B207] text-white px-6 py-2 rounded-full transition" onClick={() => navigate("/")}>
+            <button className="bg-[#00B207] text-white px-6 py-2 rounded-full transition" onClick={() => navigate("/shop")}>
               Shop Now →
             </button>
           </div>
-          <img src={farm3} alt="harvest" className="rounded-xl shadow-md w-full" />
+          <img src={farm3} alt="harvest" className="order-1 md:order-2 rounded-xl shadow-md w-full" />
         </div>
       </div>
 
