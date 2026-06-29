@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import Leafs from '../assets/Leaf.webm';
 
-import HeroPage from '../components/homeComponents/HeroPage.js';
+import HeroPage from '../components/homeComponents/HeroPageTemp.js';
 
 import img1 from "../assets/gallery1.png";
 import img2 from "../assets/gallery2.png";
@@ -329,8 +329,8 @@ const AgricultureLanding = () => {
                   key={item.label}
                   onClick={() => handleNav(item)}
                   className={`font-medium text-[15px] transition-colors ${isActive
-                      ? "text-green-600"
-                      : "text-gray-500 hover:text-green-600"
+                    ? "text-green-600"
+                    : "text-gray-500 hover:text-green-600"
                     }`}
                 >
                   {item.label}
@@ -371,8 +371,8 @@ const AgricultureLanding = () => {
                   key={item.label}
                   onClick={() => handleNav(item)}
                   className={`font-medium text-[15px] transition-colors text-left ${isActive
-                      ? "text-green-600"
-                      : "text-gray-500 hover:text-green-600"
+                    ? "text-green-600"
+                    : "text-gray-500 hover:text-green-600"
                     }`}
                 >
                   {item.label}
@@ -478,21 +478,21 @@ const AgricultureLanding = () => {
                 {/* Main Green Box */}
                 <div
                   className="
-        relative
-        bg-[#f0faf0]
-        rounded-3xl
-        flex
-        flex-col
-        items-center
-        overflow-hidden
-        px-3
-        sm:px-5
-        pt-4
-        sm:pt-6
-        pb-4
-        sm:pb-5
-        gap-4
-      "
+                    relative
+                    bg-[#f0faf0]
+                    rounded-3xl
+                    flex
+                    flex-col
+                    items-center
+                    overflow-hidden
+                    px-3
+                    sm:px-5
+                    pt-4
+                    sm:pt-6
+                    pb-4
+                    sm:pb-5
+                    gap-4
+                  "
                 >
 
                   {/* Plant Video */}
@@ -504,16 +504,16 @@ const AgricultureLanding = () => {
                     disablePictureInPicture
                     controlsList="nodownload nofullscreen noremoteplayback"
                     className="
-          relative
-          z-10
-          w-full
-          max-w-[300px]
-          sm:max-w-[360px]
-          md:max-w-[420px]
-          lg:max-w-[460px]
-          h-auto
-          object-contain
-        "
+                      relative
+                      z-10
+                      w-full
+                      max-w-[300px]
+                      sm:max-w-[360px]
+                      md:max-w-[420px]
+                      lg:max-w-[460px]
+                      h-auto
+                      object-contain
+                    "
                   >
                     <source src={PlantVideo} type="video/webm" />
                   </video>
@@ -568,15 +568,15 @@ const AgricultureLanding = () => {
 
                 <div
                   className="
-        relative
-        bg-[#e8f8e8]
-        rounded-3xl
-        overflow-hidden
-        h-[420px]
-        sm:h-[500px]
-        md:h-[560px]
-        lg:h-[620px]
-      "
+                    relative
+                    bg-[#e8f8e8]
+                    rounded-3xl
+                    overflow-hidden
+                    h-[420px]
+                    sm:h-[500px]
+                    md:h-[560px]
+                    lg:h-[620px]
+                  "
                 >
 
                   {/* Video */}
@@ -589,12 +589,12 @@ const AgricultureLanding = () => {
                       disablePictureInPicture
                       controlsList="nodownload nofullscreen noremoteplayback"
                       className="
-            w-full
-            h-full
-            object-contain
-            scale-[1.15]
-            sm:scale-[1.2]
-          "
+                        w-full
+                        h-full
+                        object-contain
+                        scale-[1.15]
+                        sm:scale-[1.2]
+                      "
                     >
                       <source src={RootVideo} type="video/webm" />
                     </video>
@@ -750,11 +750,11 @@ const AgricultureLanding = () => {
                     disablePictureInPicture
                     controlsList="nodownload nofullscreen noremoteplayback"
                     className="
-          w-full
-          h-auto
-          object-contain
-          rounded-[24px]
-        "
+                      w-full
+                      h-auto
+                      object-contain
+                      rounded-[24px]
+                    "
                   >
                     <source src={Leafs} type="video/webm" />
                   </video>
@@ -776,10 +776,6 @@ const AgricultureLanding = () => {
 
               </div>
             </Reveal>
-
-
-
-
           </div>
         </div>
       </section>

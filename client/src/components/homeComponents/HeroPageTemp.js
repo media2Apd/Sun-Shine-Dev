@@ -267,7 +267,7 @@ const HeroPage = () => {
               <img
                 src={HeroImage}
                 alt="Thiruvalluvar"
-                className="w-full h-auto block mt-14"
+                className={`w-full h-auto block ${isHomePage && "mt-12 md:mt-16"}`}
               />
             </picture>
 
